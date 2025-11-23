@@ -11,7 +11,7 @@ export class backendFetch {
     }).then((response) => response.json());
   }
 
-  async get<T>(endPoint: string): Promise<T> {
+  async get<T>(endPoint: string) {
     return await fetch(`${this.url}${endPoint}`, {
       method: "GET",
       headers: {
@@ -30,7 +30,7 @@ export class backendFetch {
     }).then((response) => response.json());
   }
 
-  async delete<T>(endPoint: string): Promise<T> {
+  async delete<T>(endPoint: string) {
     return await fetch(`${this.url}${endPoint}`, {
       method: "DELETE",
       headers: {
