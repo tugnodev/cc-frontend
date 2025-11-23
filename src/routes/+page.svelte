@@ -11,7 +11,7 @@
     }
 </script>
 
-<main class="">
+<main class="container">
     <h1>Welcome to Tauri + Svelte</h1>
 
     <div class="row">
