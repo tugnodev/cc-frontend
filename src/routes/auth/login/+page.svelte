@@ -4,9 +4,11 @@
 <div class="container">
     <h2>Connecte Toi</h2>
 
+    <!-- svelte-ignore a11y_label_has_associated_control -->
     <label>Email</label>
     <input type="email" placeholder="Entrez votre Email" />
 
+    <!-- svelte-ignore a11y_label_has_associated_control -->
     <label>Mot de passe</label>
     <input type="password" placeholder="Entrez votre mot de passe" />
 
@@ -33,7 +35,7 @@
 
     <p style="text-align:center; margin-top:20px;">
         Pas encore de compte?
-        <a href="">S'inscrire</a>
+        <a href=" ">S'inscrire</a>
     </p>
 </div>
 
