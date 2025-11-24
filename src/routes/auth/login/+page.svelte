@@ -8,6 +8,7 @@
     <h2 class="text-3xl font-bold text-center mb-6">Connecte Toi</h2>
 
     <div class="form-control mb-4">
+      <!-- svelte-ignore a11y_label_has_associated_control -->
       <label class="label">
         <span class="label-text">Email</span>
       </label>
@@ -19,6 +20,7 @@
     </div>
 
     <div class="form-control mb-2">
+      <!-- svelte-ignore a11y_label_has_associated_control -->
       <label class="label">
         <span class="label-text">Mot de passe</span>
       </label>
