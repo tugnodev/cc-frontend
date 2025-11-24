@@ -33,7 +33,7 @@
 
     <p style="text-align:center; margin-top:20px;">
         Pas encore de compte?
-        <a href="/auth/register">S'inscrire</a>
+        <a href="">S'inscrire</a>
     </p>
 </div>
 
