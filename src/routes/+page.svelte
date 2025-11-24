@@ -40,6 +40,8 @@
         <button type="submit">Greet</button>
     </form>
     <p>{greetMsg}</p>
+
+    <a href="/auth/login">Login</a>
 </main>
 
 <style>
