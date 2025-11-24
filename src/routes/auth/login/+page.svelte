@@ -22,7 +22,7 @@
             </label>
             <input
                 type="password"
-                placeholder="Enter your password"
+                placeholder="Entrez votre mot de passe"
                 class="input input-bordered w-full"
             />
         </div>
