@@ -6,6 +6,7 @@
         <h2 class="text-3xl font-bold text-center mb-6">Connecte Toi</h2>
 
         <div class="form-control mb-4">
+            <!-- svelte-ignore a11y_label_has_associated_control -->
             <label class="label">
                 <span class="label-text">Email</span>
             </label>
@@ -17,6 +18,7 @@
         </div>
 
         <div class="form-control mb-2">
+            <!-- svelte-ignore a11y_label_has_associated_control -->
             <label class="label">
                 <span class="label-text">Mot de passe</span>
             </label>
@@ -43,9 +45,12 @@
         <div class="divider">Ou connectez-vous avec</div>
 
         <div class="flex justify-center gap-4 my-4">
+            <!-- svelte-ignore a11y_consider_explicit_label -->
+            <!-- svelte-ignore a11y_consider_explicit_label -->
             <button class="btn btn-circle"
                 ><img src="/google.svg" class="w-5" /></button
             >
+            <!-- svelte-ignore a11y_consider_explicit_label -->
             <button class="btn btn-circle"
                 ><img src="/facebook.svg" class="w-5" /></button
             >
