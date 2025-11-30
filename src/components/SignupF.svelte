@@ -127,7 +127,6 @@
         <p class="text-center">
             Vous avez déjà un compte?
             <a href="/auth/login" class="link link-primary">Connectez-vous</a>
-            >
         </p>
     </div>
 </div>
