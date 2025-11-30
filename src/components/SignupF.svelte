@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <script>
     import { backendFetch } from "../lib/backend";
     let email = "";
@@ -131,3 +132,5 @@
         </p>
     </div>
 </div>
+=======
+>>>>>>> 0e58c64 (true)
