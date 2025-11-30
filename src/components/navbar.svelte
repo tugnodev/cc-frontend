@@ -5,7 +5,7 @@
     const navItems = [
         { label: "Home", href: "/market", icon: House },
         { label: "Recherche", href: "/market/search", icon: Search },
-        { label: "Profile", href: "/market/contact", icon: CircleUserRound },
+        { label: "Profile", href: "/market/profile", icon: CircleUserRound },
     ];
 </script>
 
