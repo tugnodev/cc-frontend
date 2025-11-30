@@ -3,5 +3,8 @@
      "[svelte]": {
      "editor.defaultFormatter": "svelte.svelte-vscode"
    },
+<<<<<<< HEAD
 
+=======
+>>>>>>> 4cacd66 (signup)
 }
