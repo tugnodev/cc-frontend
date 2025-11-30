@@ -1,5 +1,5 @@
 <script>
-    import SignupF from "../../../components/SignupF.svelte";
+    import SignupF from "../../../components/auth/SignupForm.svelte"
 </script>
 
 <main>
