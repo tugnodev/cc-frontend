@@ -61,7 +61,7 @@
 
     <p class="text-center">
       Pas encore de compte?
-      <a href="/auth/register" class="link link-primary">Inscrivez-vous</a>
+      <a href="signup" class="link link-primary">Inscrivez-vous</a>
     </p>
   </div>
 </div>
