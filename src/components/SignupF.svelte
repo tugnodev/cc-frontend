@@ -89,7 +89,7 @@
                     class="input input-bordered w-full border-base-300"
                 />
             </div>
-
+            <!--
             <div class="flex justify-between items-center mb-4">
                 <label class="flex items-center gap-2 cursor-pointer">
                     <input
@@ -98,16 +98,16 @@
                         bind:checked={agree}
                     />
                     <span>Se souvenir de moi</span>
-                </label>
+                </label> -->
 
-                <a
+            <!-- <a
                     href="/auth/forgot"
                     class="link link-hover text-sm text-primary"
                     >Mot de passe oublié?</a
                 >
-            </div>
+            </div> -->
 
-            <button class="btn btn-success w-full">Se connecter</button>
+            <button class="btn btn-success w-full">S'inscrire</button>
 
             <div class="divider">Ou connectez-vous avec</div>
 
