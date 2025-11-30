@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 <script>
     import { backendFetch } from "../lib/backend";
     let email = "";
@@ -128,9 +127,6 @@
         <p class="text-center">
             Vous avez déjà un compte?
             <a href="/auth/login" class="link link-primary">Connectez-vous</a>
-            >
         </p>
     </div>
 </div>
-=======
->>>>>>> 0e58c64 (true)
