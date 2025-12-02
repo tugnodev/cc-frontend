@@ -1,7 +1,7 @@
 <script>
 </script>
 
-<div class="w-full bg-red-500 h-96">
+<div class="w-full bg-base-300 h-52 rounded-2xl shadow-xl">
     <div>
         <div>
             <img src="#" alt="Profile Picture" />
