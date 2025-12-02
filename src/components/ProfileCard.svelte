@@ -1,16 +1,28 @@
 <script>
+    import { Pencil, AtSign, CardSim } from "@lucide/svelte";
 </script>
 
-<div class="w-full bg-base-300 h-52 rounded-2xl shadow-xl">
-    <div>
-        <div>
-            <img src="#" alt="Profile Picture" />
+<section class="flex flex-col items-center justify-center w-full gap-8">
+    <div
+        class="flex flex-col items-center gap-2 justify-center indicator w-40 rounded-full bg-white mt-8"
+    >
+        <div
+            class="indicator-item indicator-bottom bg-base-100 border border-base-300 p-2 rounded-full"
+        >
+            <Pencil size={28} />
         </div>
-        <section>
-            <p>Name: John Doe</p>
-            <p>Email: john.doe@example.com</p>
-            <h2>+221 701234567</h2>
-        </section>
+        <img class="rounded-full" src="/profile.png" alt="" />
     </div>
-    <div></div>
-</div>
+    <div class="flex flex-col items-center gap-1">
+        <div class="flex items-center">
+            <h2 class="font-semibold text-xl">Racine DIOP</h2>
+            <div class="badge badge-soft badge-success badge-sm">vendeur</div>
+        </div>
+        <h2 class="text-xs font-semibold flex items-center gap-1">
+            <AtSign size={16} /> mailofracine1@gmail.com
+        </h2>
+        <h2 class="text-xs font-semibold flex items-center gap-1">
+            <CardSim size={16} /> 78 475 45 28
+        </h2>
+    </div>
+</section>
