@@ -1,4 +1,9 @@
 <script>
+    import ProfileCard from "../../../components/ProfileCard.svelte";
 </script>
 
-<h1>Welcome to CC</h1>
+<main class="w-full h-screen">
+    <div class="w-full h-auto p-2">
+        <ProfileCard />
+    </div>
+</main>
