@@ -22,7 +22,7 @@
 >
     <ul class={`flex items-center justify-center p-2 gap-4`}>
         {#each navItems as item}
-            <li class={isActive(item.href) + ` transition-all duration-300`}>
+            <li class={isActive(item.href) + ` transition-all duration-400`}>
                 <a
                     class="flex justify-center gap-2 items-center"
                     href={item.href}
