@@ -1,16 +1,11 @@
 <script>
-    import { Pencil, AtSign, CardSim } from "@lucide/svelte";
+    import { Pencil, AtSign, CardSim, User, Store } from "@lucide/svelte";
 </script>
 
-<section class="flex flex-col items-center justify-center w-full gap-8">
+<section class="flex flex-col items-center justify-center w-full gap-4">
     <div
-        class="flex flex-col items-center gap-2 justify-center indicator w-40 rounded-full bg-white mt-8"
+        class="flex flex-col items-center gap-2 justify-center indicator w-40 rounded-full bg-white"
     >
-        <div
-            class="indicator-item indicator-bottom bg-base-100 border border-base-300 p-2 rounded-full"
-        >
-            <Pencil size={28} />
-        </div>
         <img class="rounded-full" src="/profile.png" alt="" />
     </div>
     <div class="flex flex-col items-center gap-1">
@@ -24,5 +19,13 @@
         <h2 class="text-xs font-semibold flex items-center gap-1">
             <CardSim size={16} /> 78 475 45 28
         </h2>
+    </div>
+    <div class="flex w-full items-center justify-center gap-2">
+        <button class="btn btn-soft btn-sm btn-infos flex items-center gap-2"
+            ><User /> Modifier le profile</button
+        >
+        <button class="btn btn-soft btn-sm btn-warning flex items-center gap-2"
+            >Voire ma boutiques <Store /></button
+        >
     </div>
 </section>
