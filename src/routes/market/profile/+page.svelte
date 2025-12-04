@@ -1,14 +1,11 @@
 <script>
-    // @ts-nocheck
-
-    import ExtraSettings from "../../../components/ExtraSettings.svelte";
+    import ExtraSetting from "../../../components/ExtraSetting.svelte";
 
     function logout() {
         alert("Déconnecté !");
-        
     }
 </script>
 
 <div class="min-h-screen bg-base-200 flex justify-center p-6">
-    <ExtraSettings onLogout={logout} />
+    <ExtraSetting onLogout={logout} />
 </div>
