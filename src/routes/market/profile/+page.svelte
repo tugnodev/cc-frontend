@@ -5,7 +5,7 @@
 
     function logout() {
         alert("Déconnecté !");
-        // logiques : remove token, redirect...
+        
     }
 </script>
 
