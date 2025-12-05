@@ -8,7 +8,6 @@
 </script>
 
 <Main>
-    <h1>Recherche</h1>
     <SearchBar
         onSearch={handleSearch}
         placeholder="Rechercher vos commandes..."
