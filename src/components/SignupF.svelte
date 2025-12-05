@@ -132,12 +132,14 @@
                 />
                 <span class="text-sm leading-tight">
                     J'accepte les
-                    <a class="text-primary font-medium cursor-pointer" href="#"
-                        >Conditions d'utilisation</a
+                    <a
+                        class="text-primary font-medium cursor-pointer"
+                        href="/terms">Conditions d'utilisation</a
                     >
                     et la
-                    <a class="text-primary font-medium cursor-pointer" href="#"
-                        >Politique de confidentialité</a
+                    <a
+                        class="text-primary font-medium cursor-pointer"
+                        href="/privacy">Politique de confidentialité</a
                     >.
                 </span>
             </label>

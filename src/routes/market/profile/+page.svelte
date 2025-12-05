@@ -8,6 +8,11 @@
     } from "@lucide/svelte";
     import Main from "../../../components/Main.svelte";
 
+    // @ts-ignore
+    
+    
+    
+
     const routes = [
         { label: "Panier", icon: ShoppingCart },
         { label: "Discutions", icon: MessageCircle },
