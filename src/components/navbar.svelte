@@ -1,8 +1,6 @@
 <script lang="ts">
     import { House, Search, CircleUserRound } from "@lucide/svelte";
     import { page } from "$app/stores";
-    import { slide } from "svelte/transition";
-    import { cubicOut, linear } from "svelte/easing";
 
     function isActive(path: string) {
         return $page.url.pathname === path
