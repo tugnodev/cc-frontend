@@ -34,3 +34,9 @@
         <Search class="w-5 h-5" />
     </button>
 </div>
+
+<style>
+    input:focus {
+        border: none;
+    }
+</style>
