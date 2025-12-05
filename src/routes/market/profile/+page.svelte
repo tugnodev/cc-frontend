@@ -6,6 +6,6 @@
     }
 </script>
 
-<div class="min-h-screen bg-base-200 flex justify-center p-6">
+<div class="min-h-screen bg-base-200 flex justify-center items-start p-6">
     <ExtraSetting onLogout={logout} />
 </div>
