@@ -1,7 +1,7 @@
 <script>
     import { Search } from "@lucide/svelte";
     export let placeholder = "Rechercher...";
-    export let onSearch = (query) => {};
+    export let onSearch = (/** @type {string} */ query) => {};
 
     let query = "";
 
@@ -9,6 +9,9 @@
         onSearch(query);
     }
 
+    /**
+     * @param {{ key: string; }} event
+     */
     function handleKey(event) {
         if (event.key === "Enter") {
             handleSearch();
