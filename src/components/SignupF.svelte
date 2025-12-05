@@ -1,32 +1,54 @@
 <script>
     import { backendFetch } from "../lib/backend";
-    let email = "";
+
     let name = "";
+    let email = "";
     let password = "";
     let confirmPassword = "";
-    let csrf_token = "";
     let agree = false;
-    const requeste = new backendFetch();
+    let loading = false;
+    let errorMsg = "";
+    let successMsg = "";
 
-    function signUp() {
+    const request = new backendFetch();
+
+    async function signUp(e) {
+        e.preventDefault();
+        errorMsg = "";
+        successMsg = "";
+
+        if (!name || !email || !password) {
+            errorMsg = "Tous les champs sont obligatoires.";
+            return;
+        }
+
         if (password !== confirmPassword) {
-            alert("Passwords do not match");
+            errorMsg = "Les mots de passe ne correspondent pas.";
             return;
         }
-        if (!agree) {
-            alert("You must agree to terms");
-            return;
-        }
-        console.log({ email, password });
 
-        requeste
-            .post("/user/register", { name, email, password })
-            .then((response) => {
-                console.log(response);
-            })
-            .catch((error) => {
-                console.error(error);
+        if (!agree) {
+            errorMsg = "Vous devez accepter les conditions.";
+            return;
+        }
+
+        loading = true;
+
+        try {
+            const response = await request.post("/user/register", {
+                name,
+                email,
+                password,
             });
+
+            successMsg = "Compte créé avec succès !";
+            console.log(response);
+        } catch (err) {
+            errorMsg = "Erreur lors de l'inscription.";
+            console.error(err);
+        }
+
+        loading = false;
     }
 </script>
 
@@ -34,25 +56,36 @@
     <div
         class="card w-full max-w-md bg-base-100 shadow-xl p-6 border border-base-300"
     >
-        <form action="" onsubmit={signUp}>
-            <input type="hidden" name="csrf_token" value={csrf_token} />
-            <h2 class="text-3xl font-bold text-center mb-6">Inscrivez-vous</h2>
+        <h2 class="text-3xl font-bold text-center mb-6">Inscrivez-vous</h2>
 
+        {#if errorMsg}
+            <div class="alert alert-error mb-4">
+                {errorMsg}
+            </div>
+        {/if}
+
+        {#if successMsg}
+            <div class="alert alert-success mb-4">
+                {successMsg}
+            </div>
+        {/if}
+
+        <form on:submit={signUp}>
+            <!-- Name -->
             <div class="form-control mb-4">
-                <!-- svelte-ignore a11y_label_has_associated_control -->
                 <label class="label">
                     <span class="label-text">Nom</span>
                 </label>
                 <input
                     type="text"
-                    placeholder="Entrez votre nom"
                     bind:value={name}
-                    class="input input-bordered w-full border-base-300"
+                    placeholder="Entrez votre nom"
+                    class="input input-bordered w-full"
                 />
             </div>
 
+            <!-- Email -->
             <div class="form-control mb-4">
-                <!-- svelte-ignore a11y_label_has_associated_control -->
                 <label class="label">
                     <span class="label-text">Email</span>
                 </label>
@@ -60,12 +93,12 @@
                     type="email"
                     bind:value={email}
                     placeholder="Entrez votre email"
-                    class="input input-bordered w-full border-base-300"
+                    class="input input-bordered w-full"
                 />
             </div>
 
-            <div class="form-control mb-2">
-                <!-- svelte-ignore a11y_label_has_associated_control -->
+            <!-- Password -->
+            <div class="form-control mb-4">
                 <label class="label">
                     <span class="label-text">Mot de passe</span>
                 </label>
@@ -73,59 +106,64 @@
                     type="password"
                     bind:value={password}
                     placeholder="Entrez votre mot de passe"
-                    class="input input-bordered w-full border-base-300"
+                    class="input input-bordered w-full"
                 />
             </div>
 
-            <div class="form-control mb-2">
-                <!-- svelte-ignore a11y_label_has_associated_control -->
+            <!-- Confirm password -->
+            <div class="form-control mb-4">
                 <label class="label">
                     <span class="label-text">Confirmer le mot de passe</span>
                 </label>
                 <input
                     type="password"
                     bind:value={confirmPassword}
-                    placeholder="Confirmer votre mot de passe"
-                    class="input input-bordered w-full border-base-300"
+                    placeholder="Confirmez votre mot de passe"
+                    class="input input-bordered w-full"
                 />
             </div>
-            <!--
-            <div class="flex justify-between items-center mb-4">
-                <label class="flex items-center gap-2 cursor-pointer">
-                    <input
-                        type="checkbox"
-                        class="checkbox checkbox-success"
-                        bind:checked={agree}
-                    />
-                    <span>Se souvenir de moi</span>
-                </label> -->
 
-            <!-- <a
-                    href="/auth/forgot"
-                    class="link link-hover text-sm text-primary"
-                    >Mot de passe oublié?</a
-                >
-            </div> -->
+            <!-- Terms -->
+            <label class="flex items-center gap-3 mb-4 cursor-pointer">
+                <input
+                    type="checkbox"
+                    bind:checked={agree}
+                    class="checkbox checkbox-success"
+                />
+                <span class="text-sm leading-tight">
+                    J'accepte les
+                    <a class="text-primary font-medium cursor-pointer" href="#"
+                        >Conditions d'utilisation</a
+                    >
+                    et la
+                    <a class="text-primary font-medium cursor-pointer" href="#"
+                        >Politique de confidentialité</a
+                    >.
+                </span>
+            </label>
 
-            <button class="btn btn-success w-full">S'inscrire</button>
+            <!-- Submit -->
+            <button class="btn btn-success w-full" disabled={loading}>
+                {loading ? "Chargement..." : "S'inscrire"}
+            </button>
 
             <div class="divider">Ou connectez-vous avec</div>
 
             <div class="flex justify-center gap-4 my-4">
-                <button class="btn btn-circle border-base-300">
-                    <img src="/google.svg" alt="Logo Google" class="w-5" />
+                <button type="button" class="btn btn-circle border-base-300">
+                    <img src="/google.svg" alt="Google" class="w-5" />
                 </button>
-                <button class="btn btn-circle border-base-300">
-                    <img src="/facebook.svg" alt="Logo Facebook" class="w-5" />
+                <button type="button" class="btn btn-circle border-base-300">
+                    <img src="/facebook.svg" alt="Facebook" class="w-5" />
                 </button>
-                <button class="btn btn-circle border-base-300">
-                    <img src="/apple.svg" alt="Logo Apple" class="w-6" />
+                <button type="button" class="btn btn-circle border-base-300">
+                    <img src="/apple.svg" alt="Apple" class="w-6" />
                 </button>
             </div>
         </form>
 
-        <p class="text-center">
-            Vous avez déjà un compte?
+        <p class="text-center mt-4">
+            Vous avez déjà un compte ?
             <a href="/auth/login" class="link link-primary">Connectez-vous</a>
         </p>
     </div>

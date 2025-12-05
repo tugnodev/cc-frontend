@@ -19,7 +19,7 @@
     }
 </script>
 
-<div class="flex w-full max-w-md mx-auto">
+<div class="flex w-11/12 m-2.5">
     <input
         type="text"
         bind:value={query}
