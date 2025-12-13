@@ -41,7 +41,9 @@
     </form>
     <p>{greetMsg}</p>
 
-    <a href="/auth/login">Login</a>
+    <a href="/auth/login">Login</a> <br>
+    <a href="/auth/signup">Sign Up</a> <br>
+    <a href="/market">Market</a>
 </main>
 
 <style>
