@@ -1,14 +1,19 @@
 <script>
-    // @ts-ignore
     /**
      * @type {any[] | null | undefined}
      */
     export let categories = [];
-    // @ts-ignore
     /**
      * @type {null}
      */
     let selectedCategory = null;
+
+    /**
+     * @param {null} category
+     */
+    function toggleCategory(category) {
+        selectedCategory = selectedCategory === category ? null : category;
+    }
 </script>
 
 <section>
@@ -19,7 +24,7 @@
             <button
                 class="btn btn-sm
           {selectedCategory === category ? 'btn-primary' : 'btn-outline'}"
-                on:click={() => (selectedCategory = category)}
+                on:click={() => toggleCategory(category)}
             >
                 {category}
             </button>
@@ -28,7 +33,7 @@
 
     {#if selectedCategory}
         <div class="mt-4 alert alert-info">
-            Catégorie sélectionnée :
+            Filtre actif :
             <strong>{selectedCategory}</strong>
         </div>
     {/if}
