@@ -60,7 +60,7 @@
 </script>
 
 <div
-    class="ad-banner w-11/12 mx-auto my-4 relative overflow-hidden rounded-lg shadow-lg"
+    class="ad-banner w-full max-w-2xl h-auto mx-auto my-4 relative overflow-hidden rounded-lg shadow-lg"
     role="region"
     aria-label="Carousel de publicités"
     on:mouseenter={stopTimer}
