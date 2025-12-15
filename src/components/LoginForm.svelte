@@ -1,11 +1,20 @@
-<script>
+<script lang="ts">
     import { backendFetch } from "../lib/backend";
+
     let email = "";
     let password = "";
     let rememberMe = false;
+    let csrf_token = "";
     const requeste = new backendFetch();
 
-    function login() {
+    function login(event?: Event) {
+        event?.preventDefault?.();
+
+        if (!email.trim() || !password) {
+            alert("Veuillez remplir tous les champs.");
+            return;
+        }
+
         console.log({ email, password, rememberMe });
 
         requeste
@@ -24,6 +33,7 @@
         class="card w-full max-w-md bg-base-100 shadow-xl p-6 border border-base-300"
     >
         <form action="" onsubmit={login}>
+            <input type="hidden" name="csrf_token" value={csrf_token} />
             <h2 class="text-3xl font-bold text-center mb-6">Connectez-vous</h2>
 
             <div class="form-control mb-4">
