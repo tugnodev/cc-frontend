@@ -3,7 +3,7 @@
 </script>
 
 <main>
-    <div class=" ">
+    <div>
         <SignupF />
     </div>
 </main>
