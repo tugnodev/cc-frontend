@@ -1,4 +1,7 @@
-<script>
+<script lang="ts">
+  import ProfileCertife from "../../components/ProfileCertife.svelte";
 </script>
 
-<h1>Welcome to CC</h1>
+<main class="w-full">
+  <ProfileCertife />
+</main>
