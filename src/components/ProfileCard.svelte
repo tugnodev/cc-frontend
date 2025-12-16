@@ -21,7 +21,7 @@
         </h2>
     </div>
     <div class="flex w-full items-center justify-center gap-2">
-        <button class="btn btn-soft btn-sm btn-infos flex items-center gap-2"
+        <button class="btn btn-soft btn-sm btn-infos flex items-center gap-2" 
             ><User /> Modifier le profile</button
         >
         <button class="btn btn-soft btn-sm btn-warning flex items-center gap-2"
