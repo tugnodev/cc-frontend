@@ -5,10 +5,10 @@
 
 <div
     class="join fixed bottom-[100px] left-1/2 -translate-x-1/2 z-50
-         bg-neutral text-neutral-content shadow-xl rounded-full px-2"
+         bg-base-300/50 border-2 border-base-300 text-neutral-content shadow-xl rounded-full"
 >
     <button
-        class="btn btn-ghost join-item gap-2"
+        class="btn btn-ghost rounded-3xl join-item gap-2"
         on:click={() => dispatch("sort")}
     >
         Trier
@@ -31,7 +31,7 @@
     </button>
 
     <button
-        class="btn btn-ghost join-item gap-2"
+        class="btn btn-ghost rounded-3xl join-item gap-2"
         on:click={() => dispatch("filter")}
     >
         Filtres
