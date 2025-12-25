@@ -8,7 +8,7 @@
     } from "@lucide/svelte";
     import { X } from "@lucide/svelte";
     import Main from "../../../components/Main.svelte";
-    import Panier from "../../../components/Panier.svelte";
+    import ModalBox from "../../../components/ModalBox.svelte";
 
     let modal = false;
     let window;
@@ -55,7 +55,9 @@
     <div
         class="absolute inset-0 p-2 bg-base-100/70 backdrop-blur z-50 flex items-center justify-center"
     >
-        <Panier />
+        <ModalBox>
+            <h1>Hello word</h1>
+        </ModalBox>
         <button
             on:click={() => (modal = false)}
             class="absolute top-2 right-2 btn btn-sm btn-circle btn-ghost btn-error"
