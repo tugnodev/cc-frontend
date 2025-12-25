@@ -6,12 +6,14 @@
         PackageOpen,
         MessageSquareWarning,
     } from "@lucide/svelte";
+    import { X } from "@lucide/svelte";
     import Main from "../../../components/Main.svelte";
+    import Panier from "../../../components/Panier.svelte";
+
+    let modal = false;
+    let window;
 
     // @ts-ignore
-    
-    
-    
 
     const routes = [
         { label: "Panier", icon: ShoppingCart },
@@ -33,6 +35,8 @@
         >
             {#each routes as route}
                 <button
+                    on:click={() => (modal = true)}
+                    bind:this={window}
                     class="bg-base-100/50 border-2 rounded-xl gap-1 border-base-300 min-w-36 w-full min-h-36 h-full flex flex-col items-center justify-center"
                 >
                     <span>
@@ -45,3 +49,18 @@
         <button class="w-full btn btn-error">Se deconnecter</button>
     </div>
 </Main>
+
+<!-- Modal -->
+{#if modal}
+    <div
+        class="absolute inset-0 p-2 bg-base-100/70 backdrop-blur z-50 flex items-center justify-center"
+    >
+        <Panier />
+        <button
+            on:click={() => (modal = false)}
+            class="absolute top-2 right-2 btn btn-sm btn-circle btn-ghost btn-error"
+        >
+            <X class="w-8 h-8" />
+        </button>
+    </div>
+{/if}
