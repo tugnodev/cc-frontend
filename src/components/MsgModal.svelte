@@ -4,63 +4,120 @@
     export let onClose: () => void;
 
     export let messages = [
-        { id: 1, sender: "John Doe", preview: "Hello, how are you?", time: "10:30 AM" },
-        { id: 2, sender: "Jane Smith", preview: "Hey, what's up?", time: "11:45 AM" },
-        { id: 3, sender: "Alice Johnson", preview: "Hi, I'm fine!", time: "12:00 PM" },
-        { id: 4, sender: "Bob Brown", preview: "How's the weather?", time: "1:15 PM" },
-        { id: 5, sender: "Charlie White", preview: "What's new?", time: "2:30 PM" },
-        { id: 6, sender: "David Black", preview: "Good morning!", time: "3:45 PM" },
-        { id: 7, sender: "Eve Green", preview: "See you later!", time: "4:30 PM" },
-        { id: 8, sender: "Frank White", preview: "Nice to meet you!", time: "5:00 PM" },
-        { id: 9, sender: "Grace Brown", preview: "Good afternoon!", time: "6:15 PM" },
-        { id: 10, sender: "Henry Green", preview: "Good evening!", time: "7:30 PM" },
-        { id: 11, sender: "Isabella White", preview: "How's the weather?", time: "8:45 PM" },
-        { id: 12, sender: "Jack Black", preview: "What's new?", time: "9:30 PM" }
+        {
+            id: 1,
+            sender: "John Doe",
+            preview: "Hello, how are you?",
+            time: "10:30 AM",
+        },
+        {
+            id: 2,
+            sender: "Jane Smith",
+            preview: "Hey, what's up?",
+            time: "11:45 AM",
+        },
+        {
+            id: 3,
+            sender: "Alice Johnson",
+            preview: "Hi, I'm fine!",
+            time: "12:00 PM",
+        },
+        {
+            id: 4,
+            sender: "Bob Brown",
+            preview: "How's the weather?",
+            time: "1:15 PM",
+        },
+        {
+            id: 5,
+            sender: "Charlie White",
+            preview: "What's new?",
+            time: "2:30 PM",
+        },
+        {
+            id: 6,
+            sender: "David Black",
+            preview: "Good morning!",
+            time: "3:45 PM",
+        },
+        {
+            id: 7,
+            sender: "Eve Green",
+            preview: "See you later!",
+            time: "4:30 PM",
+        },
+        {
+            id: 8,
+            sender: "Frank White",
+            preview: "Nice to meet you!",
+            time: "5:00 PM",
+        },
+        {
+            id: 9,
+            sender: "Grace Brown",
+            preview: "Good afternoon!",
+            time: "6:15 PM",
+        },
+        {
+            id: 10,
+            sender: "Henry Green",
+            preview: "Good evening!",
+            time: "7:30 PM",
+        },
+        {
+            id: 11,
+            sender: "Isabella White",
+            preview: "How's the weather?",
+            time: "8:45 PM",
+        },
+        {
+            id: 12,
+            sender: "Jack Black",
+            preview: "What's new?",
+            time: "9:30 PM",
+        },
     ];
 </script>
 
-<!-- Overlay -->
-<div class="fixed inset-0 bg-black/40 backdrop-blur z-50 flex items-center justify-center">
-    <!-- Modal -->
-    <div
-        class="max-w-96 w-full h-[32rem] bg-base-200/90 rounded-2xl border border-base-300 p-4 flex flex-col gap-4 relative"
+<!-- Modal -->
+<div
+    class="max-w-96 w-full bg-base-200/30 h-[32rem] rounded-2xl border border-base-300 p-4 flex flex-col gap-4 relative"
+>
+    <!-- Close -->
+    <button
+        on:click={onClose}
+        class="absolute top-2 right-2 btn btn-sm btn-circle btn-ghost btn-error"
     >
-        <!-- Close -->
-        <button
-            on:click={onClose}
-            class="absolute top-2 right-2 btn btn-sm btn-circle btn-ghost btn-error"
-        >
-            <X />
-        </button>
+        <X />
+    </button>
 
-        <!-- Header -->
-        <div class="text-center">
-            <h1 class="text-2xl font-bold">Discussions</h1>
-            <h2 class="text-lg opacity-70">Nouveaux messages</h2>
-        </div>
-
-        <!-- Messages (SCROLL ICI) -->
-        <div class="flex-1 overflow-y-auto flex flex-col gap-2 pr-1">
-            {#each messages as msg}
-                <div class="bg-base-100 rounded-xl p-3 border border-base-300">
-                    <div class="flex justify-between items-center">
-                        <span class="font-bold">{msg.sender}</span>
-                        <span class="text-xs opacity-60">{msg.time}</span>
-                    </div>
-                    <p class="text-sm opacity-80 truncate">
-                        {msg.preview}
-                    </p>
-                </div>
-            {/each}
-        </div>
-
-        <!-- Action -->
-        <button
-            on:click={() => (window.location.href = "/chat")}
-            class="btn btn-primary w-full flex items-center gap-2"
-        >
-            <MessageCircle />
-            Aller au chat
-        </button>
+    <!-- Header -->
+    <div class="text-center">
+        <h1 class="text-2xl font-bold">Discussions</h1>
+        <h2 class="text-lg opacity-70">Nouveaux messages</h2>
     </div>
+
+    <!-- Messages (SCROLL ICI) -->
+    <div class="flex-1 overflow-y-auto flex flex-col gap-2 pr-1">
+        {#each messages as msg}
+            <div class="bg-base-100 rounded-xl p-3 border border-base-300">
+                <div class="flex justify-between items-center">
+                    <span class="font-bold">{msg.sender}</span>
+                    <span class="text-xs opacity-60">{msg.time}</span>
+                </div>
+                <p class="text-sm opacity-80 truncate">
+                    {msg.preview}
+                </p>
+            </div>
+        {/each}
+    </div>
+
+    <!-- Action -->
+    <button
+        on:click={() => (window.location.href = "/chat")}
+        class="btn btn-primary w-full flex items-center gap-2"
+    >
+        <MessageCircle />
+        Aller au chat
+    </button>
 </div>
