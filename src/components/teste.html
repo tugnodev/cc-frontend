@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="fr">
+    <head>
+        <meta charset="UTF-8" />
+        <title>Exemple Modal</title>
+
+        <style>
+            body {
+                font-family: Arial, sans-serif;
+            }
+
+            /* Fond sombre */
+            .modal {
+                display: none; /* caché par défaut */
+                position: fixed;
+                z-index: 1000;
+                left: 0;
+                top: 0;
+                width: 100%;
+                height: 100%;
+                background-color: rgba(0, 0, 0, 0.5);
+            }
+
+            /* Contenu de la modal */
+            .modal-content {
+                background-color: white;
+                margin: 15% auto;
+                padding: 20px;
+                width: 300px;
+                border-radius: 8px;
+                text-align: center;
+            }
+
+            /* Bouton fermer */
+            .close {
+                float: right;
+                font-size: 20px;
+                cursor: pointer;
+            }
+        </style>
+    </head>
+
+    <body>
+        <h2>Exemple de Modal Box</h2>
+
+        <button id="openModal">Ouvrir la modal</button>
+
+        <!-- Modal -->
+        <div id="myModal" class="modal">
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                <h3>Modal Title</h3>
+                <p>Ceci est une modal box simple.</p>
+            </div>
+        </div>
+
+        <script>
+            const modal = document.getElementById("myModal");
+            const openBtn = document.getElementById("openModal");
+            const closeBtn = document.querySelector(".close");
+
+            openBtn.onclick = () => {
+                modal.style.display = "block";
+            };
+
+            closeBtn.onclick = () => {
+                modal.style.display = "none";
+            };
+
+            // Fermer si on clique en dehors
+            window.onclick = (event) => {
+                if (event.target === modal) {
+                    modal.style.display = "none";
+                }
+            };
+        </script>
+    </body>
+</html>

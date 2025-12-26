@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
     import ProfileCard from "../../../components/ProfileCard.svelte";
     import {
         ShoppingCart,
@@ -9,8 +9,10 @@
     import { X } from "@lucide/svelte";
     import Main from "../../../components/Main.svelte";
     import ModalBox from "../../../components/ModalBox.svelte";
+    import MsgModal from "../../../components/MsgModal.svelte";
 
-    let modal = false;
+    let modal : boolean = false;
+    let activeRoute : any = null;
     let window;
 
     // @ts-ignore
@@ -35,7 +37,10 @@
         >
             {#each routes as route}
                 <button
-                    on:click={() => (modal = true)}
+                    on:click={() => {
+                      modal = true;
+                      activeRoute = route.label;
+                    }}
                     bind:this={window}
                     class="bg-base-100/50 border-2 rounded-xl gap-1 border-base-300 min-w-36 w-full min-h-36 h-full flex flex-col items-center justify-center"
                 >
@@ -51,18 +56,60 @@
 </Main>
 
 <!-- Modal -->
-{#if modal}
-    <div
-        class="absolute inset-0 p-2 bg-base-100/70 backdrop-blur z-50 flex items-center justify-center"
-    >
-        <ModalBox>
-            <h1>Hello word</h1>
-        </ModalBox>
-        <button
-            on:click={() => (modal = false)}
-            class="absolute top-2 right-2 btn btn-sm btn-circle btn-ghost btn-error"
-        >
-            <X class="w-8 h-8" />
-        </button>
-    </div>
-{/if}
+{#each routes as route}
+    {#if modal}
+        {#if activeRoute == "Panier"}
+            <div
+                class="absolute inset-0 p-2 bg-base-100/70 backdrop-blur z-50 flex items-center justify-center"
+            >
+                <ModalBox>
+                    <h1>Panier</h1>
+                </ModalBox>
+                <button
+                    on:click={() => (modal = false)}
+                    class="absolute top-2 right-2 btn btn-sm btn-circle btn-ghost btn-error"
+                >
+                    <X class="w-8 h-8" />
+                </button>
+            </div>
+            {/if}
+            
+        {#if activeRoute == "Discutions"}
+            <div
+                class="absolute inset-0 p-2 bg-base-100/70 backdrop-blur z-50 flex items-center justify-center"
+            >
+                <MsgModal onClose={() => (modal = false)} />
+            </div>
+        {/if}
+        {#if activeRoute == "Commandes"}
+            <div
+                class="absolute inset-0 p-2 bg-base-100/70 backdrop-blur z-50 flex items-center justify-center"
+            >
+                <ModalBox>
+                    <h1>Commandes</h1>
+                </ModalBox>
+                <button
+                    on:click={() => (modal = false)}
+                    class="absolute top-2 right-2 btn btn-sm btn-circle btn-ghost btn-error"
+                >
+                    <X class="w-8 h-8" />
+                </button>
+            </div>
+        {/if}
+        {#if activeRoute == "Notes et avis"}
+            <div
+                class="absolute inset-0 p-2 bg-base-100/70 backdrop-blur z-50 flex items-center justify-center"
+            >
+                <ModalBox>
+                    <h1>Notes et avis</h1>
+                </ModalBox>
+                <button
+                    on:click={() => (modal = false)}
+                    class="absolute top-2 right-2 btn btn-sm btn-circle btn-ghost btn-error"
+                >
+                    <X class="w-8 h-8" />
+                </button>
+            </div>
+        {/if}
+    {/if}
+{/each}
