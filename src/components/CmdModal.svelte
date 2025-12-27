@@ -4,7 +4,6 @@
      */
     export let orders = [];
     export let statusFilter = "all";
-    export let onClose = () => {};
 
     /**
      * @type {{ id: any; status: any; date: any; items: any; } | null}
