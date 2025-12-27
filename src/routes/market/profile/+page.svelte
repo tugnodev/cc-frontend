@@ -45,6 +45,7 @@
                     on:click={() => {
                         modal = true;
                         activeRoute = route.label;
+                        console.log(activeRoute);
                     }}
                     bind:this={window}
                     class="bg-base-100/50 border-2 rounded-xl gap-1 border-base-300 min-w-36 w-full min-h-36 h-full flex flex-col items-center justify-center"
@@ -56,12 +57,14 @@
                 </button>
             {/each}
         </div>
+
         <button class="w-full btn btn-error">Se deconnecter</button>
     </div>
 </Main>
 
 <!-- Modal -->
 {#if modal}
+    <!--Modale Panier -->
     {#if activeRoute == "Panier"}
         <div
             class="absolute inset-0 p-2 bg-base-100/20 backdrop-blur z-50 flex items-center justify-center"
@@ -82,16 +85,14 @@
                 <X class="w-8 h-8" />
             </button>
         </div>
+        <ModalBox onClose={() => (modal = false)}>
+            <PanierModal />
+        </ModalBox>
     {/if}
-
-    {#if activeRoute == "Discutions"}
-        <div
-            class="absolute inset-0 p-2 bg-base-100/20 backdrop-blur z-50 flex items-center justify-center"
-        >
-            <ModalBox>
-                <MsgModal onClose={() => (modal = false)} />
-            </ModalBox>
-        </div>
+    {#if activeRoute == "Chat"}
+        <ModalBox onClose={() => (modal = false)}>
+            <MsgModal />
+        </ModalBox>
     {/if}
 
     {#if activeRoute == "Commandes"}
@@ -109,18 +110,8 @@
     {/if}
 
     {#if activeRoute == "Notes et avis"}
-        <div
-            class="absolute inset-0 p-2 bg-base-100/20 backdrop-blur z-50 flex items-center justify-center"
-        >
-            <ModalBox>
-                <h1>Notes et avis</h1>
-            </ModalBox>
-            <button
-                on:click={() => (modal = false)}
-                class="absolute top-2 right-2 btn btn-sm btn-circle btn-ghost btn-error"
-            >
-                <X class="w-8 h-8" />
-            </button>
-        </div>
+        <ModalBox onClose={() => (modal = false)}>
+            <h1>Notes et avis</h1>
+        </ModalBox>
     {/if}
 {/if}
