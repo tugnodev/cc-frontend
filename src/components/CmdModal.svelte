@@ -46,7 +46,7 @@
 
                 <button
                     class="btn btn-sm btn-primary mt-3"
-                    on:click={() => (selectedOrder = order)}
+                    onclick={() => (selectedOrder = order)}
                 >
                     Voir plus
                 </button>
