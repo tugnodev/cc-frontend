@@ -97,7 +97,7 @@
         <h2 class="text-lg opacity-70">Nouveaux messages</h2>
     </div>
 
-    <!-- Messages (SCROLL ICI) -->
+    
     <div class="flex-1 overflow-y-auto flex flex-col gap-2 pr-1">
         {#each messages as msg}
             <div class="bg-base-100 rounded-xl p-3 border border-base-300">
