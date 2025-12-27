@@ -1,7 +1,12 @@
 <script lang="ts">
-    import { MessageCircle } from "@lucide/svelte";
-
-    export let messages = [
+    import { MessageCircle } from "@lucide/svelte"
+    type msg = [
+        id : number,
+        sender : string,
+        preview : string,
+        time : string
+    ]
+    let  message []  : msg = $state([
         {
             id: 1,
             sender: "John Doe",
@@ -74,7 +79,8 @@
             preview: "What's new?",
             time: "9:30 PM",
         },
-    ];
+    ]) ;
+
 </script>
 
 <!-- Modal -->
@@ -87,7 +93,7 @@
 
     
     <div class="flex-1 overflow-y-auto flex flex-col gap-2 pr-1">
-        {#each messages as msg}
+        {#each message as msg}
             <div class="bg-base-100 rounded-xl p-3 border border-base-300">
                 <div class="flex justify-between items-center">
                     <span class="font-bold">{msg.sender}</span>
