@@ -11,7 +11,8 @@
     import ModalBox from "../../../components/ModalBox.svelte";
     import MsgModal from "../../../components/MsgModal.svelte";
     import CmdModal from "../../../components/CmdModal.svelte";
-    import PannierModal from "../../../components/PannierModal.svelte";
+    import PanierModal from "../../../components/PanierModal.svelte";
+    import { blur, fade } from "svelte/transition";
 
     let modal: boolean = false;
     let activeRoute: any = null;
@@ -23,7 +24,7 @@
 
     const routes = [
         { label: "Panier", icon: ShoppingCart },
-        { label: "Discussions", icon: MessageCircle },
+        { label: "Chat", icon: MessageCircle },
         { label: "Commandes", icon: PackageOpen },
         { label: "Notes et avis", icon: MessageSquareWarning },
     ];
@@ -44,6 +45,7 @@
                     on:click={() => {
                         modal = true;
                         activeRoute = route.label;
+                        console.log(activeRoute);
                     }}
                     bind:this={window}
                     class="bg-base-100/50 border-2 rounded-xl gap-1 border-base-300 min-w-36 w-full min-h-36 h-full flex flex-col items-center justify-center"
@@ -55,89 +57,34 @@
                 </button>
             {/each}
         </div>
+
         <button class="w-full btn btn-error">Se deconnecter</button>
     </div>
 </Main>
 
 <!-- Modal -->
 {#if modal}
+    <!--Modale Panier -->
     {#if activeRoute == "Panier"}
-        <div
-            class="absolute inset-0 p-2 bg-base-100/20 backdrop-blur z-50 flex items-center justify-center"
-        >
-            <ModalBox>
-                    {#if modal && activeRoute === "Panier"}
-                        <PannierModal
-                            {cart}
-                            {totalPrice}
-                            onClose={() => (modal = false)}
-                        />
-                    {/if}
-            </ModalBox>
-            <button
-                on:click={() => (modal = false)}
-                class="absolute top-2 right-2 btn btn-sm btn-circle btn-ghost btn-error"
-            >
-                <X class="w-8 h-8" />
-            </button>
-        </div>
+        <ModalBox onClose={() => (modal = false)}>
+            <PanierModal />
+        </ModalBox>
     {/if}
-
-    {#if activeRoute == "Discutions"}
-        <div
-            class="absolute inset-0 p-2 bg-base-100/20 backdrop-blur z-50 flex items-center justify-center"
-        >
-            <ModalBox>
-                <MsgModal onClose={() => (modal = false)} />
-            </ModalBox>
-        </div>
+    {#if activeRoute == "Chat"}
+        <ModalBox onClose={() => (modal = false)}>
+            <MsgModal />
+        </ModalBox>
     {/if}
 
     {#if activeRoute == "Commandes"}
-        <div
-            class="absolute inset-0 p-2 bg-base-100/20 backdrop-blur z-50 flex items-center justify-center"
-        >
-            <ModalBox class="relative w-full max-w-3xl p-4">
-                <button
-                    on:click={() => (modal = false)}
-                    class="absolute top-2 right-2 btn btn-sm btn-circle btn-ghost btn-error"
-                    aria-label="Fermer"
-                >
-                    <X class="w-6 h-6" />
-                </button>
-
-                <h1 class="text-xl font-bold mb-4">Commandes</h1>
-
-                <select
-                    bind:value={statusFilter}
-                    class="select select-bordered mb-4 w-full"
-                >
-                    <option value="all">Toutes</option>
-                    <option value="pending">En attente</option>
-                    <option value="processing">En cours</option>
-                    <option value="shipped">Expédiée</option>
-                    <option value="delivered">Livrée</option>
-                    <option value="canceled">Annulée</option>
-                </select>
-
-                <CmdModal {orders} {statusFilter} />
-            </ModalBox>
-        </div>
+        <ModalBox onClose={() => (modal = false)}>
+            <CmdModal />
+        </ModalBox>
     {/if}
 
     {#if activeRoute == "Notes et avis"}
-        <div
-            class="absolute inset-0 p-2 bg-base-100/20 backdrop-blur z-50 flex items-center justify-center"
-        >
-            <ModalBox>
-                <h1>Notes et avis</h1>
-            </ModalBox>
-            <button
-                on:click={() => (modal = false)}
-                class="absolute top-2 right-2 btn btn-sm btn-circle btn-ghost btn-error"
-            >
-                <X class="w-8 h-8" />
-            </button>
-        </div>
+        <ModalBox onClose={() => (modal = false)}>
+            <h1>Notes et avis</h1>
+        </ModalBox>
     {/if}
 {/if}
