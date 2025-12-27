@@ -1,5 +1,4 @@
 <script>
-    // Props
     const { orders = [] } = $props();
 
     // state
@@ -73,7 +72,7 @@
             {/each}
 
             <div class="modal-action">
-                <button class="btn" on:click={() => (selectedOrder = null)}>
+                <button class="btn" onclick={() => (selectedOrder = null)}>
                     Fermer
                 </button>
             </div>
