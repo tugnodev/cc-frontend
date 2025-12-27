@@ -1,28 +1,37 @@
 <script>
-    /**
-     * @type {any[]}
-     */
-    export let orders = [];
-    export let statusFilter = "all";
+    // Props
+    const { orders = [] } = $props();
 
-    /**
-     * @type {{ id: any; status: any; date: any; items: any; } | null}
-     */
-    let selectedOrder = null;
+    // state
+    let statusFilter = $state("all");
+    let selectedOrder = $state(null);
 
-    $: filteredOrders =
+    // derived value
+    const filteredOrders = $derived(() =>
         statusFilter === "all"
             ? orders
-            : orders.filter((o) => o.status === statusFilter);
+            : orders.filter((o) => o.status === statusFilter),
+    );
 </script>
 
-<!-- LISTE DES COMMANDES -->
+<h2 class="text-xl font-bold mb-4">Commandes</h2>
+
+<select bind:value={statusFilter} class="select select-bordered mb-4 w-full">
+    <option value="all">Toutes</option>
+    <option value="pending">En attente</option>
+    <option value="processing">En cours</option>
+    <option value="shipped">Expédiée</option>
+    <option value="delivered">Livrée</option>
+    <option value="canceled">Annulée</option>
+</select>
+
 {#if filteredOrders.length === 0}
     <p class="text-center">Aucune commande trouvée</p>
 {:else}
     {#each filteredOrders as order}
         <div class="collapse collapse-plus bg-base-200 my-2">
             <input type="checkbox" />
+
             <div class="collapse-title font-bold">
                 {order.id} — {order.status} — {order.date}
             </div>
@@ -47,7 +56,6 @@
     {/each}
 {/if}
 
-<!-- MODAL -->
 {#if selectedOrder}
     <dialog class="modal modal-open">
         <div class="modal-box">

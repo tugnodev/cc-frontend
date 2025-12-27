@@ -1,5 +1,9 @@
 <script>
     import { Pencil, AtSign, CardSim, User, Store } from "@lucide/svelte";
+    import ModalBox from "./ModalBox.svelte";
+    import UserModal from "./UserModal.svelte";
+
+    let modal = $state(false);
 </script>
 
 <section class="flex flex-col items-center justify-center w-full gap-4">
@@ -21,7 +25,9 @@
         </h2>
     </div>
     <div class="flex w-full items-center justify-center gap-2">
-        <button class="btn btn-soft btn-sm btn-infos flex items-center gap-2" 
+        <button
+            onclick={() => (modal = true)}
+            class="btn btn-soft btn-sm btn-infos flex items-center gap-2"
             ><User /> Modifier le profile</button
         >
         <button class="btn btn-soft btn-sm btn-warning flex items-center gap-2"
@@ -29,3 +35,9 @@
         >
     </div>
 </section>
+
+{#if modal}
+    <ModalBox onClose={() => (modal = false)}>
+        <UserModal />
+    </ModalBox>
+{/if}
