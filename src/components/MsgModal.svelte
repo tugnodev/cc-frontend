@@ -1,12 +1,12 @@
 <script lang="ts">
     import { MessageCircle } from "@lucide/svelte"
-    type msg = [
+    type Msg = {
         id : number,
         sender : string,
         preview : string,
         time : string
-    ]
-    let  message []  : msg = $state([
+    }
+    let  message : Msg[] = $state([
         {
             id: 1,
             sender: "John Doe",
@@ -93,7 +93,7 @@
 
     
     <div class="flex-1 overflow-y-auto flex flex-col gap-2 pr-1">
-        {#each message as msg}
+        {#each message as msg }
             <div class="bg-base-100 rounded-xl p-3 border border-base-300">
                 <div class="flex justify-between items-center">
                     <span class="font-bold">{msg.sender}</span>
