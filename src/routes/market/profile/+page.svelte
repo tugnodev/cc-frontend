@@ -14,9 +14,8 @@
     import FiltreCmd from "../../../components/FiltreCmd.svelte";
     import PanierModal from "../../../components/PanierModal.svelte";
 
-    let modal: boolean = false;
-    let activeRoute: any = null;
-    let window;
+    let modal: boolean = $state(false);
+    let activeRoute: any = $state(null);
     let orders = [];
     let statusFilter = "all";
 
@@ -42,12 +41,10 @@
         >
             {#each routes as route}
                 <button
-                    on:click={() => {
-                        modal = true;
+                    onclick={() => {
                         activeRoute = route.label;
-                        console.log(activeRoute);
+                        modal = true;
                     }}
-                    bind:this={window}
                     class="bg-base-100/50 border-2 rounded-xl gap-1 border-base-300 min-w-36 w-full min-h-36 h-full flex flex-col items-center justify-center"
                 >
                     <span>

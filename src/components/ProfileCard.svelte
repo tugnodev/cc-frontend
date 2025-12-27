@@ -3,7 +3,7 @@
     import ModalBox from "./ModalBox.svelte";
     import UserModal from "./UserModal.svelte";
 
-    let modal = $state(true);
+    let modal = $state(false);
 </script>
 
 <section class="flex flex-col items-center justify-center w-full gap-4">
