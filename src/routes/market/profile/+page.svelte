@@ -11,8 +11,8 @@
     import ModalBox from "../../../components/ModalBox.svelte";
     import MsgModal from "../../../components/MsgModal.svelte";
     import CmdModal from "../../../components/CmdModal.svelte";
-    import FiltreCmd from "../../../components/FiltreCmd.svelte";
     import PanierModal from "../../../components/PanierModal.svelte";
+    import { blur, fade } from "svelte/transition";
 
     let modal: boolean = $state(false);
     let activeRoute: any = $state(null);
@@ -23,7 +23,7 @@
 
     const routes = [
         { label: "Panier", icon: ShoppingCart },
-        { label: "Discussions", icon: MessageCircle },
+        { label: "Chat", icon: MessageCircle },
         { label: "Commandes", icon: PackageOpen },
         { label: "Notes et avis", icon: MessageSquareWarning },
     ];
@@ -63,25 +63,6 @@
 {#if modal}
     <!--Modale Panier -->
     {#if activeRoute == "Panier"}
-        <div
-            class="absolute inset-0 p-2 bg-base-100/20 backdrop-blur z-50 flex items-center justify-center"
-        >
-            <ModalBox>
-                {#if modal && activeRoute === "Panier"}
-                    <PanierModal
-                        {cart}
-                        {totalPrice}
-                        onClose={() => (modal = false)}
-                    />
-                {/if}
-            </ModalBox>
-            <button
-                on:click={() => (modal = false)}
-                class="absolute top-2 right-2 btn btn-sm btn-circle btn-ghost btn-error"
-            >
-                <X class="w-8 h-8" />
-            </button>
-        </div>
         <ModalBox onClose={() => (modal = false)}>
             <PanierModal />
         </ModalBox>
@@ -93,17 +74,9 @@
     {/if}
 
     {#if activeRoute == "Commandes"}
-        <div
-            class="absolute inset-0 p-2 bg-base-100/20 backdrop-blur z-50 flex items-center justify-center"
-        >
-            <ModalBox class="relative w-full max-w-3xl p-4">
-                <FiltreCmd
-                    bind:statusFilter
-                    onChange={(v) => (statusFilter = v)}
-                />
-                <CmdModal {orders} {statusFilter} />
-            </ModalBox>
-        </div>
+        <ModalBox onClose={() => (modal = false)}>
+            <CmdModal />
+        </ModalBox>
     {/if}
 
     {#if activeRoute == "Notes et avis"}
