@@ -75,7 +75,7 @@
 
     {#if activeRoute == "Commandes"}
         <ModalBox onClose={() => (modal = false)}>
-            <CmdModal />
+            <CmdModal {orders} />
         </ModalBox>
     {/if}
 
