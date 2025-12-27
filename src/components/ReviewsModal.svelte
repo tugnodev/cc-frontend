@@ -1,8 +1,7 @@
 <script lang="ts">
-    import { X, Star } from "@lucide/svelte";
+    import { Star } from "@lucide/svelte";
 
     export let orders: any[] = [];
-    export let onClose: () => void;
 
     let purchasedItems: Array<{
         id: string;
@@ -165,15 +164,7 @@
     }
 </script>
 
-<div
-    class="max-w-96 w-full bg-base-200/30 h-128 rounded-2xl border border-base-300 p-4 flex flex-col gap-4 relative"
->
-    <button
-        on:click={onClose}
-        class="absolute top-2 right-2 btn btn-sm btn-circle btn-ghost btn-error"
-    >
-        <X />
-    </button>
+<div class="w-full h-full overflow-scroll p-4 flex flex-col gap-4">
 
     <div class="text-center">
         <h1 class="text-2xl font-bold">Notes et avis</h1>

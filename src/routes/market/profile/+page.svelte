@@ -13,6 +13,7 @@
     import CmdModal from "../../../components/CmdModal.svelte";
     import PanierModal from "../../../components/PanierModal.svelte";
     import { blur, fade } from "svelte/transition";
+    import ReviewsModal from "../../../components/ReviewsModal.svelte"
 
     let modal: boolean = $state(false);
     let activeRoute: any = $state(null);
@@ -81,7 +82,7 @@
 
     {#if activeRoute == "Notes et avis"}
         <ModalBox onClose={() => (modal = false)}>
-            <h1>Notes et avis</h1>
+            <ReviewsModal />
         </ModalBox>
     {/if}
 {/if}
