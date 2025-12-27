@@ -11,6 +11,7 @@
     import ModalBox from "../../../components/ModalBox.svelte";
     import MsgModal from "../../../components/MsgModal.svelte";
     import CmdModal from "../../../components/CmdModal.svelte";
+    import { blur, fade } from "svelte/transition";
 
     let modal: boolean = false;
     let activeRoute: any = null;
@@ -64,41 +65,25 @@
 {#if modal}
     <!--Modale Panier -->
     {#if activeRoute == "Panier"}
-        <div
-            class="absolute inset-0 p-2 bg-base-100/20 backdrop-blur z-50 flex items-center justify-center"
-        >
-            <ModalBox onClose={() => (modal = false)}>
-                <h1>Panier</h1>
-            </ModalBox>
-        </div>
+        <ModalBox onClose={() => (modal = false)}>
+            <h1>Panier</h1>
+        </ModalBox>
     {/if}
     {#if activeRoute == "Chat"}
-        <div
-            class="absolute inset-0 p-2 bg-base-100/20 backdrop-blur z-50 flex items-center justify-center"
-        >
-            <ModalBox onClose={() => (modal = false)}>
-                <MsgModal />
-            </ModalBox>
-        </div>
+        <ModalBox onClose={() => (modal = false)}>
+            <MsgModal />
+        </ModalBox>
     {/if}
 
     {#if activeRoute == "Commandes"}
-        <div
-            class="absolute inset-0 p-2 bg-base-100/20 backdrop-blur z-50 flex items-center justify-center"
-        >
-            <ModalBox onClose={() => (modal = false)}>
-                <CmdModal />
-            </ModalBox>
-        </div>
+        <ModalBox onClose={() => (modal = false)}>
+            <CmdModal />
+        </ModalBox>
     {/if}
 
     {#if activeRoute == "Notes et avis"}
-        <div
-            class="absolute inset-0 p-2 bg-base-100/20 backdrop-blur z-50 flex items-center justify-center"
-        >
-            <ModalBox onClose={() => (modal = false)}>
-                <h1>Notes et avis</h1>
-            </ModalBox>
-        </div>
+        <ModalBox onClose={() => (modal = false)}>
+            <h1>Notes et avis</h1>
+        </ModalBox>
     {/if}
 {/if}
