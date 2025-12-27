@@ -1,7 +1,5 @@
 <script lang="ts">
-    import { X, MessageCircle } from "@lucide/svelte";
-
-    export let onClose: () => void;
+    import { MessageCircle } from "@lucide/svelte";
 
     export let messages = [
         {
@@ -80,17 +78,7 @@
 </script>
 
 <!-- Modal -->
-<div
-    class="max-w-96 w-full bg-base-200/30 h-[32rem] rounded-2xl border border-base-300 p-4 flex flex-col gap-4 relative"
->
-    <!-- Close -->
-    <button
-        on:click={onClose}
-        class="absolute top-2 right-2 btn btn-sm btn-circle btn-ghost btn-error"
-    >
-        <X />
-    </button>
-
+<div class="w-full h-full overflow-scroll p-4 flex flex-col gap-4">
     <!-- Header -->
     <div class="text-center">
         <h1 class="text-2xl font-bold">Discussions</h1>

@@ -11,6 +11,7 @@
     import ModalBox from "../../../components/ModalBox.svelte";
     import MsgModal from "../../../components/MsgModal.svelte";
     import CmdModal from "../../../components/CmdModal.svelte";
+    import PannierModal from "../../../components/PannierModal.svelte";
 
     let modal: boolean = false;
     let activeRoute: any = null;
@@ -65,7 +66,13 @@
             class="absolute inset-0 p-2 bg-base-100/20 backdrop-blur z-50 flex items-center justify-center"
         >
             <ModalBox>
-                <h1>Panier</h1>
+                    {#if modal && activeRoute === "Panier"}
+                        <PannierModal
+                            {cart}
+                            {totalPrice}
+                            onClose={() => (modal = false)}
+                        />
+                    {/if}
             </ModalBox>
             <button
                 on:click={() => (modal = false)}
