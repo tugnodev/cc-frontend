@@ -11,6 +11,7 @@
     import ModalBox from "../../../components/ModalBox.svelte";
     import MsgModal from "../../../components/MsgModal.svelte";
     import CmdModal from "../../../components/CmdModal.svelte";
+    import FiltreCmd from "../../../components/FiltreCmd.svelte";
     import PannierModal from "../../../components/PannierModal.svelte";
 
     let modal: boolean = false;
@@ -66,13 +67,13 @@
             class="absolute inset-0 p-2 bg-base-100/20 backdrop-blur z-50 flex items-center justify-center"
         >
             <ModalBox>
-                    {#if modal && activeRoute === "Panier"}
-                        <PannierModal
-                            {cart}
-                            {totalPrice}
-                            onClose={() => (modal = false)}
-                        />
-                    {/if}
+                {#if modal && activeRoute === "Panier"}
+                    <PannierModal
+                        {cart}
+                        {totalPrice}
+                        onClose={() => (modal = false)}
+                    />
+                {/if}
             </ModalBox>
             <button
                 on:click={() => (modal = false)}
@@ -98,28 +99,10 @@
             class="absolute inset-0 p-2 bg-base-100/20 backdrop-blur z-50 flex items-center justify-center"
         >
             <ModalBox class="relative w-full max-w-3xl p-4">
-                <button
-                    on:click={() => (modal = false)}
-                    class="absolute top-2 right-2 btn btn-sm btn-circle btn-ghost btn-error"
-                    aria-label="Fermer"
-                >
-                    <X class="w-6 h-6" />
-                </button>
-
-                <h1 class="text-xl font-bold mb-4">Commandes</h1>
-
-                <select
-                    bind:value={statusFilter}
-                    class="select select-bordered mb-4 w-full"
-                >
-                    <option value="all">Toutes</option>
-                    <option value="pending">En attente</option>
-                    <option value="processing">En cours</option>
-                    <option value="shipped">Expédiée</option>
-                    <option value="delivered">Livrée</option>
-                    <option value="canceled">Annulée</option>
-                </select>
-
+                <FiltreCmd
+                    bind:statusFilter
+                    onChange={(v) => (statusFilter = v)}
+                />
                 <CmdModal {orders} {statusFilter} />
             </ModalBox>
         </div>

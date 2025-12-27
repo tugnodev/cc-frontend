@@ -1,14 +1,8 @@
-<script>
-    /**
-     * @type {any[]}
-     */
-    export let orders = [];
-    export let statusFilter = "all";
+<script lang="ts">
+    export let orders: any[] = [];
+    export let statusFilter: string = "all";
 
-    /**
-     * @type {{ id: any; status: any; date: any; items: any; } | null}
-     */
-    let selectedOrder = null;
+    let selectedOrder: any = null;
 
     $: filteredOrders =
         statusFilter === "all"
@@ -16,7 +10,6 @@
             : orders.filter((o) => o.status === statusFilter);
 </script>
 
-<!-- LISTE DES COMMANDES -->
 {#if filteredOrders.length === 0}
     <p class="text-center">Aucune commande trouvée</p>
 {:else}
@@ -47,7 +40,6 @@
     {/each}
 {/if}
 
-<!-- MODAL -->
 {#if selectedOrder}
     <dialog class="modal modal-open">
         <div class="modal-box">
