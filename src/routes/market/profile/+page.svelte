@@ -11,11 +11,12 @@
     import ModalBox from "../../../components/ModalBox.svelte";
     import MsgModal from "../../../components/MsgModal.svelte";
     import CmdModal from "../../../components/CmdModal.svelte";
+    import ReviewsModal from "../../../components/ReviewsModal.svelte";
 
     let modal: boolean = false;
     let activeRoute: any = null;
     let window;
-    let orders = [];
+    let orders: any[] = [];
     let statusFilter = "all";
 
     // @ts-ignore
@@ -76,7 +77,7 @@
         </div>
     {/if}
 
-    {#if activeRoute == "Discutions"}
+    {#if activeRoute == "Discussions"}
         <div
             class="absolute inset-0 p-2 bg-base-100/20 backdrop-blur z-50 flex items-center justify-center"
         >
@@ -123,14 +124,8 @@
             class="absolute inset-0 p-2 bg-base-100/20 backdrop-blur z-50 flex items-center justify-center"
         >
             <ModalBox>
-                <h1>Notes et avis</h1>
+                <ReviewsModal {orders} onClose={() => (modal = false)} />
             </ModalBox>
-            <button
-                on:click={() => (modal = false)}
-                class="absolute top-2 right-2 btn btn-sm btn-circle btn-ghost btn-error"
-            >
-                <X class="w-8 h-8" />
-            </button>
         </div>
     {/if}
 {/if}
