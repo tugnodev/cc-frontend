@@ -12,7 +12,7 @@
     import MsgModal from "../../../components/MsgModal.svelte";
     import CmdModal from "../../../components/CmdModal.svelte";
     import FiltreCmd from "../../../components/FiltreCmd.svelte";
-    import PannierModal from "../../../components/PannierModal.svelte";
+    import PanierModal from "../../../components/PanierModal.svelte";
 
     let modal: boolean = false;
     let activeRoute: any = null;
@@ -71,7 +71,7 @@
         >
             <ModalBox>
                 {#if modal && activeRoute === "Panier"}
-                    <PannierModal
+                    <PanierModal
                         {cart}
                         {totalPrice}
                         onClose={() => (modal = false)}
