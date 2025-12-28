@@ -14,7 +14,6 @@
     import PanierModal from "../../../components/PanierModal.svelte";
     import { blur, fade } from "svelte/transition";
     import ReviewsModal from "../../../components/ReviewsModal.svelte"
-
     let modal: boolean = $state(false);
     let activeRoute: any = $state(null);
     let orders = [];
