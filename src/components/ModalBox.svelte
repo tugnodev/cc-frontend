@@ -7,11 +7,11 @@
 </script>
 
 <div
-    in:blur={{ amount: 100, duration: 300 }}
-    class="absolute inset-0 p-2 bg-base-100/20 backdrop-blur z-50 flex items-center justify-center"
+    in:blur={{ amount: 15, duration: 250 }}
+    class="absolute inset-0 p-4 bg-base-100/20 backdrop-blur z-50 flex items-center justify-center"
 >
     <div
-        in:blur={{ duration: 250, delay: 150 }}
+        in:blur={{ duration: 100, delay: 100 }}
         class="absolute max-w-96 w-full min-h-96 max-h-10/12 gap-2 bg-base-200/90 rounded-2xl border border-base-300 backdrop-blur-2xl flex flex-col items-center justify-start"
     >
         <div
@@ -24,6 +24,8 @@
                 <X />
             </button>
         </div>
-        {@render children()}
+        <div class="overflow-scroll w-full h-full">
+            {@render children()}
+        </div>
     </div>
 </div>

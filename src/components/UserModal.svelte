@@ -5,30 +5,30 @@
     class="flex flex-col w-full h-full items-center justify-center gap-4 p-2"
     action=""
 >
-    <h1 class="text-2xl font-semibold">
+    <h1 class="text-xl font-semibold">
         {`Modifier le profile`.toUpperCase()}
     </h1>
 
-    <button class="w-42 h-42">
+    <button class="w-28 h-28">
         <img class="rounded-full" src="/profile.png" alt="" />
     </button>
 
     <div class="w-full flex flex-col item-center gap-2 justify-center">
         <input
             value={`Racine DIOP`}
-            class="input input-border bg-transparent w-full"
+            class="input input-sm input-border bg-transparent w-full"
             type="text"
             placeholder="Nom Complet"
         />
         <input
             value={`tugnodev`}
-            class="w-full input input-border bg-transparent"
+            class="w-full input input-sm input-border bg-transparent"
             type="text"
             placeholder="Nom d'utilisateur"
         />
         <input
             value={`mailofracine1@gmail.com`}
-            class="input input-border bg-transparent w-full"
+            class="input input-sm input-border bg-transparent w-full"
             type="email"
             placeholder="Email"
         />
@@ -36,30 +36,30 @@
     <div class="w-full flex item-center justify-center gap-2">
         <input
             value={`781234567`}
-            class="w-full input input-border bg-transparent"
+            class="w-full input input-sm input-border bg-transparent"
             type="number"
             placeholder="Numero de telephone"
         />
-        <button class="btn btn-soft btn-md btn-info"> Ajouter </button>
+        <button class="btn btn-soft btn-sm btn-info"> Ajouter </button>
     </div>
     <div class="flex flex-col item-center gap-2 justify-center w-full">
         <input
             type="password"
-            class="w-full input input-border bg-transparent"
+            class="w-full input input-sm input-border bg-transparent"
             placeholder="Ancien Mot de passe"
         />
         <input
             type="password"
-            class="w-full input input-border bg-transparent"
+            class="w-full input input-sm input-border bg-transparent"
             placeholder="Nouveau Mot de passe"
         />
         <input
             type="password"
-            class="w-full input input-border bg-transparent"
+            class="w-full input input-sm input-border bg-transparent"
             placeholder="Confirmer le Mot de passe"
         />
     </div>
-    <button class="w-full btn btn-soft btn-warning"> Confirmer </button>
+    <button class="w-full btn-sm btn btn-warning"> Confirmer </button>
 </form>
 
 <style>
