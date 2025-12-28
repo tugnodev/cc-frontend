@@ -1,5 +1,11 @@
 <script>
-    import { Check, X, MessageCircle, ChevronDown } from "@lucide/svelte";
+    import {
+        Check,
+        X,
+        MessageCircle,
+        ChevronDown,
+        ShoppingCart,
+    } from "@lucide/svelte";
 
     // ID de l'utilisateur connecté
     const utilisateurId = 1;
@@ -52,6 +58,10 @@
 </script>
 
 <div class="space-y-2">
+    <h1 class="text-2xl font-bold mb-4 flex items-center gap-2">
+        <ShoppingCart class="w-6 h-6 text-blue-500" />
+        Commandes
+    </h1>
     {#each commandes as commande}
         <div
             class={`collapse border rounded-box mb-2
