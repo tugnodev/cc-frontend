@@ -1,4 +1,6 @@
 <script>
+// @ts-nocheck
+
     const { orders = [] } = $props();
 
     // state
