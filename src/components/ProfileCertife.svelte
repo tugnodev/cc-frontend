@@ -1,43 +1,43 @@
 <script lang="ts">
-  const defaultAvatar =
-    "https://ui-avatars.com/api/?name=User&background=22c55e&color=fff";
+    const defaultAvatar =
+        "https://ui-avatars.com/api/?name=User&background=22c55e&color=fff";
 
-  const users = [
-    {
-      name: "Awa Ndiaye",
-      avatar: "https://randomuser.me/api/portraits/women/42.jpg",
-      rating: "4.9",
-      sales: "1 240"
-    },
-    {
-      name: "Moussa Diop",
-      avatar: "https://randomuser.me/api/portraits/men/32.jpg",
-      rating: "4.8",
-      sales: "980"
-    },
-    {
-      name: "Fatou Sarr",
-      avatar: "https://randomuser.me/api/portraits/women/48.jpg",
-      rating: "4.9",
-      sales: "1 100"
-    },
-    {
-      name: "Ibrahima Fall",
-      avatar: "https://randomuser.me/api/portraits/men/44.jpg",
-      rating: "4.7",
-      sales: "870"
-    },
-    {
-      name: "Aminata Ba",
-      avatar: "https://randomuser.me/api/portraits/women/34.jpg",
-      rating: "4.8",
-      sales: "920"
+    const users = [
+        {
+            name: "Awa Ndiaye",
+            avatar: "https://randomuser.me/api/portraits/women/42.jpg",
+            rating: "4.9",
+            sales: "1 240",
+        },
+        {
+            name: "Moussa Diop",
+            avatar: "https://randomuser.me/api/portraits/men/32.jpg",
+            rating: "4.8",
+            sales: "980",
+        },
+        {
+            name: "Fatou Sarr",
+            avatar: "https://randomuser.me/api/portraits/women/48.jpg",
+            rating: "4.9",
+            sales: "1 100",
+        },
+        {
+            name: "Ibrahima Fall",
+            avatar: "https://randomuser.me/api/portraits/men/44.jpg",
+            rating: "4.7",
+            sales: "870",
+        },
+        {
+            name: "Aminata Ba",
+            avatar: "https://randomuser.me/api/portraits/women/34.jpg",
+            rating: "4.8",
+            sales: "920",
+        },
+    ];
+
+    function fallback(e: any) {
+        e.target.src = defaultAvatar;
     }
-  ];
-
-  function fallback(e : any) {
-    e.target.src = defaultAvatar;
-  }
 </script>
 
 <main class="w-full">
@@ -92,9 +92,6 @@
               </div>
               
             </div>
-          </div>
-        {/each}
-      </div>
 
     </div>
   </section>
