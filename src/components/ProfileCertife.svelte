@@ -41,19 +41,19 @@
 </script>
 
 <main class="w-full">
-  <section class="py-12 pb-20 w-full">
+  <section class="w-full">
     <div class="w-full mx-auto px-4">
 
       <!-- Titre -->
       <div class="flex items-center justify-between mb-4">
-        <!-- <div>
+        <div>
           <h2 class="text-lg font-bold text-base-content">
             Utilisateurs certifiés
           </h2>
           <p class="text-xs text-base-content/70">
             Des vendeurs vérifiés et fiables
           </p>
-        </div> -->
+        </div>
 
         <!-- Desktop -->
         <a href="#" class="hidden md:inline-flex btn btn-outline btn-sm">
@@ -68,10 +68,10 @@
       >
         {#each users as user}
           <div class="min-w-[145px] md:min-w-0 card bg-base-200 shadow-md rounded-box min-h-[175px]">
-            <div class="card-body p-3 flex flex-col items-center justify-between text-center">
+            <div class="card-body p-3 flex flex-col  text-center">
 
               <!-- Haut -->
-              <div class="flex flex-col items-center">
+              <div class="flex flex-col items-center ">
                 <div class="avatar">
                   <div class="w-10 rounded-full ring ring-success ring-offset-base-100 ring-offset-1">
                     <img
@@ -86,33 +86,15 @@
                   {user.name}
                 </h3>
 
-                <div class="badge badge-success badge-xs mt-1">
+                <!-- <div class="badge badge-success badge-xs mt-1">
                   Certifié
-                </div>
+                </div> -->
               </div>
-
-              <!-- Bas -->
-              <div class="flex flex-col items-center gap-1">
-                <p class="text-[10px] text-base-content/70">
-                  ⭐ {user.rating} • {user.sales}
-                </p>
-
-                <button class="btn btn-primary btn-xs px-2">
-                  Profil
-                </button>
-              </div>
-
+              
             </div>
           </div>
         {/each}
       </div>
-
-      <!-- Mobile
-      <div class="mt-4 text-center md:hidden">
-        <a href="#" class="btn btn-outline btn-xs">
-          Voir tous les utilisateurs
-        </a>
-      </div> -->
 
     </div>
   </section>
