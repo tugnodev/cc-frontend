@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <script lang="ts">
     import Main from "../../components/Main.svelte";
     import AdBanner from "../../components/AdBanner.svelte";
@@ -38,4 +39,14 @@
 =======
     <AdBanner images={["/ads/ad1.jpg", "/ads/ad2.jpg", "/ads/ad3.jpg"]} />
 >>>>>>> 33f67835735b3f0676e84a720374eb9c52754210
+=======
+<script>
+    import Main from "../../components/Main.svelte";
+    import AdBanner from "../../components/AdBanner.svelte";
+    import ShopDash from "../../components/dashborad/ShopDash.svelte";
+</script>
+
+<Main>
+    <ShopDash />
+>>>>>>> teste
 </Main>
