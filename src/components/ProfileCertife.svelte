@@ -1,6 +1,6 @@
 <script lang="ts">
     const defaultAvatar =
-        "http//ui-avatars.com/api/?name=User&background=22c55e&color=fff";
+        "https://ui-avatars.com/api/?name=User&background=22c55e&color=fff";
 
     const users = [
         {

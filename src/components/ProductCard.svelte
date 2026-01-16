@@ -12,6 +12,22 @@
         description:
             "Description du produit Description du produit Description du produit",
         image: ["/profile.png", "/profile.png", "/profile.png"],
+        comments: [
+            {
+                id: 1,
+                author: "John Doe",
+                content: "Great product!",
+                rating: 5,
+                date: "2023-01-01",
+            },
+            {
+                id: 2,
+                author: "Jane Smith",
+                content: "Good quality",
+                rating: 4,
+                date: "2023-01-02",
+            },
+        ],
     };
 </script>
 
@@ -75,9 +91,28 @@
                     {product.description}
                 </p>
             </div>
-            <div class="divider"></div>
             <div class="flex flex-col gap-2 p-2 w-full">
-                <h1>Hello World</h1>
+                {#each product.comments as comment}
+                    <div>
+                        <div class="flex items-center gap-2">
+                            <img
+                                src="/profile.png"
+                                class="w-8 h-8 rounded-full"
+                                alt="User Profile"
+                            />
+                            <div>
+                                <h4 class="font-semibold">{comment.author}</h4>
+                                <p class="text-sm text-gray-500">
+                                    {comment.content}
+                                </p>
+                            </div>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <span>{comment.rating} 🌟</span>
+                            <span>{comment.date}</span>
+                        </div>
+                    </div>
+                {/each}
             </div>
         </div>
     </ModalBox>
