@@ -1,6 +1,6 @@
 <script>
     import NavbarShop from "../../components/navbarShop.svelte";
-    import Header from "../../components/header.svelte";
+    import HeaderShop from "../../components/headerShop.svelte";
 
     let { children } = $props();
     import "../../app.css";
@@ -10,7 +10,7 @@
     class="w-full h-screen items-center justify-start flex flex-col fixed z-0 bg-base-200"
 >
     <div class="flex absolute z-30 top-0 w-full">
-        <Header />
+        <HeaderShop />
     </div>
     <div class="overflow-scroll no-scrollbar w-full h-full">
         {@render children()}
