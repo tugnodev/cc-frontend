@@ -5,12 +5,16 @@
         MessageCircle,
         ChevronDown,
         ShoppingCart,
+        Filter,
+        CheckCircle,
+        Clock,
+        XCircle,
     } from "@lucide/svelte";
 
-    // ID de l'utilisateur connecté
     const utilisateurId = 1;
 
-    // Liste des commandes
+    let statutActif = "Toutes";
+
     let commandes = [
         {
             id: 1,
@@ -41,7 +45,7 @@
             clientId: 4,
             clientName: "Devprocode",
             statut: "Annulé",
-            date: "2026-01-2",
+            date: "2026-01-02",
             articles: ["Article F", "Article G"],
         },
         {
@@ -49,7 +53,7 @@
             clientId: 5,
             clientName: "Hackdev",
             statut: "En attente",
-            date: "2026-01-3",
+            date: "2026-01-03",
             articles: ["Article H", "Article I"],
         },
         {
@@ -57,7 +61,7 @@
             clientId: 6,
             clientName: "Marouane",
             statut: "Annulé",
-            date: "2026-01-3",
+            date: "2026-01-03",
             articles: ["Article J", "Article K"],
         },
         {
@@ -65,13 +69,13 @@
             clientId: 7,
             clientName: "Tug",
             statut: "Validé",
-            date: "2026-01-3",
+            date: "2026-01-03",
             articles: ["Article L", "Article M"],
         },
         {
             id: 8,
             clientId: 8,
-            clientName: " Bomberkill",
+            clientName: "Bomberkill",
             statut: "En attente",
             date: "2026-12-27",
             articles: ["Article A", "Article B"],
@@ -97,7 +101,7 @@
             clientId: 11,
             clientName: "Adja",
             statut: "Annulé",
-            date: "2026-01-2",
+            date: "2026-01-02",
             articles: ["Article F", "Article G"],
         },
         {
@@ -105,7 +109,7 @@
             clientId: 12,
             clientName: "Arcel",
             statut: "En attente",
-            date: "2026-01-3",
+            date: "2026-01-03",
             articles: ["Article H", "Article I"],
         },
         {
@@ -113,7 +117,7 @@
             clientId: 13,
             clientName: "Marouane",
             statut: "Annulé",
-            date: "2026-01-3",
+            date: "2026-01-03",
             articles: ["Article J", "Article K"],
         },
         {
@@ -121,20 +125,11 @@
             clientId: 14,
             clientName: "Pro",
             statut: "Annulé",
-            date: "2026-01-3",
+            date: "2026-01-03",
             articles: ["Article J", "Article K"],
-        },
-        {
-            id: 7,
-            clientId: 7,
-            clientName: "Tug",
-            statut: "Validé",
-            date: "2026-01-3",
-            articles: ["Article L", "Article M"],
         },
     ];
 
-    // Changer le statut d'une commande
     /**
      * @param {number} id
      * @param {string} nouveauStatut
@@ -144,63 +139,115 @@
         if (commande) commande.statut = nouveauStatut;
     }
 
-    // Contacter le client
     /**
      * @param {number} clientId
      */
     function contacterClient(clientId) {
         window.location.href = `/discussion/${clientId}`;
     }
+
+    $: commandesFiltrees =
+        statutActif === "Toutes"
+            ? commandes
+            : commandes.filter((c) => c.statut === statutActif);
 </script>
 
-<div class="space-y-2">
-    <h1 class="text-2xl font-bold mb-4 flex items-center gap-2">
+<div class="space-y-4">
+    <!-- TITRE -->
+    <h1 class="text-2xl font-bold flex items-center gap-2">
         <ShoppingCart class="w-6 h-6 text-blue-500" />
         Commandes
     </h1>
-    {#each commandes as commande}
-        <div class="collapse border rounded-box mb-2">
-            <input type="checkbox" />
-            <div
-                class="collapse-title text-lg font-semibold flex justify-between items-center"
-            >
-                <span>Commande #{commande.id} - {commande.clientName}</span>
-                <div class="flex items-center gap-2">
-                    <span class="badge">{commande.statut}</span>
-                    <ChevronDown class="w-5 h-5" />
+
+    <!-- FILTRE -->
+    <div class="flex flex-wrap gap-2">
+        <button
+            class="btn btn-sm flex gap-1"
+            class:btn-primary={statutActif === "Toutes"}
+            on:click={() => (statutActif = "Toutes")}
+        >
+            <Filter class="w-4 h-4" /> Toutes
+        </button>
+
+        <button
+            class="btn btn-sm flex gap-1"
+            class:btn-success={statutActif === "Validé"}
+            on:click={() => (statutActif = "Validé")}
+        >
+            <CheckCircle class="w-4 h-4" /> Validé
+        </button>
+
+        <button
+            class="btn btn-sm flex gap-1"
+            class:btn-warning={statutActif === "En attente"}
+            on:click={() => (statutActif = "En attente")}
+        >
+            <Clock class="w-4 h-4" /> En attente
+        </button>
+
+        <button
+            class="btn btn-sm flex gap-1"
+            class:btn-error={statutActif === "Annulé"}
+            on:click={() => (statutActif = "Annulé")}
+        >
+            <XCircle class="w-4 h-4" /> Annulé
+        </button>
+    </div>
+
+    <!-- COMMANDES -->
+    {#if commandesFiltrees.length === 0}
+        <p class="text-center text-gray-500 mt-10">Aucune commande trouvée</p>
+    {:else}
+        {#each commandesFiltrees as commande}
+            <div class="collapse border rounded-box">
+                <input type="checkbox" />
+
+                <div
+                    class="collapse-title text-lg font-semibold flex justify-between items-center"
+                >
+                    <span>Commande #{commande.id} – {commande.clientName}</span>
+                    <div class="flex items-center gap-2">
+                        <span class="badge">{commande.statut}</span>
+                        <ChevronDown class="w-5 h-5" />
+                    </div>
+                </div>
+
+                <div class="collapse-content">
+                    <p><strong>Date :</strong> {commande.date}</p>
+
+                    <p class="mt-2 font-semibold">Articles :</p>
+                    <ul class="list-disc ml-5">
+                        {#each commande.articles as article}
+                            <li>{article}</li>
+                        {/each}
+                    </ul>
+
+                    <div class="mt-4 flex gap-2 flex-wrap">
+                        <button
+                            class="btn btn-success btn-sm flex gap-1"
+                            on:click={() =>
+                                changerStatut(commande.id, "Validé")}
+                        >
+                            <Check class="w-4 h-4" /> Valider
+                        </button>
+
+                        <button
+                            class="btn btn-error btn-sm flex gap-1"
+                            on:click={() =>
+                                changerStatut(commande.id, "Annulé")}
+                        >
+                            <X class="w-4 h-4" /> Annuler
+                        </button>
+
+                        <button
+                            class="btn btn-outline btn-sm flex gap-1"
+                            on:click={() => contacterClient(commande.clientId)}
+                        >
+                            <MessageCircle class="w-4 h-4" /> Contacter
+                        </button>
+                    </div>
                 </div>
             </div>
-
-            <div class="collapse-content">
-                <p><strong>Date :</strong> {commande.date}</p>
-                <p><strong>Articles :</strong></p>
-                <ul class="list-disc ml-5">
-                    {#each commande.articles as article}
-                        <li>{article}</li>
-                    {/each}
-                </ul>
-
-                <div class="mt-4 flex gap-2 flex-wrap">
-                    <button
-                        class="btn btn-success btn-sm flex items-center gap-1"
-                        onclick={() => changerStatut(commande.id, "Validé")}
-                    >
-                        <Check class="w-4 h-4" /> Valider
-                    </button>
-                    <button
-                        class="btn btn-error btn-sm flex items-center gap-1"
-                        onclick={() => changerStatut(commande.id, "Annulé")}
-                    >
-                        <X class="w-4 h-4" /> Annuler
-                    </button>
-                    <button
-                        class="btn btn-outline btn-sm flex items-center gap-1"
-                        onclick={() => contacterClient(commande.clientId)}
-                    >
-                        <MessageCircle class="w-4 h-4" /> Contacter
-                    </button>
-                </div>
-            </div>
-        </div>
-    {/each}
+        {/each}
+    {/if}
 </div>
