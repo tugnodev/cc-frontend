@@ -36,6 +36,38 @@
             date: "2025-12-25",
             articles: ["Article D", "Article E"],
         },
+        {
+            id: 4,
+            clientId: 4,
+            clientName: "Devprocode",
+            statut: "Annulé",
+            date: "2026-01-2",
+            articles: ["Article F", "Article G"],
+        },
+        {
+            id: 5,
+            clientId: 5,
+            clientName: "Hackdev",
+            statut: "En attente",
+            date: "2026-01-3",
+            articles: ["Article H", "Article I"],
+        },
+        {
+            id: 6,
+            clientId: 6,
+            clientName: "Marouane",
+            statut: "Annulé",
+            date: "2026-01-3",
+            articles: ["Article J", "Article K"],
+        },
+        {
+            id: 7,
+            clientId: 7,
+            clientName: "Tug",
+            statut: "Validé",
+            date: "2026-01-3",
+            articles: ["Article L", "Article M"],
+        },
     ];
 
     // Changer le statut d'une commande
