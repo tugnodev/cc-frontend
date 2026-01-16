@@ -13,5 +13,5 @@
         <ProductCard />
         <ProductCard />
     </div>
-    <h1>Welcome to CC</h1>
+  
 </Main>
