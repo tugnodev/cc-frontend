@@ -8,5 +8,5 @@
     <AdBanner images={["/ads/ad1.jpg", "/ads/ad2.jpg", "/ads/ad3.jpg"]} />
 
     <Commande />
-    <h1>Welcome to CC</h1>
+    <h1>Welcome to CC teste</h1>
 </Main>
