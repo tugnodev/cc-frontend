@@ -7,9 +7,9 @@
 </script>
 
 <main
-    class="w-full h-screen items-center justify-start flex flex-col fixed z-0 bg-base-200"
+    class="w-full h-full items-center justify-start flex flex-col fixed z-0 bg-base-200"
 >
-    <div class="flex absolute z-30 top-0 w-full">
+    <div class="flex absolute z-30 mt-8 top-0 w-full">
         <HeaderShop />
     </div>
     <div class="overflow-scroll no-scrollbar w-full h-full">
