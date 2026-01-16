@@ -95,10 +95,7 @@
         Commandes
     </h1>
     {#each commandes as commande}
-        <div
-            class={`collapse border rounded-box mb-2
-                 ${commande.clientId === utilisateurId ? "border-blue-400 bg-blue-50" : "border-base-300 bg-base-100"}`}
-        >
+        <div class="collapse border rounded-box mb-2">
             <input type="checkbox" />
             <div
                 class="collapse-title text-lg font-semibold flex justify-between items-center"

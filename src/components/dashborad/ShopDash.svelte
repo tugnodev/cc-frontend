@@ -105,7 +105,7 @@
     }
 </script>
 
-<div class="min-h-screen bg-base-100 text-base-content font-['Raleway'] p-4 md:p-8">
+<div class="min-h-screen bg-base-100 text-base-content p-4 md:p-8">
 	
 	<div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
 		<div>
