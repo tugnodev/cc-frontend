@@ -100,7 +100,7 @@
 	});
 
 	// --- 4. Simulation de Ventes (Pour tester la réactivité) ---
-	function simulerVente() {
+	function AjouterVente() {
 		salesData[5] += 5000; 
     }
 </script>
@@ -112,7 +112,7 @@
 			<h1 class="text-3xl font-bold text-base-content">Tableau de Bord</h1>
 			<p class="text-base-content/60 mt-1">Bon retour, voici vos performances du jour.</p>
 		</div>
-		<button onclick={simulerVente} class="btn btn-primary rounded-field shadow-lg shadow-primary/30 text-primary-content font-bold">
+		<button onclick={AjouterVente} class="btn btn-primary rounded-field shadow-lg shadow-primary/30 text-primary-content font-bold">
 			+ Ajouter une Vente
 		</button>
 	</div>
