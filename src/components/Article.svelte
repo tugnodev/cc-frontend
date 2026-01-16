@@ -168,7 +168,7 @@
         <div class="alert alert-error">{error}</div>
     {:else}
         <div class="overflow-x-auto">
-            <table class="table w-full">
+            <table class="table table-xs w-full">
                 <thead>
                     <tr>
                         <th>Nom</th>
