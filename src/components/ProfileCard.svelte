@@ -31,7 +31,8 @@
             ><User /> Modifier le profile</button
         >
         <button class="btn btn-soft btn-sm btn-warning flex items-center gap-2"
-            >Voire ma boutiques <Store /></button
+            onclick={() => (window.location.href = "/shop")}
+            >Voir ma boutique <Store /></button
         >
     </div>
 </section>
