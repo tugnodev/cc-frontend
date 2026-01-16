@@ -55,7 +55,9 @@
 
 {#if modal}
     <ModalBox onClose={() => (modal = false)}>
-        <div class="flex flex-col gap-2 w-full">
+        <div
+            class="flex flex-col gap-2 w-full p-2 overflow-scroll h-[calc(100vh-300px)]"
+        >
             <div
                 class="carousel carousel-center w-full h-52 max-w-md space-x-4 p-2"
             >
@@ -69,7 +71,6 @@
                     </div>
                 {/each}
             </div>
-            <div class="divider"></div>
             <div class="flex flex-col gap-2 p-2 w-full">
                 <span class="flex items-center justify-between">
                     <h3 class="text-2xl font-semibold">{product.name}</h3>
@@ -79,7 +80,7 @@
                     <h3 class="font-semibold">{product.price} FCFA</h3>
                     <span>{product.rate} 🌟</span>
                 </span>
-                <div>
+                <div class="flex gap-2">
                     {#each product.tags as tag}
                         <span class="badge badge-soft badge-warning text-sm"
                             >{tag}</span
@@ -94,7 +95,7 @@
             <div class="flex flex-col gap-2 p-2 w-full">
                 {#each product.comments as comment}
                     <div>
-                        <div class="flex items-center gap-2">
+                        <div class="flex items-center gap-4">
                             <img
                                 src="/profile.png"
                                 class="w-8 h-8 rounded-full"

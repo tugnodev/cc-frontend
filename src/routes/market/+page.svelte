@@ -16,6 +16,9 @@
     <div class="grid grid-cols-2 gap-2">
         <ProductCard />
         <ProductCard />
+        <ProductCard />
+        <ProductCard />
+        <ProductCard />
+        <ProductCard />
     </div>
-  
 </Main>
