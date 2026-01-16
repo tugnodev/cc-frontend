@@ -93,9 +93,6 @@
                                     {user.name}
                                 </h3>
 
-                                <!-- <div class="badge badge-success badge-xs mt-1">
-                  Certifié
-                </div> -->
                             </div>
                         </div>
                     </div>
