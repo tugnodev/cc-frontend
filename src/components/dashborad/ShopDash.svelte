@@ -117,9 +117,15 @@
         }
     });
 
+<<<<<<< HEAD
+	// --- 4. Simulation de Ventes (Pour tester la réactivité) ---
+	function AjouterVente() {
+		salesData[5] -= 5000; 
+=======
     // --- 4. Simulation de Ventes (Pour tester la réactivité) ---
     function simulerVente() {
         salesData[5] += 5000;
+>>>>>>> d6d755c1a35e979e8a88f854c180885d44ea645c
     }
 </script>
 
