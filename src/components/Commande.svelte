@@ -68,6 +68,70 @@
             date: "2026-01-3",
             articles: ["Article L", "Article M"],
         },
+        {
+            id: 8,
+            clientId: 8,
+            clientName: " Bomberkill",
+            statut: "En attente",
+            date: "2026-12-27",
+            articles: ["Article A", "Article B"],
+        },
+        {
+            id: 9,
+            clientId: 9,
+            clientName: "Angele",
+            statut: "Validé",
+            date: "2025-12-26",
+            articles: ["Article C"],
+        },
+        {
+            id: 10,
+            clientId: 10,
+            clientName: "Fatou",
+            statut: "Annulé",
+            date: "2025-12-25",
+            articles: ["Article D", "Article E"],
+        },
+        {
+            id: 11,
+            clientId: 11,
+            clientName: "Adja",
+            statut: "Annulé",
+            date: "2026-01-2",
+            articles: ["Article F", "Article G"],
+        },
+        {
+            id: 12,
+            clientId: 12,
+            clientName: "Arcel",
+            statut: "En attente",
+            date: "2026-01-3",
+            articles: ["Article H", "Article I"],
+        },
+        {
+            id: 13,
+            clientId: 13,
+            clientName: "Marouane",
+            statut: "Annulé",
+            date: "2026-01-3",
+            articles: ["Article J", "Article K"],
+        },
+        {
+            id: 14,
+            clientId: 14,
+            clientName: "Pro",
+            statut: "Annulé",
+            date: "2026-01-3",
+            articles: ["Article J", "Article K"],
+        },
+        {
+            id: 7,
+            clientId: 7,
+            clientName: "Tug",
+            statut: "Validé",
+            date: "2026-01-3",
+            articles: ["Article L", "Article M"],
+        },
     ];
 
     // Changer le statut d'une commande
@@ -95,10 +159,7 @@
         Commandes
     </h1>
     {#each commandes as commande}
-        <div
-            class={`collapse border rounded-box mb-2
-                 ${commande.clientId === utilisateurId ? "border-blue-400 bg-blue-50" : "border-base-300 bg-base-100"}`}
-        >
+        <div class="collapse border rounded-box mb-2">
             <input type="checkbox" />
             <div
                 class="collapse-title text-lg font-semibold flex justify-between items-center"

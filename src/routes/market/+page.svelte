@@ -7,7 +7,11 @@
 
 <Main>
     <AdBanner images={["/ads/ad1.jpg", "/ads/ad2.jpg", "/ads/ad3.jpg"]} />
-    <ProfileCertife />
+    <div class="hidden">
+        <ProfileCertife />
+    </div>
+    
+    
 
     <div class="grid grid-cols-2 gap-2">
         <ProductCard />
