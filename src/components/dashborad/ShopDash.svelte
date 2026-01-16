@@ -101,7 +101,7 @@
 
 	// --- 4. Simulation de Ventes (Pour tester la réactivité) ---
 	function AjouterVente() {
-		salesData[5] += 5000; 
+		salesData[5] -= 5000; 
     }
 </script>
 
