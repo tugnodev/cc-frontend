@@ -3,7 +3,7 @@
 </script>
 
 <main>
-  <div class="mt-70 ">
+  <!-- <div class="mt-70 "> -->
     <LoginForm />
-  </div>
+  <!-- </div> -->
 </main>
