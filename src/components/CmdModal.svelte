@@ -1,4 +1,5 @@
 <script>
+    import { Filter, CheckCircle, Clock, XCircle } from "@lucide/svelte";
     // @ts-nocheck
 
     const orders = [
@@ -45,63 +46,99 @@
     ];
 
     // state
-    let statusFilter = "all";
+    let statusFilter = "Toutes"; // correspond aux boutons
+    /**
+     * @type {{ id: any; clientName: any; statut: any; date: any; articles: any; clientId?: number; } | null}
+     */
     let selectedOrder = null;
 
-    // derived
+    // filtered orders
     $: filteredOrders =
-        statusFilter === "all"
+        statusFilter === "Toutes"
             ? orders
             : orders.filter((o) => o.statut === statusFilter);
 </script>
 
 <h2 class="text-xl font-bold mb-4">Commandes</h2>
 
-<select bind:value={statusFilter} class="select select-bordered mb-4 w-full">
-    <option value="all">Toutes</option>
-    <option value="En attente">En attente</option>
-    <option value="Validé">Validé</option>
-    <option value="Annulé">Annulée</option>
-</select>
+<!-- BOUTONS DE FILTRE -->
+<div class="flex flex-wrap gap-2 mb-6">
+    <button
+        class="btn btn-sm flex gap-1"
+        class:btn-primary={statusFilter === "Toutes"}
+        on:click={() => (statusFilter = "Toutes")}
+    >
+        <Filter class="w-4 h-4" /> Toutes
+    </button>
 
+    <button
+        class="btn btn-sm flex gap-1"
+        class:btn-success={statusFilter === "Validé"}
+        on:click={() => (statusFilter = "Validé")}
+    >
+        <CheckCircle class="w-4 h-4" /> Validé
+    </button>
+
+    <button
+        class="btn btn-sm flex gap-1"
+        class:btn-warning={statusFilter === "En attente"}
+        on:click={() => (statusFilter = "En attente")}
+    >
+        <Clock class="w-4 h-4" /> En attente
+    </button>
+
+    <button
+        class="btn btn-sm flex gap-1"
+        class:btn-error={statusFilter === "Annulé"}
+        on:click={() => (statusFilter = "Annulé")}
+    >
+        <XCircle class="w-4 h-4" /> Annulé
+    </button>
+</div>
+
+<!-- COMMANDES -->
 {#if filteredOrders.length === 0}
-    <p class="text-center">Aucune commande trouvée</p>
+    <p class="text-center text-gray-500">Aucune commande trouvée</p>
 {:else}
-    {#each filteredOrders as order}
-        <div class="collapse collapse-plus bg-base-200 my-2">
-            <input type="checkbox" />
-
-            <div class="collapse-title font-bold">
-                #{order.id} — {order.clientName} — {order.statut}
-            </div>
-
-            <div class="collapse-content">
-                <p><strong>Date :</strong> {order.date}</p>
-
-                <ul class="mt-2 list-disc list-inside">
-                    {#each order.articles as article}
-                        <li>{article}</li>
-                    {/each}
-                </ul>
-
-                <button
-                    class="btn btn-sm btn-primary mt-3"
-                    on:click={() => (selectedOrder = order)}
+    <div class="space-y-4">
+        <!-- <-- interligne entre commandes -->
+        {#each filteredOrders as order}
+            <div class="collapse collapse-plus border rounded-box bg-base-200">
+                <input type="checkbox" />
+                <div
+                    class="collapse-title font-bold flex justify-between items-center"
                 >
-                    Voir plus
-                </button>
+                    <span>Commande #{order.id} — {order.clientName}</span>
+                    <span class="badge">{order.statut}</span>
+                </div>
+
+                <div class="collapse-content">
+                    <p><strong>Date :</strong> {order.date}</p>
+
+                    <p class="mt-2 font-semibold">Articles :</p>
+                    <ul class="list-disc ml-5">
+                        {#each order.articles as article}
+                            <li>{article}</li>
+                        {/each}
+                    </ul>
+
+                    <button
+                        class="btn btn-sm btn-primary mt-3"
+                        on:click={() => (selectedOrder = order)}
+                    >
+                        Voir plus
+                    </button>
+                </div>
             </div>
-        </div>
-    {/each}
+        {/each}
+    </div>
 {/if}
 
+<!-- MODAL DETAILS -->
 {#if selectedOrder}
     <dialog class="modal modal-open">
         <div class="modal-box">
-            <h3 class="font-bold text-lg">
-                Commande #{selectedOrder.id}
-            </h3>
-
+            <h3 class="font-bold text-lg">Commande #{selectedOrder.id}</h3>
             <p><strong>Client :</strong> {selectedOrder.clientName}</p>
             <p><strong>Statut :</strong> {selectedOrder.statut}</p>
             <p><strong>Date :</strong> {selectedOrder.date}</p>
@@ -115,9 +152,9 @@
             </ul>
 
             <div class="modal-action">
-                <button class="btn" on:click={() => (selectedOrder = null)}>
-                    Fermer
-                </button>
+                <button class="btn" on:click={() => (selectedOrder = null)}
+                    >Fermer</button
+                >
             </div>
         </div>
     </dialog>
