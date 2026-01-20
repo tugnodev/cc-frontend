@@ -1,6 +1,6 @@
 <script lang="ts">
     import { onMount } from "svelte";
-    import { X, Pencil, Trash2, Plus, ArrowUp, ArrowDown, ChevronsUpDown } from 'lucide-svelte';
+    import { X, Pencil, Trash2, Plus, ArrowUp, ArrowDown, ChevronsUpDown } from '@lucide/svelte';
     import type { Article } from "../services/articleService";
     import * as service from "../services/articleService";
     import ModalBox from "./ModalBox.svelte";
