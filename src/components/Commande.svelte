@@ -152,7 +152,9 @@
             : commandes.filter((c) => c.statut === statutActif);
 </script>
 
-<div class="space-y-4">
+<div
+    class="w-full flex flex-col items-center justify-start mt-16 mb-24 px-1 transition-all duration-300 ease-in-out"
+>
     <!-- TITRE -->
     <h1 class="text-2xl font-bold flex items-center gap-2">
         <ShoppingCart class="w-6 h-6 text-blue-500" />
