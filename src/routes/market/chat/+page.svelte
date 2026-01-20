@@ -105,17 +105,13 @@
 </script>
 
 <!-- PAGE -->
-<div class="w-full h-full p-4 flex flex-col gap-4 bg-base-200">
-
-    <div class="mt-20"> 
-        <h1 class="text-2xl font-bold mb-3">Discussions</h1>
-
-       
-    </div>
-
+<div class="w-full flex flex-col justify-start mt-5 mb-24 px-1 transition-all duration-300 ease-in-out">
     <!-- Liste de discussion -->
-    <div class="flex flex-col gap-2 overflow-y-auto pb-6">
-         <div class="flex gap-2">
+    <div class="flex flex-col gap-2  pb-6 ">
+        <div class="mt-20"> 
+            <h1 class="text-2xl font-bold mb-3">Discussions</h1>
+        </div>
+         <div class="flex gap-2 space-y-2">
             <button
                 class="btn btn-sm"
                 class:btn-primary={filter === "all"}
