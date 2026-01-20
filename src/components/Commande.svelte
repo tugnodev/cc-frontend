@@ -200,56 +200,61 @@
     {#if commandesFiltrees.length === 0}
         <p class="text-center text-gray-500 mt-10">Aucune commande trouvée</p>
     {:else}
-        {#each commandesFiltrees as commande}
-            <div class="collapse border rounded-box">
-                <input type="checkbox" />
+        <div class="w-full max-w-3xl space-y-2 mt-6">
+            {#each commandesFiltrees as commande}
+                <div class="collapse border rounded-box bg-base-100">
+                    <input type="checkbox" />
 
-                <div
-                    class="collapse-title text-lg font-semibold flex justify-between items-center"
-                >
-                    <span>Commande #{commande.id} – {commande.clientName}</span>
-                    <div class="flex items-center gap-2">
-                        <span class="badge">{commande.statut}</span>
-                        <ChevronDown class="w-5 h-5" />
+                    <div
+                        class="collapse-title text-lg font-semibold flex justify-between items-center"
+                    >
+                        <span
+                            >Commande #{commande.id} – {commande.clientName}</span
+                        >
+                        <div class="flex items-center gap-2">
+                            <span class="badge">{commande.statut}</span>
+                            <ChevronDown class="w-5 h-5" />
+                        </div>
+                    </div>
+
+                    <div class="collapse-content">
+                        <p><strong>Date :</strong> {commande.date}</p>
+
+                        <p class="mt-2 font-semibold">Articles :</p>
+                        <ul class="list-disc ml-5">
+                            {#each commande.articles as article}
+                                <li>{article}</li>
+                            {/each}
+                        </ul>
+
+                        <div class="mt-4 flex gap-2 flex-wrap">
+                            <button
+                                class="btn btn-success btn-sm flex gap-1"
+                                on:click={() =>
+                                    changerStatut(commande.id, "Validé")}
+                            >
+                                <Check class="w-4 h-4" /> Valider
+                            </button>
+
+                            <button
+                                class="btn btn-error btn-sm flex gap-1"
+                                on:click={() =>
+                                    changerStatut(commande.id, "Annulé")}
+                            >
+                                <X class="w-4 h-4" /> Annuler
+                            </button>
+
+                            <button
+                                class="btn btn-outline btn-sm flex gap-1"
+                                on:click={() =>
+                                    contacterClient(commande.clientId)}
+                            >
+                                <MessageCircle class="w-4 h-4" /> Contacter
+                            </button>
+                        </div>
                     </div>
                 </div>
-
-                <div class="collapse-content">
-                    <p><strong>Date :</strong> {commande.date}</p>
-
-                    <p class="mt-2 font-semibold">Articles :</p>
-                    <ul class="list-disc ml-5">
-                        {#each commande.articles as article}
-                            <li>{article}</li>
-                        {/each}
-                    </ul>
-
-                    <div class="mt-4 flex gap-2 flex-wrap">
-                        <button
-                            class="btn btn-success btn-sm flex gap-1"
-                            on:click={() =>
-                                changerStatut(commande.id, "Validé")}
-                        >
-                            <Check class="w-4 h-4" /> Valider
-                        </button>
-
-                        <button
-                            class="btn btn-error btn-sm flex gap-1"
-                            on:click={() =>
-                                changerStatut(commande.id, "Annulé")}
-                        >
-                            <X class="w-4 h-4" /> Annuler
-                        </button>
-
-                        <button
-                            class="btn btn-outline btn-sm flex gap-1"
-                            on:click={() => contacterClient(commande.clientId)}
-                        >
-                            <MessageCircle class="w-4 h-4" /> Contacter
-                        </button>
-                    </div>
-                </div>
-            </div>
-        {/each}
+            {/each}
+        </div>
     {/if}
 </div>
