@@ -10,10 +10,10 @@
     <div class="hidden">
         <ProfileCertife />
     </div>
-    
-    
 
-    <div class="grid grid-cols-2 gap-2">
+    <div
+        class="grid grid-cols-2 md:grid-cols-4 gap-1 w-full items-center justify-center"
+    >
         <ProductCard />
         <ProductCard />
         <ProductCard />
