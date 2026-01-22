@@ -4,6 +4,7 @@ export interface Article {
     description?: string;
     price: number;
     stock: number;
+    imageUrl?: string[];
     createdAt: string;
     updatedAt: string;
 }
@@ -17,8 +18,15 @@ export const demoArticles: Article[] = [
         description: "Riz de qualité supérieure pour usage domestique et commercial",
         price: 18500,
         stock: 32,
+        imageUrl: [
+            "/profile.png",
+            "/profile.png",
+            "/profile.png",
+            "/profile.png",
+            "/profile.png",
+        ],
         createdAt: "2025-01-10",
-        updatedAt: "2025-01-10",
+        updatedAt: "2025-01-10"
     },
     {
         id: "art-002",

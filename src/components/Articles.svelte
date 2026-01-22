@@ -1,6 +1,15 @@
 <script lang="ts">
     import { onMount } from "svelte";
-    import { X, Pencil, Trash2, Plus, ArrowUp, ArrowDown, ChevronsUpDown } from '@lucide/svelte';
+    import {
+        X,
+        Pencil,
+        Trash2,
+        Plus,
+        ArrowUp,
+        ArrowDown,
+        ChevronsUpDown,
+        Image as ImageIcon,
+    } from "@lucide/svelte";
     import type { Article } from "../services/articleService";
     import * as service from "../services/articleService";
     import ModalBox from "./ModalBox.svelte";
@@ -10,7 +19,7 @@
         try {
             window.dispatchEvent(new CustomEvent(type, { detail }));
         } catch {
-            // 
+            //
         }
     };
 
@@ -32,7 +41,15 @@
         description: "",
         price: 0,
         stock: 0,
+        imageUrl: [],
     };
+
+    // Image handling
+    let fileInput: HTMLInputElement;
+    let previewImages: string[] = [];
+    let uploading = false;
+    let imagePreviewModal = false;
+    let selectedImagePreview: string | null = null;
 
     // Confirmation
     let toDelete: Article | null = null;
@@ -77,28 +94,31 @@
 
     function openCreate() {
         isEditing = false;
-        form = { name: "", description: "", price: 0, stock: 0 };
+        form = { name: "", description: "", price: 0, stock: 0, imageUrl: [] };
+        previewImages = [];
         showForm = true;
     }
 
     function openEdit(a: Article) {
         isEditing = true;
         form = { ...a };
+        previewImages = [...(a.imageUrl || [])];
         showForm = true;
     }
 
     async function submit() {
         try {
+            const updatedForm = { ...form, imageUrl: previewImages };
             if (isEditing && form.id) {
                 const updated = await service.updateArticle(
                     form.id as string,
-                    form,
+                    updatedForm,
                 );
                 articles = articles.map((x) =>
                     x.id === updated.id ? updated : x,
                 );
             } else {
-                const created = await service.createArticle(form);
+                const created = await service.createArticle(updatedForm);
                 articles = [created, ...articles];
             }
             showForm = false;
@@ -126,25 +146,64 @@
         }
     }
 
+    // Image handling functions
+    async function handleImageUpload(e: Event) {
+        uploading = true;
+        const input = e.target as HTMLInputElement;
+        const files = input.files ? Array.from(input.files) : [];
+
+        for (const file of files) {
+            const reader = new FileReader();
+            reader.onload = (event) => {
+                const base64 = event.target?.result as string;
+                previewImages = [...previewImages, base64];
+            };
+            reader.readAsDataURL(file);
+        }
+
+        uploading = false;
+        input.value = "";
+    }
+
+    function removeImage(index: number) {
+        previewImages = previewImages.filter((_, i) => i !== index);
+    }
+
+    function openImagePreview(image: string) {
+        selectedImagePreview = image;
+        imagePreviewModal = true;
+    }
+
     // reactive: run whenever dependencies used by applyFilters change
-    $: { search; sortKey; sortDir; applyFilters(); }
+    $: {
+        search;
+        sortKey;
+        sortDir;
+        applyFilters();
+    }
 
     function formatPrice(n: number) {
-        return n.toLocaleString('fr-SN', { style: 'currency', currency: 'XOF' });
+        return n.toLocaleString("fr-SN", {
+            style: "currency",
+            currency: "XOF",
+        });
     }
 
     onMount(load);
 </script>
 
 <div class="min-h-screen bg-base-200 p-4 md:p-8 w-full">
-    
-    <div class="mb-6 flex flex-col md:flex-row justify-between items-center gap-4">
+    <div
+        class="mb-6 flex flex-col md:flex-row justify-between items-center gap-4"
+    >
         <div>
-             <p class="text-sm text-base-content/70">{filtered.length} article(s) affiché(s)</p>
+            <p class="text-sm text-base-content/70">
+                {filtered.length} article(s) affiché(s)
+            </p>
         </div>
-        
+
         <div class="flex gap-3 w-full md:w-auto">
-             <div class="join w-full md:w-auto shadow-sm">
+            <div class="join w-full md:w-auto shadow-sm">
                 <input
                     type="text"
                     placeholder="Rechercher un article..."
@@ -152,17 +211,22 @@
                     class="input input-bordered join-item w-full md:w-64 focus:outline-offset-0"
                 />
                 {#if search}
-                <button
-                    class="btn btn-square join-item btn-ghost border-base-300"
-                    on:click={() => { search = ""; }}
-                    title="Effacer la recherche"
-                >
-                    <X class="w-5 h-5" />
-                </button>
+                    <button
+                        class="btn btn-square join-item btn-ghost border-base-300"
+                        on:click={() => {
+                            search = "";
+                        }}
+                        title="Effacer la recherche"
+                    >
+                        <X class="w-5 h-5" />
+                    </button>
                 {/if}
             </div>
 
-            <button class="btn btn-primary shadow-sm gap-2" on:click={openCreate}>
+            <button
+                class="btn btn-primary shadow-sm gap-2"
+                on:click={openCreate}
+            >
                 <Plus class="w-5 h-5" />
                 <span class="hidden md:inline">Nouvel article</span>
             </button>
@@ -173,27 +237,43 @@
         <div class="card-body p-0 overflow-hidden">
             {#if loading}
                 <div class="flex justify-center items-center p-12">
-                    <span class="loading loading-spinner loading-lg text-primary"></span>
+                    <span
+                        class="loading loading-spinner loading-lg text-primary"
+                    ></span>
                 </div>
             {:else if error}
                 <div class="alert alert-error m-4 rounded-lg">{error}</div>
             {:else}
                 <div class="overflow-x-auto">
-                    <table class="table table-zebra table-pin-rows w-full text-sm md:text-base">
-                        <thead class="bg-base-200/50 text-base-content/80 uppercase text-xs font-semibold">
+                    <table
+                        class="table table-zebra table-pin-rows w-full text-sm md:text-base"
+                    >
+                        <thead
+                            class="bg-base-200/50 text-base-content/80 uppercase text-xs font-semibold"
+                        >
                             <tr>
-                                <th class="py-2 md:py-4 pl-2 md:pl-6 text-left">Nom</th>
+                                <th class="py-2 md:py-4 pl-2 md:pl-6 text-left"
+                                    >Nom</th
+                                >
 
                                 <th
                                     class="cursor-pointer hover:bg-base-200 hover:text-primary transition-colors text-right py-2 md:py-4 px-1 md:px-2"
                                     on:click={() => toggleSort("price")}
                                 >
-                                    <div class="flex items-center justify-end gap-0.5 md:gap-1">
+                                    <div
+                                        class="flex items-center justify-end gap-0.5 md:gap-1"
+                                    >
                                         <span>Prix</span>
                                         {#if sortKey === "price"}
-                                            {#if sortDir === 1}<ArrowUp class="w-4 h-4"/>{:else}<ArrowDown class="w-4 h-4"/>{/if}
+                                            {#if sortDir === 1}<ArrowUp
+                                                    class="w-4 h-4"
+                                                />{:else}<ArrowDown
+                                                    class="w-4 h-4"
+                                                />{/if}
                                         {:else}
-                                            <ChevronsUpDown class="w-4 h-4 opacity-50"/>
+                                            <ChevronsUpDown
+                                                class="w-4 h-4 opacity-50"
+                                            />
                                         {/if}
                                     </div>
                                 </th>
@@ -202,89 +282,151 @@
                                     class="cursor-pointer hover:bg-base-200 hover:text-primary transition-colors text-center py-2 md:py-4 px-1 md:px-2"
                                     on:click={() => toggleSort("stock")}
                                 >
-                                     <div class="flex items-center justify-center gap-0.5 md:gap-1">
+                                    <div
+                                        class="flex items-center justify-center gap-0.5 md:gap-1"
+                                    >
                                         <span>Stock</span>
-                                         {#if sortKey === "stock"}
-                                             {#if sortDir === 1}<ArrowUp class="w-4 h-4"/>{:else}<ArrowDown class="w-4 h-4"/>{/if}
-                                         {:else}
-                                             <ChevronsUpDown class="w-4 h-4 opacity-50"/>
-                                         {/if}
-                                     </div>
+                                        {#if sortKey === "stock"}
+                                            {#if sortDir === 1}<ArrowUp
+                                                    class="w-4 h-4"
+                                                />{:else}<ArrowDown
+                                                    class="w-4 h-4"
+                                                />{/if}
+                                        {:else}
+                                            <ChevronsUpDown
+                                                class="w-4 h-4 opacity-50"
+                                            />
+                                        {/if}
+                                    </div>
                                 </th>
-                                <th class="text-center py-2 md:py-4 pr-2 md:pr-6">Actions</th>
+                                <th
+                                    class="text-center py-2 md:py-4 pr-2 md:pr-6"
+                                    >Actions</th
+                                >
                             </tr>
                         </thead>
                         <tbody>
                             {#if filtered.length === 0}
                                 <tr>
-                                    <td colspan="4" class="text-center py-8 md:py-12 text-base-content/60 italic">
-                                        Aucun article ne correspond à votre recherche.
+                                    <td
+                                        colspan="4"
+                                        class="text-center py-8 md:py-12 text-base-content/60 italic"
+                                    >
+                                        Aucun article ne correspond à votre
+                                        recherche.
                                     </td>
                                 </tr>
                             {:else}
                                 {#each filtered as a (a.id)}
-                                    <tr class="hover:bg-base-200/30 transition-colors">
+                                    <tr
+                                        class="hover:bg-base-200/30 transition-colors"
+                                    >
                                         <td class="pl-2 md:pl-6 py-2 md:py-3">
-                                            <div class="font-bold text-base-content text-sm">{a.name}</div>
+                                            <div
+                                                class="font-bold text-base-content text-sm"
+                                            >
+                                                {a.name}
+                                            </div>
                                             {#if a.description}
-                                                <div class="text-xs opacity-60 max-w-xs truncate hidden md:block" title={a.description}>
+                                                <div
+                                                    class="text-xs opacity-60 max-w-xs truncate hidden md:block"
+                                                    title={a.description}
+                                                >
                                                     {a.description}
                                                 </div>
                                             {/if}
                                         </td>
-                                        
-                                        <td class="text-right font-mono font-medium py-2 md:py-3 px-1 md:px-2 text- md:text-sm">
+
+                                        <td
+                                            class="text-right font-mono font-medium py-2 md:py-3 px-1 md:px-2 text- md:text-sm"
+                                        >
                                             {formatPrice(a.price)}
                                         </td>
 
                                         <td class="text-center font-semibold">
                                             {#if a.stock === 0}
-                                                <div class="text-error badge-outline gap-1  text-sm">
-                                                    <span class="hidden sm:inline">Épuisé</span>
-                                                    <span class="sm:hidden">0</span>
+                                                <div
+                                                    class="text-error badge-outline gap-1 text-sm"
+                                                >
+                                                    <span
+                                                        class="hidden sm:inline"
+                                                        >Épuisé</span
+                                                    >
+                                                    <span class="sm:hidden"
+                                                        >0</span
+                                                    >
                                                 </div>
                                             {:else if a.stock < 10}
-                                                <div class="text-warning badge-warning gap-1">
+                                                <div
+                                                    class="text-warning badge-warning gap-1"
+                                                >
                                                     {a.stock}
-                                                    <span class="hidden lg:inline ml-1 text-xs opacity-70">(Faible)</span>
+                                                    <span
+                                                        class="hidden lg:inline ml-1 text-xs opacity-70"
+                                                        >(Faible)</span
+                                                    >
                                                 </div>
                                             {:else}
-                                                <span class="text-success text-sm">
+                                                <span
+                                                    class="text-success text-sm"
+                                                >
                                                     {a.stock}
                                                 </span>
                                             {/if}
                                         </td>
 
                                         <td class="pr-3 md:pr-6 py-2 md:py-3">
-                                            <div class="flex justify-center gap-0.75">
-                                                <div class="md:hidden flex gap-1">
-                                                    <div class="tooltip" data-tip="Modifier">
+                                            <div
+                                                class="flex justify-center gap-0.75"
+                                            >
+                                                <div
+                                                    class="md:hidden flex gap-1"
+                                                >
+                                                    <div
+                                                        class="tooltip"
+                                                        data-tip="Modifier"
+                                                    >
                                                         <button
                                                             class="btn btn-sm btn-square btn-ghost hover:bg-primary/10 hover:text-primary"
-                                                            on:click={() => openEdit(a)}
+                                                            on:click={() =>
+                                                                openEdit(a)}
                                                         >
-                                                            <Pencil class="w-5 h-5" /> 
+                                                            <Pencil
+                                                                class="w-5 h-5"
+                                                            />
                                                         </button>
                                                     </div>
-                                                    <div class="tooltip" data-tip="Supprimer">
+                                                    <div
+                                                        class="tooltip"
+                                                        data-tip="Supprimer"
+                                                    >
                                                         <button
                                                             class="btn btn-sm btn-square btn-ghost text-error hover:bg-error/10"
-                                                            on:click={() => confirmDelete(a)}
+                                                            on:click={() =>
+                                                                confirmDelete(
+                                                                    a,
+                                                                )}
                                                         >
-                                                            <Trash2 class="w-5 h-5" />
+                                                            <Trash2
+                                                                class="w-5 h-5"
+                                                            />
                                                         </button>
                                                     </div>
                                                 </div>
-                                                <div class="hidden md:flex gap-2">
+                                                <div
+                                                    class="hidden md:flex gap-2"
+                                                >
                                                     <button
                                                         class="btn btn-sm btn-primary"
-                                                        on:click={() => openEdit(a)}
+                                                        on:click={() =>
+                                                            openEdit(a)}
                                                     >
                                                         Modifier
                                                     </button>
                                                     <button
                                                         class="btn btn-sm btn-error"
-                                                        on:click={() => confirmDelete(a)}
+                                                        on:click={() =>
+                                                            confirmDelete(a)}
                                                     >
                                                         Supprimer
                                                     </button>
@@ -301,44 +443,164 @@
         </div>
     </div>
 
-
     {#if showForm}
         <ModalBox onClose={() => (showForm = false)}>
             {#snippet children()}
                 <div class="sm:max-w-lg w-full p-4">
                     <h3 class="font-bold text-xl mb-4 flex items-center gap-2">
-                        {#if isEditing}<Pencil class="w-6 h-6 text-primary"/>{:else}<Plus class="w-6 h-6 text-primary"/>{/if}
-                        {isEditing ? "Modifier l'article" : "Créer un nouvel article"}
+                        {#if isEditing}<Pencil
+                                class="w-6 h-6 text-primary"
+                            />{:else}<Plus class="w-6 h-6 text-primary" />{/if}
+                        {isEditing
+                            ? "Modifier l'article"
+                            : "Créer un nouvel article"}
                     </h3>
-                    
+
                     <div class="flex flex-col gap-3">
+                        <!-- Image Upload Section -->
                         <div class="form-control">
-                            <label class="label" for="name"><span class="label-text font-medium">Nom du produit *</span></label>
-                            <input id="name" class="input input-bordered focus:input-primary" placeholder="Ex: Laptop X1" bind:value={form.name} />
+                            <label class="label" for="images"
+                                ><span class="label-text font-medium"
+                                    >Images du produit</span
+                                ></label
+                            >
+                            <div class="flex flex-wrap gap-2 mb-2">
+                                {#if previewImages.length > 0}
+                                    {#each previewImages as image, index}
+                                        <div
+                                            class="relative w-20 h-20 rounded-lg overflow-hidden border border-base-300"
+                                        >
+                                            <button
+                                                type="button"
+                                                class="w-full h-full object-cover cursor-pointer p-0 border-0"
+                                                on:click={() =>
+                                                    openImagePreview(image)}
+                                                title="Afficher l'image"
+                                            >
+                                                <img
+                                                    src={image}
+                                                    alt="preview {index}"
+                                                    class="w-full h-full object-cover"
+                                                />
+                                            </button>
+                                            <button
+                                                type="button"
+                                                class="absolute top-1 right-1 btn btn-xs btn-circle btn-error"
+                                                on:click={() =>
+                                                    removeImage(index)}
+                                                title="Supprimer l'image"
+                                            >
+                                                <X class="w-3 h-3" />
+                                            </button>
+                                        </div>
+                                    {/each}
+                                {/if}
+                                <button
+                                    type="button"
+                                    class="w-20 h-20 rounded-lg border-2 border-dashed border-base-300 flex items-center justify-center hover:border-primary hover:bg-primary/5 transition-colors"
+                                    on:click={() => fileInput.click()}
+                                    disabled={uploading}
+                                >
+                                    {#if uploading}
+                                        <span
+                                            class="loading loading-spinner loading-sm"
+                                        ></span>
+                                    {:else}
+                                        <ImageIcon class="w-6 h-6" />
+                                    {/if}
+                                </button>
+                            </div>
+                            <input
+                                id="images"
+                                type="file"
+                                multiple
+                                accept="image/*"
+                                bind:this={fileInput}
+                                on:change={handleImageUpload}
+                                class="hidden"
+                            />
+                            <p class="text-xs text-base-content/50 mt-1">
+                                Cliquez pour ajouter des images (PNG, JPG, etc.)
+                            </p>
+                        </div>
+
+                        <div class="form-control">
+                            <label class="label" for="name"
+                                ><span class="label-text font-medium"
+                                    >Nom du produit *</span
+                                ></label
+                            > <br />
+                            <input
+                                id="name"
+                                class="input input-bordered focus:input-primary"
+                                placeholder="Ex: Laptop X1"
+                                bind:value={form.name}
+                            />
                         </div>
                         <div class="form-control">
-                            <label class="label" for="description"><span class="label-text font-medium">Description</span></label>
-                            <textarea id="description" class="textarea textarea-bordered h-24 focus:textarea-primary" placeholder="Courte description..." bind:value={form.description}></textarea>
+                            <label class="label" for="description"
+                                ><span class="label-text font-medium"
+                                    >Description</span
+                                ></label
+                            > <br />
+                            <textarea
+                                id="description"
+                                class="textarea textarea-bordered h-24 focus:textarea-primary"
+                                placeholder="Courte description..."
+                                bind:value={form.description}
+                            ></textarea>
                         </div>
-                        
+
                         <div class="grid grid-cols-2 gap-4">
                             <div class="form-control">
-                                <label class="label" for="price"><span class="label-text font-medium">Prix (F CFA) *</span></label>
+                                <label class="label" for="price"
+                                    ><span class="label-text font-medium"
+                                        >Prix (F CFA) *</span
+                                    ></label
+                                >
                                 <label class="input-group">
-                                    <input id="price" type="number" class="input input-bordered w-full focus:input-primary" placeholder="0.00" bind:value={form.price} step="0.01" min="0"/>
+                                    <input
+                                        id="price"
+                                        type="number"
+                                        class="input input-bordered w-full focus:input-primary"
+                                        placeholder="0.00"
+                                        bind:value={form.price}
+                                        step="0.01"
+                                        min="0"
+                                    />
                                 </label>
                             </div>
                             <div class="form-control">
-                                <label class="label" for="stock"><span class="label-text font-medium">Stock initial *</span></label>
-                                <input id="stock" type="number" class="input input-bordered focus:input-primary" placeholder="0" bind:value={form.stock} min="0" />
+                                <label class="label" for="stock"
+                                    ><span class="label-text font-medium"
+                                        >Stock initial *</span
+                                    ></label
+                                >
+                                <input
+                                    id="stock"
+                                    type="number"
+                                    class="input input-bordered focus:input-primary"
+                                    placeholder="0"
+                                    bind:value={form.stock}
+                                    min="0"
+                                />
                             </div>
                         </div>
                     </div>
 
                     <div class="modal-action mt-6">
-                        <button class="btn btn-ghost" on:click={() => (showForm = false)}>Annuler</button>
-                        <button class="btn btn-primary px-6" disabled={!form.name} on:click={submit}>
-                            {isEditing ? "Enregistrer les modifications" : "Créer l'article"}
+                        <button
+                            class="btn btn-ghost"
+                            on:click={() => (showForm = false)}>Annuler</button
+                        >
+                        <button
+                            class="btn btn-primary px-6"
+                            disabled={!form.name}
+                            on:click={submit}
+                        >
+                            {isEditing
+                                ? "Enregistrer les modifications"
+                                : "Créer l'article"}
                         </button>
                     </div>
                 </div>
@@ -350,21 +612,63 @@
         <ModalBox onClose={() => (toDelete = null)}>
             {#snippet children()}
                 <div class="w-full p-4">
-                    <h3 class="font-bold text-lg text-error flex items-center gap-2">
-                        <Trash2 class="w-6 h-6"/>
+                    <h3
+                        class="font-bold text-lg text-error flex items-center gap-2"
+                    >
+                        <Trash2 class="w-6 h-6" />
                         Confirmation de suppression
                     </h3>
                     <div class="py-4">
-                        <p>Voulez-vous vraiment supprimer définitivement l'article :</p>
-                        <p class="mt-2 p-3 bg-base-200 rounded-lg font-medium text-center">
+                        <p>
+                            Voulez-vous vraiment supprimer définitivement
+                            l'article :
+                        </p>
+                        <p
+                            class="mt-2 p-3 bg-base-200 rounded-lg font-medium text-center"
+                        >
                             {toDelete?.name}
                         </p>
-                        <p class="text-sm text-base-content/70 mt-4">Cette action est irréversible.</p>
+                        <p class="text-sm text-base-content/70 mt-4">
+                            Cette action est irréversible.
+                        </p>
                     </div>
                     <div class="modal-action">
-                        <button class="btn btn-ghost" on:click={() => (toDelete = null)}>Annuler</button>
-                        <button class="btn btn-error px-6" on:click={doDelete}>Confirmer la suppression</button>
+                        <button
+                            class="btn btn-ghost"
+                            on:click={() => (toDelete = null)}>Annuler</button
+                        >
+                        <button class="btn btn-error px-6" on:click={doDelete}
+                            >Confirmer la suppression</button
+                        >
                     </div>
+                </div>
+            {/snippet}
+        </ModalBox>
+    {/if}
+
+    {#if imagePreviewModal && selectedImagePreview}
+        <ModalBox
+            onClose={() => {
+                imagePreviewModal = false;
+                selectedImagePreview = null;
+            }}
+        >
+            {#snippet children()}
+                <div
+                    class="w-full h-full flex flex-col items-center justify-center p-4"
+                >
+                    <img
+                        src={selectedImagePreview}
+                        alt="preview"
+                        class="max-w-full max-h-[70vh] rounded-lg"
+                    />
+                    <button
+                        class="btn btn-primary mt-4"
+                        on:click={() => {
+                            imagePreviewModal = false;
+                            selectedImagePreview = null;
+                        }}>Fermer</button
+                    >
                 </div>
             {/snippet}
         </ModalBox>
