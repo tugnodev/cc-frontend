@@ -19,7 +19,6 @@
     }
 </script>
 
-<!--<section> -->
     <!-- <h3 class="text-xl font-semibold mb-4">Catégories</h3>
 
     <div class="flex flex-wrap gap-3">
@@ -51,4 +50,3 @@
             {/each}
         </div>
     </div>
-<!--</section> -->
