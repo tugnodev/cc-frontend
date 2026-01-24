@@ -1,5 +1,7 @@
 <script lang="ts">
     import ModalBox from "./ModalBox.svelte";
+    import { type articleDto } from "../services/dtos/article";
+    import { type commentDto } from "../services/dtos/comment";
 
     let modal = $state(false);
     let commentModal = $state(false);
@@ -9,52 +11,29 @@
         { label: "Ajouter au panier", callback: () => "void" },
     ];
 
-    let product = {
-        name: "Nom du produit",
+    let comments: commentDto[] = [];
+
+    let exemple: articleDto = {
+        id: "xxxxxxxxx",
+        userId: "xxxxxxxxx",
+        title: "Nom du produit",
         price: 99999,
         stock: 10,
-        tags: ["tag", "tag2", "tag3"],
-        rate: 4.5,
+        category: ["tag", "tag2", "tag3"],
+        rates: 4.5,
         description:
             "Description du produit Description du produit Description du produit",
-        image: [
+        images: [
             "/profile.png",
             "/profile.png",
             "/profile.png",
             "/profile.png",
             "/profile.png",
         ],
-        comments: [
-            {
-                id: 1,
-                author: "John Doe",
-                content: "Great product!",
-                rating: 5,
-                date: "2023-01-01",
-            },
-            {
-                id: 2,
-                author: "Jane Smith",
-                content: "Good quality",
-                rating: 4,
-                date: "2023-01-02",
-            },
-            {
-                id: 3,
-                author: "Alice Johnson",
-                content: "Excellent product!",
-                rating: 5,
-                date: "2023-01-03",
-            },
-            {
-                id: 4,
-                author: "Bob Brown",
-                content: "Very satisfied!",
-                rating: 5,
-                date: "2023-01-04",
-            },
-        ],
+        createdAt: new Date(),
+        updatedAt: new Date(),
     };
+    const { product = exemple } = $props();
 </script>
 
 <div
@@ -74,7 +53,7 @@
         </span>
     </div>
     <div class="flex flex-col w-full">
-        <h3 class="">{product.name}</h3>
+        <h3 class="">{product.title}</h3>
         <h3 class="font-semibold">{product.price} FCFA</h3>
     </div>
 </div>
@@ -87,12 +66,12 @@
             <div
                 class="carousel carousel-center w-full max-w-md md:max-w-2xl h-[50vh] md:h-[80vh] max-h-48 md:max-h-72 space-x-2 rounded"
             >
-                {#each product.image as image}
+                {#each product.images as image}
                     <div class="carousel-item h-full">
                         <img
                             src={image}
                             class="aspect-square object-cover"
-                            alt="Product Image"
+                            alt=""
                         />
                     </div>
                 {/each}
@@ -100,16 +79,16 @@
             <div class="flex flex-col gap-2 p-2 w-full">
                 <span class="flex items-center justify-between">
                     <h3 class="text-xl sm:text-2xl font-semibold">
-                        {product.name}
+                        {product.title}
                     </h3>
                     <span>{product.stock} 📦</span>
                 </span>
                 <span class="flex items-center justify-between">
                     <h3 class="font-semibold">{product.price} FCFA</h3>
-                    <span>{product.rate} 🌟</span>
+                    <span>{product.rates} 🌟</span>
                 </span>
                 <div class="flex gap-2">
-                    {#each product.tags as tag}
+                    {#each product.category as tag}
                         <span class="badge badge-soft badge-warning text-sm"
                             >{tag}</span
                         >
@@ -149,32 +128,54 @@
         <div
             class={`w-full p-2 flex flex-col gap-2 max-h-[80vh] overflow-scroll no-scrollbar`}
         >
-            {#each product.comments as comment}
-                <div
-                    class="flex flex-col gap-2 border border-base-300 rounded-lg bg-base-200/10 backdrop-blur-2xl p-2 w-full"
-                >
-                    <span class="flex items-center justify-between">
-                        <span class="flex items-center gap-2">
-                            <span>{comment.rating} ⭐</span>
-                            <span class="text-xl font-semibold"
-                                >{comment.author}</span
+            {#if comments.length > 0}
+                {#each comments as comment}
+                    <div
+                        class="flex flex-col gap-2 border border-base-300 rounded-lg bg-base-200/10 backdrop-blur-2xl p-2 w-full"
+                    >
+                        <span class="flex items-center justify-between">
+                            <span class="flex items-center gap-2">
+                                <span>{comment.rates} ⭐</span>
+                                <span class="text-xl font-semibold"
+                                    >{comment.author}</span
+                                >
+                            </span>
+                            <span class="text-base-content/60"
+                                >{comment.createdAt}</span
                             >
                         </span>
-                        <span class="text-base-content/60">{comment.date}</span>
-                    </span>
-                    <span>{comment.content}</span>
+                        <span>{comment.comment}</span>
+                    </div>
+                {/each}
+            {:else}
+                <div>
+                    <span class="text-base-content/60">Aucun commentaire</span>
                 </div>
-            {/each}
-            <div class="flex items-center gap-2">
-                <input
-                    class="input input-bordered w-full input-base-200 md:input-xl flex-4"
-                    type="text"
-                    placeholder="ecrire un commentaire"
-                />
-                <button
-                    class="btn btn-base-300 btn-soft flex-1"
-                    onclick={() => console.log("Comment envoyé")}>Envoye</button
-                >
+            {/if}
+            <div
+                class="flex flex-col gap-2 border border-base-300 rounded-lg bg-base-200/10 backdrop-blur-2xl p-2 w-full"
+            >
+                <div class="flex items-center justify-between gap-2">
+                    {#each [1, 2, 3, 4, 5] as rate}
+                        <button
+                            onclick={() => console.log(rate)}
+                            class="badge badge-soft badge-base-300 text-base-content/60"
+                            >{rate} ⭐</button
+                        >
+                    {/each}
+                </div>
+                <div class="flex items-center gap-2">
+                    <input
+                        class="input input-bordered w-full input-base-200 md:input-xl flex-4"
+                        type="text"
+                        placeholder="ecrire un commentaire"
+                    />
+                    <button
+                        class="btn btn-base-300 btn-soft flex-1"
+                        onclick={() => console.log("Comment envoyé")}
+                        >Envoye</button
+                    >
+                </div>
             </div>
         </div>
     </ModalBox>
