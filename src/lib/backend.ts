@@ -1,11 +1,17 @@
 export class backendFetch {
   private url: string = "http://localhost:3000";
+  private token: string = "your_token_here";
+
+  constructor(token: string) {
+    this.token = token;
+  }
 
   async post<T>(endPoint: string, data: T) {
     return await fetch(`${this.url}${endPoint}`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+        Authorization: `Bearer ${this.token}`,
       },
       body: JSON.stringify(data),
     }).then((response) => response.json());
@@ -16,6 +22,7 @@ export class backendFetch {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
+        Authorization: `Bearer ${this.token}`,
       },
     }).then((response) => response.json());
   }
@@ -25,6 +32,7 @@ export class backendFetch {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
+        Authorization: `Bearer ${this.token}`,
       },
       body: JSON.stringify(data),
     }).then((response) => response.json());
@@ -35,6 +43,7 @@ export class backendFetch {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",
+        Authorization: `Bearer ${this.token}`,
       },
     }).then((response) => response.json());
   }

@@ -45,7 +45,7 @@
         } else if (currentSort === "stock") {
             result = [...result].sort((a, b) => b.stock - a.stock);
         } else if (currentSort === "views") {
-            result = [...result].sort((a, b) => b.views - a.views);
+            result = [...result].sort((a, b) => b.rates - a.rates);
         }
 
         return result;
@@ -93,7 +93,7 @@
         </div>
         
 
-        <ProductByCategory {categories} items={filteredItems} />
+        <ProductByCategory items={filteredItems} />
     </div>
 
     <Filtre 

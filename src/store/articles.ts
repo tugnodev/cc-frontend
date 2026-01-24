@@ -17,7 +17,7 @@ export const articles = writable<articleDto[]>([{
         description: "Ordinateur ultra puissant pour les professionnels du montage et du code.",
         price: 2499,
         stock: 15,
-        views: 1240,
+        rates: 1240,
         createdAt: new Date("2024-01-15T10:00:00"),
         updatedAt: new Date("2024-01-20T14:30:00")
     },
@@ -36,7 +36,7 @@ export const articles = writable<articleDto[]>([{
         description: "Baskets iconiques en édition limitée, confortables et stylées.",
         price: 180,
         stock: 5,
-        views: 850,
+        rates: 850,
         createdAt: new Date("2024-02-01T08:00:00"),
         updatedAt: new Date("2024-02-01T08:00:00")
     },
@@ -55,7 +55,56 @@ export const articles = writable<articleDto[]>([{
         description: "Console de nouvelle génération avec retour haptique et SSD ultra-rapide.",
         price: 499,
         stock: 0,
-        views: 3200,
+        rates: 3200,
         createdAt: new Date("2023-12-10T12:00:00"),
         updatedAt: new Date("2024-01-05T09:15:00")
-}]);
+    },
+    {
+        id: "art-004",
+        userId: "user-123",
+        title: "PlayStation 5",
+        images: [ 
+            "/profile.png",
+            "/profile.png",
+            "/profile.png",
+            "/profile.png",
+            "/profile.png",
+        ],
+        category: ["Jeux vidéos & consoles"],
+        description: "Console de nouvelle génération avec retour haptique et SSD ultra-rapide.",
+        price: 499,
+        stock: 0,
+        rates: 3200,
+        createdAt: new Date("2023-12-10T12:00:00"),
+        updatedAt: new Date("2024-01-05T09:15:00")
+}
+]); 
+
+  export const addArticle = (article: articleDto) => {
+    articles.update((articles) => [...articles, article]);
+  };
+
+  export const removeArticle = (id: string) => {
+    articles.update((articles) =>
+      articles.filter((article) => article.id !== id),
+    );
+  };
+
+  export const updateArticle = (id: string, updatedArticle: articleDto) => {
+    articles.update((articles) => {
+      const index = articles.findIndex((article) => article.id === id);
+      if (index !== -1) {
+        return [
+          ...articles.slice(0, index),
+          updatedArticle,
+          ...articles.slice(index + 1),
+        ];
+      }
+      return articles;
+    });
+  };
+
+  export const clearArticles = () => {
+    articles.set([]);
+  };
+

@@ -5,7 +5,6 @@
     /**
      * @type {any[] | null | undefined}
      */
-    export let categories = [];
     export let items= [];
     /**
      * @type {null}
@@ -20,7 +19,7 @@
     }
 </script>
 
-<section>
+<!--<section> -->
     <!-- <h3 class="text-xl font-semibold mb-4">Catégories</h3>
 
     <div class="flex flex-wrap gap-3">
@@ -41,12 +40,15 @@
             <strong>{selectedCategory}</strong>
         </div>
     {/if} -->
-
-        {#each items as article (article.id)}
-            <ProductCard/>
-        {:else}
-            <div class="col-span-2 text-center py-10 text-gray-400">
-                Aucun article trouvé...
-            </div>
-        {/each}
-</section>
+    <div class="w-full flex flex-col justify-start mt-4 mb-24 px-1 transition-all duration-300 ease-in-out">
+        <div class="grid grid-cols-2 gap-1"> 
+            {#each items as article (article.id)}
+                <ProductCard />
+            {:else}
+                <div class="col-span-2 text-center py-10 text-gray-400">
+                    Aucun article trouvé
+                </div>
+            {/each}
+        </div>
+    </div>
+<!--</section> -->
