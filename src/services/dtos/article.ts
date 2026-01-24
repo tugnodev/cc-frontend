@@ -17,6 +17,7 @@ export interface updateAticleDto {
   description?: string;
   price?: number;
   stock?: number;
+  rates?: number;
 }
 
 export interface articleDto {
@@ -28,7 +29,7 @@ export interface articleDto {
   description: string;
   price: number;
   stock: number;
-  views?: number;
+  rates: number;
   createdAt: Date;
   updatedAt: Date;
 }
