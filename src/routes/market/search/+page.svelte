@@ -38,13 +38,16 @@
         if (filterStatus === "inStock") {
             result = result.filter(a => a.stock > 0);
         }
+        if (filterStatus === "inPrice") {
+            result = [...result].sort((a, b) => a.price - b.price);
+        }
 
         //  Tri
         if (currentSort === "price") {
             result = [...result].sort((a, b) => a.price - b.price);
         } else if (currentSort === "stock") {
             result = [...result].sort((a, b) => b.stock - a.stock);
-        } else if (currentSort === "views") {
+        } else if (currentSort === "rates") {
             result = [...result].sort((a, b) => b.rates - a.rates);
         }
 
@@ -71,7 +74,7 @@
         placeholder="Rechercher vos commandes..."
     />
 
-    <div class="p-6">
+    <div class="p-0">
          <h3 class="text-xl font-semibold mb-4">Catégories</h3>
         <div class="flex flex-wrap gap-3">
             {#each categories as cat}
@@ -134,6 +137,13 @@
                     >
                         En stock uniquement 
                         <span>{filterStatus === 'inStock' ? '✅' : '⚪'}</span>
+                    </button>
+                    <button 
+                        class="btn {filterStatus === 'inPrice' ?  'btn-primary' : 'btn-outline'} justify-between w-full border-b border-base-300 rounded-none h-14" 
+                        onclick={() => setFilter('inPrice')}
+                    >
+                        En fonction du prix 
+                        <span>{filterStatus === 'inPrice' ? '✅' : '⚪'}</span>
                     </button>
                 </div>
                 <div class="flex gap-2 mt-8 w-full">

@@ -72,7 +72,7 @@ export const articles = writable<articleDto[]>([{
         ],
         category: ["Jeux vidéos & consoles"],
         description: "Console de nouvelle génération avec retour haptique et SSD ultra-rapide.",
-        price: 499,
+        price: 2000,
         stock: 0,
         rates: 3200,
         createdAt: new Date("2023-12-10T12:00:00"),
