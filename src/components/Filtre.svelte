@@ -8,7 +8,7 @@
          bg-base-300/50 border-2 border-base-300 text-neutral-content shadow-xl rounded-full"
 >
     <button
-        class="btn btn-ghost rounded-3xl join-item gap-2"
+        class="btn rounded-3xl join-item gap-2"
         on:click={() => dispatch("sort")}
     >
         Trier
@@ -31,7 +31,7 @@
     </button>
 
     <button
-        class="btn btn-ghost rounded-3xl join-item gap-2"
+        class="btn rounded-3xl join-item gap-2"
         on:click={() => dispatch("filter")}
     >
         Filtres
