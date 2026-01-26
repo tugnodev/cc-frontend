@@ -139,10 +139,11 @@ const data = [{
     let filterStatus = $state(""); 
     let showSortModal = $state(false);
     let showFilterModal = $state(false);
+    let maxPrice = $state(500000);
 
     // --- LOGIQUE RÉACTIVE ---
 let filteredItems = $derived.by(() => {
-let result = [...$articles ];
+    let result = [...$articles ];
 
         //  Recherche
     if (search.trim()) {
@@ -159,9 +160,7 @@ let result = [...$articles ];
     if (filterStatus === "inStock") {
         result = result.filter(a => a.stock > 0);
         }
-    if (filterStatus === "inPrice") {
-        result = [...result].sort((a, b) => a.price - b.price);
-    }
+    result = result.filter(a => a.price <= maxPrice);
 
         //  Tri
     if (currentSort === "price") {
@@ -252,20 +251,40 @@ function setFilter(type: string) {
                 <h3 class="text-xl font-bold mb-4 text-center">Filtrer par</h3>
                 <div class="flex flex-col gap-3 w-full">
                     <button 
-                        class="btn {filterStatus === 'inStock' ?  'btn-primary' : 'btn-outline'} justify-between w-full border-b border-base-300 rounded-none h-14" 
+                        class="btn {filterStatus === 'inStock' } justify-between w-full border-b border-base-300 rounded-none h-14" 
                         onclick={() => setFilter('inStock')}
                     >
                         En stock uniquement 
-                        <span>{filterStatus === 'inStock' ? '✅' : '⚪'}</span>
+                        <span>
+                            {#if filterStatus === 'inStock'}
+                                <span class="badge badge-success badge-xs"></span> 
+                             {:else}
+                                <span class="badge badge-primary badge-lg font-round opacity-50"></span>
+                             {/if}
+                        </span>
                     </button>
-                    <button 
-                        class="btn {filterStatus === 'inPrice' ?  'btn-primary' : 'btn-outline'} justify-between w-full border-b border-base-300 rounded-none h-14" 
-                        onclick={() => setFilter('inPrice')}
-                    >
-                        En fonction du prix 
-                        <span>{filterStatus === 'inPrice' ? '✅' : '⚪'}</span>
-                    </button>
-                </div>
+                    <div class="flex flex-col gap-4 p-4 w-full border-b border-base-300">
+                        <div class="flex justify-between items-center">
+                            <span class="font-medium ">Prix maximum</span>
+                            <span class="badge badge-primary badge-lg font-bold">{maxPrice} Fcf</span>
+                        </div>
+                            <input 
+                                type="range" 
+                                min="0" 
+                                max="5000" 
+                                bind:value={maxPrice} 
+                                class="range range-primary range-sm" 
+                                step="10" 
+                                onclick={() => setFilter('inPrice')}
+                            />
+    
+                            <div class="flex justify-between text-xs px-2">
+                                <span>0 Fcf</span>
+                                <span>250000 Fcf</span>
+                                <span>500000 Fcf</span>
+                            </div>
+                        </div>
+                    </div>
                 <div class="flex gap-2 mt-8 w-full">
                     <button class="btn btn-error btn-soft mt-6 w-full" onclick={() => (showFilterModal = false)}>
                         Appliquer
