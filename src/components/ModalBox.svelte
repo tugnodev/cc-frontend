@@ -29,7 +29,7 @@
         }}
         in:blur={{ duration: 250, delay: 150 }}
         onclick={(e) => e.stopPropagation()}
-        class="max-w-2xl w-full min-h-96 max-h-[90vh] overflow-scroll no-scrollbar gap-2 bg-base-200/90 rounded-2xl border border-base-300 backdrop-blur-2xl flex flex-col items-center justify-start"
+        class="max-w-2xl w-full min-h-96 max-h-[70vh] overflow-scroll no-scrollbar gap-2 bg-base-200/90 rounded-2xl border border-base-300 backdrop-blur-2xl flex flex-col items-center justify-start"
     >
         {@render children()}
     </div>

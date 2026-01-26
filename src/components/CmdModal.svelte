@@ -59,10 +59,11 @@
             : orders.filter((o) => o.statut === statusFilter);
 </script>
 
-<h2 class="text-xl font-bold mb-4">Commandes</h2>
+<div class="w-full h-full flex flex-col gap-4 items-center justify-center p-2">
+    <h2 class="text-2xl font-bold p-2">Commandes</h2>
 
 <!-- BOUTONS DE FILTRE -->
-<div class="flex flex-wrap gap-2 mb-6">
+<div class="flex flex-wrap gap-2">
     <button
         class="btn btn-sm flex gap-1"
         class:btn-primary={statusFilter === "Toutes"}
@@ -159,3 +160,5 @@
         </div>
     </dialog>
 {/if}
+
+</div>

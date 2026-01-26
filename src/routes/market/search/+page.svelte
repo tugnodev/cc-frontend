@@ -1,70 +1,190 @@
 <script lang="ts">
-    import Main from "../../../components/Main.svelte";
-    import SearchBar from "../../../components/SearchBar.svelte";
-    import ProductByCategory from "../../../components/ProductByCategory.svelte";
-    import Filtre from "../../../components/Filtre.svelte";
-    import ModalBox from "../../../components/ModalBox.svelte";
-    import { articles } from "../../../store/articles";
+import Main from "../../../components/Main.svelte";
+import SearchBar from "../../../components/SearchBar.svelte";
+import ProductByCategory from "../../../components/ProductByCategory.svelte";
+import Filtre from "../../../components/Filtre.svelte";
+import ModalBox from "../../../components/ModalBox.svelte";
+import { articles } from "../../../store/articles";
+    
+const categories = [
+    "Mode", 
+    "Informatique", 
+    "Électroménager", 
+    "Sport", 
+    "Supermarché", 
+    "Jeux vidéos & consoles"
+    ];
+const data = [{
 
-    const categories = ["Mode", "Informatique", "Électroménager", "Sport", "Supermarché", "Jeux vidéos & consoles"];
+    id: "art-001",
+    userId: "user-123",
+    title: "MacBook Pro M3",
+    images: [ 
+        "/profile.png",
+        "/profile.png",
+        "/profile.png",
+        "/profile.png",
+        "/profile.png",
+        ],
+    category: ["Informatique", "Électroménager"],
+    description: "Ordinateur ultra puissant pour les professionnels du montage et du code.",
+    price: 2499,
+    stock: 15,
+    rates: 1240,
+    createdAt: new Date("2024-01-15T10:00:00"),
+    updatedAt: new Date("2024-01-20T14:30:00")
+    },
+    {
+    id: "art-002",
+    userId: "user-456",
+    title: "Nike Air Jordan 1",
+    images: [ 
+        "/profile.png",
+        "/pofile.png",
+        "/profile.png",
+        "/profile.png",
+        "/profile.png",
+        ],
+    category: ["Mode", "Sport"],
+    description: "Baskets iconiques en édition limitée, confortables et stylées.",
+    price: 180,
+    stock: 5,
+    rates: 850,
+    createdAt: new Date("2024-02-01T08:00:00"),
+    updatedAt: new Date("2024-02-01T08:00:00")
+    },
+    {
+    id: "art-003",
+    userId: "user-123",
+    title: "PlayStation 5",
+    images: [ 
+        "/profile.png",
+        "/profile.png",
+        "/profile.png",
+        "/profile.png",
+        "/profile.png",
+    ],
+    category: ["Jeux vidéos & consoles"],
+    description: "Console de nouvelle génération avec retour haptique et SSD ultra-rapide.",
+    price: 499,
+    stock: 0,
+    rates: 3200,
+    createdAt: new Date("2023-12-10T12:00:00"),
+    updatedAt: new Date("2024-01-05T09:15:00")
+    },
+    {
+    id: "art-004",
+    userId: "user-123",
+    title: "PlayStation 5",
+    images: [ 
+        "/profile.png",
+        "/profile.png",
+        "/profile.png",
+        "/profile.png",
+        "/profile.png",
+    ],
+    category: ["Jeux vidéos & consoles"],
+    description: "Console de nouvelle génération avec retour haptique et SSD ultra-rapide.",
+    price: 2000,
+    stock: 0,
+    rates: 3200,
+    createdAt: new Date("2023-12-10T12:00:00"),
+    updatedAt: new Date("2024-01-05T09:15:00")
+    },
+    {
+        id: "art-005",
+        userId: "user-123",
+        title: "PS 5",
+        images: [ 
+            "/profile.png",
+            "/profile.png",
+            "/profile.png",
+            "/profile.png",
+            "/profile.png",
+        ],
+        category: ["Jeux vidéos & consoles"],
+        description: "Console de nouvelle génération avec retour haptique et SSD ultra-rapide.",
+        price: 4000,
+        stock: 0,
+        rates: 3,
+        createdAt: new Date("2023-12-10T12:00:00"),
+        updatedAt: new Date("2024-01-05T09:15:00")
+    },
+    {
+        id: "art-006",
+        userId: "user-123",
+        title: "Play 4",
+        images: [ 
+            "/profile.png",
+            "/profile.png",
+            "/profile.png",
+            "/profile.png",
+            "/profile.png",
+        ],
+        category: ["Jeux vidéos & consoles"],
+        description: "Console de nouvelle génération avec retour haptique et SSD ultra-rapide.",
+        price: 1500,
+        stock: 0,
+        rates: 5,
+        createdAt: new Date("2023-12-10T12:00:00"),
+        updatedAt: new Date("2024-01-05T09:15:00")
+}
+]
+    articles.set(data)
 
-    // --- ÉTATS (Runes Svelte 5) ---
+    // --- ÉTATS ---
     let search = $state("");
     let selectedCategory = $state("");
-    let currentSort = $state(""); // "price", "stock", "views"
-    let filterStatus = $state(""); // "inStock"
-    
-    // États des modales
+    let currentSort = $state(""); 
+    let filterStatus = $state(""); 
     let showSortModal = $state(false);
     let showFilterModal = $state(false);
 
-    // --- LOGIQUE RÉACTIVE (Remplaçant du $:) ---
-    // On utilise $derived pour que filteredItems se mette à jour dès que ses dépendances changent
-    let filteredItems = $derived.by(() => {
-        let result = $articles;
+    // --- LOGIQUE RÉACTIVE ---
+let filteredItems = $derived.by(() => {
+let result = [...$articles ];
 
         //  Recherche
-        if (search.trim()) {
-            const q = search.toLowerCase();
-            result = result.filter(a => a.title.toLowerCase().includes(q));
-        }
-
-        //  Catégorie
-        if (selectedCategory) {
-            result = result.filter(a => a.category.includes(selectedCategory));
-        }
-
-        //  Filtre Stock
-        if (filterStatus === "inStock") {
-            result = result.filter(a => a.stock > 0);
-        }
-        if (filterStatus === "inPrice") {
-            result = [...result].sort((a, b) => a.price - b.price);
-        }
-
-        //  Tri
-        if (currentSort === "price") {
-            result = [...result].sort((a, b) => a.price - b.price);
-        } else if (currentSort === "stock") {
-            result = [...result].sort((a, b) => b.stock - a.stock);
-        } else if (currentSort === "rates") {
-            result = [...result].sort((a, b) => b.rates - a.rates);
-        }
-
-        return result;
-    });
-
-    // --- ACTIONS ---
-    const handleSearch = (q: string) => search = q;
-    
-    function setSort(type: string) {
-        currentSort = type;
-        showSortModal = false;
+    if (search.trim()) {
+        const q = search.toLowerCase();
+        result = result.filter(a => a.title.toLowerCase().includes(q));
     }
 
-    function setFilter(type: string) {
-        filterStatus = filterStatus === type ? "" : type;
-        // On ne ferme pas ici pour laisser l'utilisateur voir le changement avant d'appliquer
+        //  Catégorie
+    if (selectedCategory) {
+        result = result.filter(a => a.category.includes(selectedCategory));
+    }
+
+        //  Filtre Stock
+    if (filterStatus === "inStock") {
+        result = result.filter(a => a.stock > 0);
+        }
+    if (filterStatus === "inPrice") {
+        result = [...result].sort((a, b) => a.price - b.price);
+    }
+
+        //  Tri
+    if (currentSort === "price") {
+        result = [...result].sort((a, b) => a.price - b.price);
+    } else if (currentSort === "stock") {
+        result = [...result].sort((a, b) => b.stock - a.stock);
+    } else if (currentSort === "rates") {
+        result = [...result].sort((a, b) => b.rates - a.rates);
+    }
+
+    return result;
+});
+
+    // --- ACTIONS ---
+const handleSearch = (q: string) => search = q;
+    
+function setSort(type: string) {
+    currentSort = type;
+    showSortModal = false;
+}
+
+function setFilter(type: string) {
+    filterStatus = filterStatus === type ? "" : type;
     }
 </script>
 
@@ -96,7 +216,7 @@
         </div>
         
 
-        <ProductByCategory items={filteredItems} />
+        <ProductByCategory data = {filteredItems} />
     </div>
 
     <Filtre 
@@ -115,7 +235,7 @@
                     <button class="btn btn-ghost justify-between w-full border-b border-base-300 rounded-none h-14" onclick={() => setSort('stock')}>
                         Meilleur Stock <span>📦</span>
                     </button>
-                    <button class="btn btn-ghost justify-between w-full border-b border-base-300 rounded-none h-14" onclick={() => setSort('views')}>
+                    <button class="btn btn-ghost justify-between w-full border-b border-base-300 rounded-none h-14" onclick={() => setSort('rates')}>
                         Popularité <span>🔥</span>
                     </button>
                 </div>

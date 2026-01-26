@@ -4,8 +4,8 @@
 </script>
 
 <div
-    class="join fixed bottom-[100px] left-1/2 -translate-x-1/2 z-50
-         bg-base-300/50 border-2 border-base-300 text-neutral-content shadow-xl rounded-full"
+    class="join absolute bottom-32 flex items-center justify-center z-20
+         bg-base-200 border-2 border-base-300 text-neutral-content shadow-xl rounded-full"
 >
     <button
         class="btn rounded-3xl join-item gap-2"
