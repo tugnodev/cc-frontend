@@ -90,12 +90,7 @@
             ]
         }
     ]);
-
-    let currentUser = {
-        name: "Moi",
-        avatar: "https://i.pravatar.cc/150?u=my_unique_id"
-    };
-
+    
     let selectedId = $state<number | null>(null);
     let newMessageText = $state("");
     let filter = $state<"all" | "unread">("all");
@@ -142,7 +137,10 @@
     }
 </script>
 
-{#if !selectedId}
+<!-- PAGE -->
+
+    
+    {#if !selectedId}
     <div class="w-full flex flex-col justify-start mt-5 mb-28 px-1 transition-all duration-300 ease-in-out">
         <div class="mt-20"> 
             <h1 class="text-2xl font-bold mb-3">Discussions</h1>
@@ -191,10 +189,9 @@
             {/each}
         </div>
     </div>
-{:else}
-    <div class="flex flex-col mt-15 h-[89vh]">
-        <div class="flex flex-col mt-0 bg-primary/99 text-black/90 rounded-t-box">
-            <div class="w-full flex items-center gap-4 justify-start mt-5 mb-4 px-4">
+    {:else}
+        <div class="flex  flex-col mt-10 h-[90vh]">
+            <div class="w-full flex  items-center  gap-7 justify-start mt-5 mb-4 px-1 ">
                 <button 
                     class="btn btn-ghost btn-circle btn-sm" 
                     onclick={() => selectedId = null}
@@ -212,45 +209,42 @@
                     <h2 class="font-bold text-lg">{currentDiscussion?.sender}</h2>
                 </div>
             </div>
-        </div>
+            <hr class="border-base-500 opacity-50" />
 
-        <div class="flex-1 overflow-y-auto p-4 bg-base-200 no-scrollbar">
-            {#if currentDiscussion}
+            <div class="flex-1 overflow-y-auto p-4 bg-base-200 rounded-box mb-4 no-scrollbar">
                 {#each currentDiscussion.messages as msg}
                     <div class="chat {msg.sender === 'me' ? 'chat-end' : 'chat-start'} p-2">
-                        <div class="chat-image avatar">
-                            <div class="w-8 rounded-full">
-                                <img src={msg.sender === 'me' ? currentUser.avatar : currentDiscussion.avatar} alt="" />
+                        {#if msg.sender === 'them'}
+                            <div class="chat-image avatar">
+                                <div class="w-8 rounded-full">
+                                    <img src={currentDiscussion.avatar} alt="" />
+                                </div>
                             </div>
-                        </div>
+                        {/if}
                         
-                        <div class="chat-bubble {msg.sender === 'me' ? 'chat-bubble-primary' : ''}">
-                            {msg.text}
-                        </div>
-
+                        <div class="chat-bubble">{msg.text}</div>
                         <div class="chat-footer opacity-50 text-xs p-1">
                             {msg.sender === 'me' ? 'Envoyé' : 'Reçu'} à {msg.timestamp.toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})}
                         </div>
                     </div>
                 {/each}
-            {/if}
-        </div>
+            </div>
 
-        <div class="p-4 bg-base-100 flex gap-2">
-            <input 
-                type="text" 
-                placeholder="Écrivez votre message..." 
-                class="input input-bordered flex-1 rounded-full" 
-                bind:value={newMessageText}
-                onkeydown={(e) => e.key === 'Enter' && sendMessage()}
-            />
-            <button 
-                class="btn btn-primary btn-circle" 
-                onclick={sendMessage}
-            >
-                <SendHorizontal size={20} />
-            </button>
+            <div class="join w-full max-w-sm mx-auto ">
+                <input 
+                    type="text" 
+                    placeholder="Écrivez votre message..." 
+                    class="input input-bordered join-item flex-1" 
+                    bind:value={newMessageText}
+                    onkeydown={(e) => e.key === 'Enter' && sendMessage()}
+                />
+                <button 
+                    class="btn btn-primary  join-item px-4" 
+                    onclick={sendMessage}
+                    aria-label="Envoyer"
+                >
+                    <SendHorizontal size={20} strokeWidth={2.5} />
+                </button>
+            </div>
         </div>
-    </div>
-{/if}
-
+    {/if}
