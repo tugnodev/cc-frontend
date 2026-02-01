@@ -1,6 +1,5 @@
 <script lang="ts">
     import { ArrowLeft, SendHorizontal } from "lucide-svelte";
-    import { goto } from '$app/navigation';
 
     // --- TYPES ---
     type Message = {
@@ -120,6 +119,16 @@
                 { id: 1, text: "Le virement a été effectué.", sender: "them", timestamp: new Date("2026-01-25T20:30:00") },
                 { id: 2, text: "Bien reçu, merci !", sender: "me", timestamp: new Date("2026-01-25T21:00:00") }
             ]
+        },
+        {
+            id: 11,
+            sender: "Racine Diop ",
+            avatar: "https://i.pravatar.cc/150?u=mamadou",
+            unreadCount: 0,
+            messages: [
+                { id: 1, text: "Le virement a été effectué.", sender: "them", timestamp: new Date("2026-01-25T20:30:00") },
+                { id: 2, text: "Bien reçu, merci !", sender: "me", timestamp: new Date("2026-01-25T21:00:00") }
+            ]
         }
     ]);
 
@@ -175,17 +184,9 @@
 </script>
 
 {#if !selectedId}
-    <div class="w-full flex flex-col justify-start px-3">
-        <div class="mt-5 flex flex-col gap-1"> 
-            <div class="flex gap-5 p-3" >
-                <button 
-                    class="btn btn-ghost btn-circle btn-sm" 
-                    onclick={() => goto('/market/profile')}
-                >
-                    <ArrowLeft size={35} strokeWidth={2.5} />
-                </button>
-                <h1 class="text-2xl font-bold ">Discussions</h1>
-            </div>
+    <div class="w-full flex flex-col justify-start mt-0 mb-28 px-1">
+        <div class="mt-5"> 
+            <h1 class="text-2xl font-bold mb-3">Discussions</h1>
             <div class="flex gap-2 mb-4">
                 <button 
                     class="btn btn-sm {filter === 'all' ? 'btn-primary' : ''}" 
@@ -230,7 +231,7 @@
         </div>
     </div>
 {:else}
-    <div class="flex flex-col h-[96vh]"> 
+    <div class="flex flex-col mt-10 h-[90vh]"> 
         <div class="flex flex-col mt-5 bg-base-300/60" >
             <div class="w-full flex items-center gap-7 justify-start mt-1 mb-4 px-1 ">
                 <button class="btn btn-ghost btn-circle btn-sm mt-10" onclick={() => selectedId = null}>
