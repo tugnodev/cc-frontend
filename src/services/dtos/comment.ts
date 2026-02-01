@@ -7,8 +7,8 @@ export interface createCommentDto {
 
 export interface updateCommentDto {
   id: string;
-  articleId?: string;
-  userId?: string;
+  articleId: string;
+  userId: string;
   comment?: string;
   rates?: string;
 }

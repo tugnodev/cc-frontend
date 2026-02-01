@@ -106,7 +106,7 @@
 
     <!-- Action -->
     <button
-        onclick={() => (window.location.href = "/market/chat")}
+        onclick={() => (window.location.href = "/chat")}
         class="btn btn-primary w-full flex items-center gap-2"
     >
         <MessageCircle />
