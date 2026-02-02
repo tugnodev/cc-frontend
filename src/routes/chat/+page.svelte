@@ -204,7 +204,7 @@
             {#each filteredDiscussions as d (d.id)}
                 <div 
                     onclick={() => selectDiscussion(d.id)} 
-                    class="flex items-center gap-3 p-4 mb-2 rounded-xl border cursor-pointer hover:bg-base-200 transition bg-base-100"
+                    class="flex items-center gap-3 p-4 mb-2 rounded-xl border cursor-pointer hover:bg-base-200 transition bg-base-200"
                 >
                     <div class="avatar">
                         <div class="w-12 rounded-full">
