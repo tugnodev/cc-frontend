@@ -1,6 +1,6 @@
 <script lang="ts">
     import { ArrowLeft, SendHorizontal } from "lucide-svelte";
-    import { goto } from '$app/navigation';
+    import { goto } from "$app/navigation";
 
     // --- TYPES ---
     type Message = {
@@ -177,9 +177,19 @@
             avatar: "https://i.pravatar.cc/150?u=mamadou",
             unreadCount: 0,
             messages: [
-                { id: 1, text: "Le virement a été effectué.", sender: "them", timestamp: new Date("2026-01-25T20:30:00") },
-                { id: 2, text: "Bien reçu, merci !", sender: "me", timestamp: new Date("2026-01-25T21:00:00") }
-            ]
+                {
+                    id: 1,
+                    text: "Le virement a été effectué.",
+                    sender: "them",
+                    timestamp: new Date("2026-01-25T20:30:00"),
+                },
+                {
+                    id: 2,
+                    text: "Bien reçu, merci !",
+                    sender: "me",
+                    timestamp: new Date("2026-01-25T21:00:00"),
+                },
+            ],
         },
         {
             id: 9,
@@ -187,9 +197,19 @@
             avatar: "https://i.pravatar.cc/150?u=mamadou",
             unreadCount: 0,
             messages: [
-                { id: 1, text: "Le virement a été effectué.", sender: "them", timestamp: new Date("2026-01-25T20:30:00") },
-                { id: 2, text: "Bien reçu, merci !", sender: "me", timestamp: new Date("2026-01-25T21:00:00") }
-            ]
+                {
+                    id: 1,
+                    text: "Le virement a été effectué.",
+                    sender: "them",
+                    timestamp: new Date("2026-01-25T20:30:00"),
+                },
+                {
+                    id: 2,
+                    text: "Bien reçu, merci !",
+                    sender: "me",
+                    timestamp: new Date("2026-01-25T21:00:00"),
+                },
+            ],
         },
         {
             id: 10,
@@ -197,10 +217,20 @@
             avatar: "https://i.pravatar.cc/150?u=mamadou",
             unreadCount: 0,
             messages: [
-                { id: 1, text: "Le virement a été effectué.", sender: "them", timestamp: new Date("2026-01-25T20:30:00") },
-                { id: 2, text: "Bien reçu, merci !", sender: "me", timestamp: new Date("2026-01-25T21:00:00") }
-            ]
-        }
+                {
+                    id: 1,
+                    text: "Le virement a été effectué.",
+                    sender: "them",
+                    timestamp: new Date("2026-01-25T20:30:00"),
+                },
+                {
+                    id: 2,
+                    text: "Bien reçu, merci !",
+                    sender: "me",
+                    timestamp: new Date("2026-01-25T21:00:00"),
+                },
+            ],
+        },
     ]);
 
     let currentUser = {
@@ -257,9 +287,9 @@
 </script>
 
 {#if !selectedId}
-    <div class="w-full flex flex-col justify-start mt-0 mb-28 px-1">
-        <div class="mt-20">
-            <h1 class="text-2xl font-bold mb-3">Discussions</h1>
+    <div class="w-full flex flex-col justify-start p-2">
+        <div class="">
+            <h1 class="text-3xl font-bold my-3">Discussions</h1>
             <div class="flex gap-2 mb-4">
                 <button
                     class="btn btn-sm {filter === 'all' ? 'btn-primary' : ''}"
@@ -279,6 +309,11 @@
 
             {#each filteredDiscussions as d (d.id)}
                 <div
+                    role="button"
+                    aria-label="discutions"
+                    tabindex="0"
+                    onkeydown={(e) =>
+                        e.key === "Enter" && selectDiscussion(d.id)}
                     onclick={() => selectDiscussion(d.id)}
                     class="flex items-center gap-3 p-4 mb-2 rounded-xl border cursor-pointer hover:bg-base-200 transition bg-base-100"
                 >

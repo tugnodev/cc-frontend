@@ -7,7 +7,7 @@
 </script>
 
 <main
-    class="w-full h-full items-center mt-8 justify-start flex flex-col fixed z-0 bg-base-200"
+    class="w-full h-full items-center justify-start flex flex-col fixed z-0 bg-base-200"
 >
     <div class="flex absolute z-30 top-0 w-full">
         <HeaderShop />

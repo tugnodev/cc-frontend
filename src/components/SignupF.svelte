@@ -1,4 +1,5 @@
 <script>
+    import { fade } from "svelte/transition";
     import { backendFetch } from "../lib/backend";
     
     let name = "";
@@ -52,9 +53,10 @@
     }
 </script>
 
-<div class="min-h-screen bg-base-200 flex items-center justify-center p-4">
+<div class="flex h-full w-full items-center justify-center overflow-y-scroll">
     <div
-        class="card w-full max-w-md bg-base-100 shadow-xl p-6 border border-base-300"
+        transition:fade={{ duration: 150 }}
+        class="card bg-base-100 h-full md:h-auto w-full max-w-md shadow-sm p-6 border-2 border-base-300"
     >
         <h2 class="text-3xl font-bold text-center mb-6">Inscrivez-vous</h2>
 
@@ -164,7 +166,7 @@
             </div>
         </form>
 
-        <p class="text-center mt-4">
+        <p class="text-center">
             Vous avez déjà un compte ?
             <a href="/auth/login" class="link link-primary">Connectez-vous</a>
         </p>

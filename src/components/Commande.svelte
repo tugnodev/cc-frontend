@@ -153,11 +153,11 @@
 </script>
 
 <div
-    class="w-full flex flex-col items-center justify-start mt-16 mb-24 px-1 transition-all duration-300 ease-in-out"
+    class="w-full flex flex-col items-center justify-start mb-8 px-1 transition-all duration-300 ease-in-out"
 >
     <!-- TITRE -->
-    <div class="space-y-4 p-4">
-        <h1 class="text-2xl font-bold flex items-center gap-2">
+    <div class="space-y-4 w-full p-4">
+        <h1 class="text-3xl font-bold flex items-center gap-2">
             <ShoppingCart class="w-6 h-6" />
             Commandes
         </h1>
@@ -204,7 +204,9 @@
     {:else}
         <div class="w-full max-w-3xl space-y-2 mt-6">
             {#each commandesFiltrees as commande}
-                <div class="collapse border rounded-box bg-base-100">
+                <div
+                    class="collapse border-2 rounded-xl border-base-300 bg-base-100/60"
+                >
                     <input type="checkbox" />
 
                     <div

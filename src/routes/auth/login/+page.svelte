@@ -1,9 +1,7 @@
 <script>
-  import LoginForm from "../../../components/LoginForm.svelte";
+    import LoginForm from "../../../components/LoginForm.svelte";
 </script>
 
-<main>
-  <!-- <div class="mt-70 "> -->
+<div class="w-full h-full flex items-center justify-center">
     <LoginForm />
-  <!-- </div> -->
-</main>
+</div>

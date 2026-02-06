@@ -3,6 +3,6 @@
     import "../app.css";
 </script>
 
-<main class="w-full mt-8 h-screen bg-base-200">
+<main class="w-full fixed mt-8 h-screen overflow-hidden bg-base-200">
     {@render children()}
 </main>

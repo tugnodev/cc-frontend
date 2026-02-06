@@ -1,4 +1,5 @@
 <script lang="ts">
+    import { fade } from "svelte/transition";
     import { backendFetch } from "../lib/backend";
 
     let email = "";
@@ -28,9 +29,10 @@
     }
 </script>
 
-<div class="min-h-screen bg-base-200 flex items-center justify-center p-4">
+<div class="w-full bg-base-200 h-full flex items-start justify-center">
     <div
-        class="card w-full max-w-md bg-base-100 shadow-xl p-6 border border-base-300"
+        transition:fade={{ duration: 150 }}
+        class="card w-full max-w-md bg-base-100 md:h-auto h-full p-6 border-2 border-base-300"
     >
         <form action="" onsubmit={login}>
             <input type="hidden" name="csrf_token" value={csrf_token} />

@@ -121,12 +121,11 @@
     function simulerVente() {
         salesData[5] += 5000;
     }
-
 </script>
 
-<div class="min-h-screen bg-base-100 text-base-content p-4 md:p-8">
+<div class="text-base-content mb-8 p-4 md:p-8">
     <div
-        class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4"
+        class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4"
     >
         <div>
             <h1 class="text-3xl font-bold text-base-content">
@@ -136,17 +135,11 @@
                 Bon retour, voici vos performances du jour.
             </p>
         </div>
-        <button
-            onclick={simulerVente}
-            class="btn btn-primary rounded-field shadow-lg shadow-primary/30 text-primary-content font-bold"
-        >
-            + Ajouter une Vente
-        </button>
     </div>
 
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
         <div
-            class="card bg-base-200/50 border border-base-300 shadow-sm hover:shadow-md transition-all duration-300"
+            class="card rounded-xl bg-base-200/50 border border-base-300 shadow-sm hover:shadow-md transition-all duration-300"
         >
             <div
                 class="card-body flex flex-row items-center justify-between p-6"
@@ -170,7 +163,7 @@
         </div>
 
         <div
-            class="card bg-base-200/50 border border-base-300 shadow-sm hover:shadow-md transition-all duration-300"
+            class="card rounded-xl bg-base-200/50 border border-base-300 shadow-sm hover:shadow-md transition-all duration-300"
         >
             <div
                 class="card-body flex flex-row items-center justify-between p-6"
@@ -192,7 +185,7 @@
         </div>
 
         <div
-            class="card bg-base-200/50 border border-base-300 shadow-sm hover:shadow-md transition-all duration-300"
+            class="card rounded-xl bg-base-200/50 border border-base-300 shadow-sm hover:shadow-md transition-all duration-300"
         >
             <div
                 class="card-body flex flex-row items-center justify-between p-6"
@@ -227,7 +220,7 @@
 
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div
-            class="card lg:col-span-2 bg-base-100 border border-base-300 shadow-xl"
+            class="card rounded-xl lg:col-span-2 bg-base-100 border border-base-300 shadow-xl"
         >
             <div class="card-body">
                 <div class="flex justify-between items-center mb-4">
@@ -245,7 +238,9 @@
             </div>
         </div>
 
-        <div class="card bg-base-100 border border-base-300 shadow-xl">
+        <div
+            class="card rounded-xl bg-base-100 border border-base-300 shadow-xl"
+        >
             <div class="card-body">
                 <h2 class="card-title text-lg mb-4">Répartition</h2>
                 <div class="relative h-[250px] w-full flex justify-center">
