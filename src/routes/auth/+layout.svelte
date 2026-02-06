@@ -9,7 +9,7 @@
     <div class="w-full flex items-center justify-center md:h-64">
         <img src="/favicon.svg" class="max-w-auto h-48" alt="" />
     </div>
-    <div class="w-full h-full">
+    <div class="w-full min-h-full overflow-scroll">
         {@render children()}
     </div>
 </main>
