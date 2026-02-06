@@ -1,6 +1,6 @@
 <script>
     import { backendFetch } from "../lib/backend";
-
+    
     let name = "";
     let email = "";
     let password = "";
