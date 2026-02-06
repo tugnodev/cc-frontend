@@ -4,7 +4,7 @@
     import { chatStore } from '../../../store/chat.svelte';
     import { onMount } from 'svelte';
 
-    // Récupération du slug (id)
+    // Récupération du slugs (id)
     const slugId = $derived(Number(page.params.slug));
     const currentDiscussion = $derived(chatStore.discussions.find(d => d.id === slugId));
 
