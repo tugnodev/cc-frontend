@@ -30,7 +30,7 @@
 </script>
 
 {#if currentDiscussion}
-    <div class="flex flex-col h-screen max-w-2xl mx-auto"> 
+    <div class="flex flex-col h-full max-w-2xl mx-auto"> 
         <div class="flex items-center gap-4 p-4 bg-base-300/60 sticky top-0 z-10">
             <a href="/chat" class="btn btn-ghost btn-circle">
                 <ArrowLeft size={30} strokeWidth={2.5} />
@@ -43,7 +43,7 @@
             <h2 class="font-bold text-lg">{currentDiscussion.sender}</h2>
         </div>
 
-        <div class="flex-1 overflow-y-auto p-4 space-y-4 no-scrollbar">
+        <div class="flex-2 overflow-y-auto p-4 space-y-4 no-scrollbar">
             {#each currentDiscussion.messages as msg}
                 <div class="chat {msg.sender === 'me' ? 'chat-end' : 'chat-start'}">
                     <div class="chat-image avatar">
@@ -61,10 +61,10 @@
             {/each}
         </div>
 
-        <div class="p-4 bg-base-100 flex items-center gap-2">
+        <div class="p-4 bg-base-100 flex items-center gap-2 mb-12">
             <input 
                 type="text" 
-                placeholder="Écrivez votre message..." 
+                placeholder=" Message" 
                 class="input input-bordered flex-1 rounded-full" 
                 bind:value={newMessageText}
                 onkeydown={(e) => e.key === 'Enter' && handleSend()}

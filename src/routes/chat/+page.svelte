@@ -20,20 +20,21 @@
     );
 </script>
 
-<div class="w-full flex flex-col px-3 max-w-2xl mx-auto">
-    <div class="mt-5 flex flex-col gap-1"> 
-        <div class="flex gap-5 p-3 items-center">
+<div class="flex flex-col h-full max-w-2xl mx-auto">
+    <div class="mt-0 flex flex-col gap-1"> 
+        <div class="flex gap-5 p-2 items-center">
             <button class="btn btn-ghost btn-circle" onclick={() => goto('/market/profile')}>
                 <ArrowLeft size={35} strokeWidth={2.5} />
             </button>
             <h1 class="text-2xl font-bold">Discussions</h1>
         </div>
 
-        <div class="flex gap-2 mb-4 px-3">
+        <div class="flex gap-2 mb-3 px-3">
             <button class="btn btn-sm {filter === 'all' ? 'btn-primary' : ''}" onclick={() => filter = "all"}>Toutes</button>
             <button class="btn btn-sm {filter === 'unread' ? 'btn-primary' : ''}" onclick={() => filter = "unread"}>Non lues</button>
         </div>
-
+    </div>
+    <div class="flex-1 overflow-y-auto no-scrollbar pb-20 p-3">
         {#each filteredDiscussions as d (d.id)}
             <a 
                 href="/chat/{d.id}" 
@@ -60,5 +61,5 @@
                 {/if}
             </a>
         {/each}
-    </div>
+    </div>     
 </div>
