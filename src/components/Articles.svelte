@@ -1,5 +1,8 @@
 <script lang="ts">
     import { onMount } from "svelte";
+    import ModalBox from "./ModalBox.svelte";
+    import type { articleDto } from "../services/dtos/article";
+    import { userArticles as articleStore } from "../store/articles";
     import {
         X,
         Pencil,
@@ -10,18 +13,6 @@
         ChevronsUpDown,
         Image as ImageIcon,
     } from "@lucide/svelte";
-    import ModalBox from "./ModalBox.svelte";
-    import type {
-        articleDto,
-        createArticleDto,
-        updateAticleDto,
-    } from "../services/dtos/article";
-    import {
-        articles as articleStore,
-        addArticle,
-        removeArticle,
-        updateArticle,
-    } from "../store/articles";
 
     //import { backendFetch } from "../lib/backend";
     //import { users } from "../store/users";
@@ -94,6 +85,19 @@
 
     // Confirmation
     let toDelete: articleDto | null = null;
+
+    // Helpers to manipulate the articles store locally
+    function addArticle(a: articleDto) {
+        articleStore.update((arr) => [a, ...arr]);
+    }
+
+    function updateArticle(id: string, updated: articleDto) {
+        articleStore.update((arr) => arr.map((it) => (it.id === id ? { ...it, ...updated } : it)));
+    }
+
+    function removeArticle(id: string) {
+        articleStore.update((arr) => arr.filter((it) => it.id !== id));
+    }
 
     async function load() {
         loading = true;
@@ -581,7 +585,6 @@
 
     {#if showForm}
         <ModalBox onClose={() => (showForm = false)}>
-            {#snippet children()}
                 {#if error}
                     <div class="alert alert-error mt-4 shadow-lg">{error}</div>
                 {/if}
@@ -791,13 +794,11 @@
                         </button>
                     </div>
                 </div>
-            {/snippet}
         </ModalBox>
     {/if}
 
     {#if toDelete}
         <ModalBox onClose={() => (toDelete = null)}>
-            {#snippet children()}
                 <div class="w-full p-4">
                     <h3
                         class="font-bold text-lg text-error flex items-center gap-2"
@@ -829,7 +830,6 @@
                         >
                     </div>
                 </div>
-            {/snippet}
         </ModalBox>
     {/if}
 
@@ -840,7 +840,6 @@
                 selectedImagePreview = null;
             }}
         >
-            {#snippet children()}
                 <div
                     class="w-full h-full flex flex-col items-center justify-center p-4"
                 >
@@ -857,7 +856,6 @@
                         }}>Fermer</button
                     >
                 </div>
-            {/snippet}
         </ModalBox>
     {/if}
 </div>
