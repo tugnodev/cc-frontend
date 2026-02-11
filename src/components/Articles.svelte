@@ -1,5 +1,9 @@
 <script lang="ts">
     import { onMount } from "svelte";
+    import ModalBox from "./ModalBox.svelte";
+    import { supabase } from "$lib/supabaseClient";
+    import type { articleDto } from "../services/dtos/article";
+    import { userArticles as articleStore } from "../store/articles";
     import {
         X,
         Pencil,
@@ -20,16 +24,7 @@
         articles as articleStore,
     } from "../store/articles";
 
-    //import { backendFetch } from "../lib/backend";
-    //import { users } from "../store/users";
-
-    /*/ Simple token getter from localStorage
-  function getToken(): string {
-    if (typeof window !== "undefined") {
-      return localStorage.getItem("token") || "";
-    }
-    return "";
-  }*/
+    const TABLE = "Articles";
 
     type EventHandler = (type: string, detail?: any) => void;
     const dispatch: EventHandler = (type, detail) => {
@@ -40,46 +35,83 @@
         }
     };
 
-    //let service: backendFetch | null = null;
-    //let currentUser: any = null;
-    let articles: articleDto[] = [];
-    let filtered: articleDto[] = [];
-    let loading = false;
-    let error: string | null = null;
-    let success: string | null = null;
+    /** Map une ligne Supabase (snake_case) vers articleDto */
+    function rowToArticle(row: Record<string, unknown>): articleDto {
+        return {
+            id: String(row.id ?? ""),
+            userId: String(row.user_id ?? row.userId ?? ""),
+            title: String(row.title ?? ""),
+            description: String(row.description ?? ""),
+            price: Number(row.price ?? 0),
+            stock: Number(row.stock ?? 0),
+            images: Array.isArray(row.images) ? (row.images as string[]) : [],
+            category: Array.isArray(row.category) ? (row.category as string[]) : [],
+            rates: Number(row.rates ?? 0),
+            createdAt: row.createdAt ? new Date(row.createdAt as string) : new Date(),
+            updatedAt: row.updatedAt ? new Date(row.updatedAt as string) : new Date(),
+        };
+    }
+
+    // État réactif Svelte 5
+    let articles = $state<articleDto[]>([]);
+    let loading = $state(false);
+    let error = $state<string | null>(null);
+    let success = $state<string | null>(null);
 
     // UI state
-    let search = "";
-    let sortKey: "price" | "stock" | null = null;
-    let sortDir = 1; // 1 = asc, -1 = desc
+    let search = $state("");
+    let sortKey = $state<"price" | "stock" | null>(null);
+    let sortDir = $state(1); // 1 = asc, -1 = desc
 
-    // Subscribe to articles store
-    articleStore.subscribe((data) => {
-        articles = data;
-        applyFilters();
+    // Liste filtrée et triée (dérivée)
+    const filtered = $derived(
+        (() => {
+            const q = search.trim().toLowerCase();
+            let list = articles.filter(
+                (a) =>
+                    !q ||
+                    a.title.toLowerCase().includes(q) ||
+                    (a.description || "").toLowerCase().includes(q),
+            );
+            if (sortKey) {
+                const key = sortKey;
+                list = list
+                    .slice()
+                    .sort((a, b) => ((a[key] ?? 0) - (b[key] ?? 0)) * sortDir);
+            }
+            return list;
+        })(),
+    );
+
+    // Synchroniser le store vers l'état local
+    $effect(() => {
+        const unsub = articleStore.subscribe((data) => {
+            articles = data;
+        });
+        return unsub;
     });
 
     // Modal / form
-    let showForm = false;
-    let isEditing = false;
-    let form: Partial<articleDto> = {
+    let showForm = $state(false);
+    let isEditing = $state(false);
+    let form = $state<Partial<articleDto>>({
         title: "",
         description: "",
         price: 0,
         stock: 0,
         images: [],
         category: [],
-    };
+    });
 
     // Image handling
-    let fileInput: HTMLInputElement;
-    let previewImages: string[] = [];
-    let uploading = false;
-    let imagePreviewModal = false;
-    let selectedImagePreview: string | null = null;
+    let fileInput = $state<HTMLInputElement | undefined>(undefined);
+    let previewImages = $state<string[]>([]);
+    let uploading = $state(false);
+    let imagePreviewModal = $state(false);
+    let selectedImagePreview = $state<string | null>(null);
 
     // Category handling
-    let newCategory = "";
+    let newCategory = $state("");
     const allCategories = [
         "Informatique",
         "Mode",
@@ -90,36 +122,67 @@
     ];
 
     // Confirmation
-    let toDelete: articleDto | null = null;
+    let toDelete = $state<articleDto | null>(null);
+
+    // Helpers to manipulate the articles store locally
+    function addArticle(a: articleDto) {
+        articleStore.update((arr) => [a, ...arr]);
+    }
+
+    function updateArticle(id: string, updated: articleDto) {
+        articleStore.update((arr) => arr.map((it) => (it.id === id ? { ...it, ...updated } : it)));
+    }
+
+    function removeArticle(id: string) {
+        articleStore.update((arr) => arr.filter((it) => it.id !== id));
+    }
+
+    // Upload helper for Supabase Storage (bucket: 'articles')
+    async function uploadToStorage(file: File): Promise<string> {
+        const filename = `${Date.now()}_${Math.random().toString(36).slice(2)}_${file.name.replace(/\s+/g, "_")}`;
+        const bucket = "articles";
+
+        const res: any = await supabase.storage.from(bucket).upload(filename, file, {
+            cacheControl: "3600",
+            upsert: false,
+        });
+        if (res.error) throw res.error;
+
+        const path = (res && (res as any).data && (res as any).data.path) ? String((res as any).data.path) : filename;
+
+        // Try to get a public URL
+        try {
+            const publicRes: any = await supabase.storage.from(bucket).getPublicUrl(path as unknown as string);
+            const publicUrl = publicRes?.data?.publicUrl ?? publicRes?.data?.publicURL ?? publicRes?.publicURL ?? publicRes?.publicUrl;
+            if (publicUrl) return publicUrl;
+        } catch (e) {
+            // ignore and try signed url
+        }
+
+        // Fallback: signed URL for 7 days
+        const signedRes: any = await supabase.storage.from(bucket).createSignedUrl(path as unknown as string, 60 * 60 * 24 * 7);
+        if (signedRes.error) throw signedRes.error;
+        return signedRes?.data?.signedUrl ?? signedRes?.signedUrl ?? path;
+    }
 
     async function load() {
         loading = true;
         error = null;
         try {
-            // Les articles sont déjà chargés du store
-            applyFilters();
+            const { data, error: err } = await supabase
+                .from(TABLE)
+                .select("*")
+                .order("updatedAt", { ascending: false });
+
+            if (err) throw err;
+            const list = (data ?? []).map((row) => rowToArticle(row));
+            articleStore.set(list);
         } catch (e) {
             error =
-                e instanceof Error ? e.message : "Erreur lors du chargement";
+                e instanceof Error ? e.message : "Erreur lors du chargement des articles";
             console.error("Erreur load:", e);
         } finally {
             loading = false;
-        }
-    }
-
-    function applyFilters() {
-        const q = search.trim().toLowerCase();
-        filtered = articles.filter(
-            (a) =>
-                !q ||
-                a.title.toLowerCase().includes(q) ||
-                (a.description || "").toLowerCase().includes(q),
-        );
-        if (sortKey) {
-            const key = sortKey as "price" | "stock";
-            filtered = filtered
-                .slice()
-                .sort((a, b) => ((a[key] ?? 0) - (b[key] ?? 0)) * sortDir);
         }
     }
 
@@ -129,7 +192,6 @@
             sortKey = key;
             sortDir = 1;
         }
-        applyFilters();
     }
 
     function openCreate() {
@@ -168,13 +230,40 @@
 
     function addCategory() {
         if (newCategory && !form.category?.includes(newCategory)) {
-            form.category = [...(form.category || []), newCategory];
+            form = { ...form, category: [...(form.category || []), newCategory] };
             newCategory = "";
         }
     }
 
     function removeCategory(cat: string) {
-        form.category = (form.category || []).filter((c) => c !== cat);
+        form = { ...form, category: (form.category || []).filter((c) => c !== cat) };
+    }
+
+    /** Prépare l'objet pour Supabase (snake_case) */
+    function toSupabaseRow(p: {
+        id?: string;
+        userId?: string;
+        title?: string;
+        description?: string;
+        price?: number;
+        stock?: number;
+        images?: string[];
+        category?: string[];
+        rates?: number;
+    }) {
+        return {
+            ...(p.id && { id: p.id }),
+            id: p.userId ?? "current-user",
+            title: p.title ?? "",
+            description: p.description ?? "",
+            price: p.price ?? 0,
+            stock: p.stock ?? 0,
+            images: p.images ?? [],
+            category: p.category ?? [],
+            rates: p.rates ?? 0,
+            updatedAt: new Date().toISOString(),
+            ...(!p.id && { createdAt: new Date().toISOString() }),
+        };
     }
 
     async function submit() {
@@ -188,35 +277,46 @@
         }
 
         try {
-            //if (!service) throw new Error("Service non initialisé");
-            const formData = {
+            const row = toSupabaseRow({
+                id: form.id,
+                userId: form.userId,
                 title: form.title,
                 description: form.description,
                 price: form.price,
                 stock: form.stock,
                 images: previewImages,
                 category: form.category || [],
-                //userId: currentUser?.id,
-            };
+            });
 
             if (isEditing && form.id) {
-                const updated = { ...form } as articleDto;
+                const { data, error: err } = await supabase
+                    .from(TABLE)
+                    .update({
+                        title: row.title,
+                        description: row.description,
+                        price: row.price,
+                        stock: row.stock,
+                        images: row.images,
+                        category: row.category,
+                        updatedAt: row.updatedAt,
+                    })
+                    .eq("id", form.id)
+                    .select()
+                    .single();
+
+                if (err) throw err;
+                const updated = rowToArticle(data ?? row);
                 updateArticle(form.id, updated);
                 success = "Article mis à jour avec succès";
             } else {
-                const newArticle: articleDto = {
-                    id: `art-${Date.now()}`,
-                    userId: "current-user",
-                    title: form.title || "",
-                    description: form.description || "",
-                    price: form.price || 0,
-                    stock: form.stock || 0,
-                    images: previewImages,
-                    category: form.category || [],
-                    rates: 0,
-                    createdAt: new Date(),
-                    updatedAt: new Date(),
-                };
+                const { data, error: err } = await supabase
+                    .from(TABLE)
+                    .insert(row)
+                    .select()
+                    .single();
+
+                if (err) throw err;
+                const newArticle = rowToArticle(data ?? row);
                 addArticle(newArticle);
                 success = "Article créé avec succès";
             }
@@ -225,7 +325,6 @@
             setTimeout(() => {
                 success = null;
             }, 3000);
-            applyFilters();
             dispatch("change");
         } catch (e) {
             error =
@@ -241,13 +340,18 @@
     async function doDelete() {
         if (!toDelete) return;
         try {
+            const { error: err } = await supabase
+                .from(TABLE)
+                .delete()
+                .eq("id", toDelete.id);
+
+            if (err) throw err;
             removeArticle(toDelete.id);
             toDelete = null;
             success = "Article supprimé avec succès";
             setTimeout(() => {
                 success = null;
             }, 3000);
-            applyFilters();
             dispatch("change");
         } catch (e) {
             error =
@@ -264,17 +368,20 @@
         const input = e.target as HTMLInputElement;
         const files = input.files ? Array.from(input.files) : [];
 
-        for (const file of files) {
-            const reader = new FileReader();
-            reader.onload = (event) => {
-                const base64 = event.target?.result as string;
-                previewImages = [...previewImages, base64];
-            };
-            reader.readAsDataURL(file);
+        try {
+            for (const file of files) {
+                try {
+                    const url = await uploadToStorage(file);
+                    previewImages = [...previewImages, url];
+                } catch (err) {
+                    console.error("Upload error:", err);
+                    error = err instanceof Error ? err.message : String(err);
+                }
+            }
+        } finally {
+            uploading = false;
+            if (input) input.value = "";
         }
-
-        uploading = false;
-        input.value = "";
     }
 
     function removeImage(index: number) {
@@ -285,18 +392,6 @@
         selectedImagePreview = image;
         imagePreviewModal = true;
     }
-
-    // reactive: run whenever dependencies used by applyFilters change
-    $: {
-        search;
-        sortKey;
-        sortDir;
-        applyFilters();
-    }
-
-    /*/ Alertes de succès/erreur
-  $: if (success) { alert("Succès : " + success); }
-  $: if (error) { alert("Erreur : " + error); } */
 
     function formatPrice(n: number) {
         return n.toLocaleString("fr-SN", {
@@ -348,7 +443,7 @@
                 {#if search}
                     <button
                         class="btn btn-square join-item btn-ghost border-base-300"
-                        on:click={() => {
+                        onclick={() => {
                             search = "";
                         }}
                         title="Effacer la recherche"
@@ -360,7 +455,7 @@
 
             <button
                 class="btn btn-primary shadow-sm gap-2"
-                on:click={openCreate}
+                onclick={openCreate}
             >
                 <Plus class="w-5 h-5" />
                 <span class="hidden md:inline">Nouvel article</span>
@@ -391,7 +486,7 @@
 
                                 <th
                                     class="cursor-pointer hover:bg-base-200 hover:text-primary transition-colors text-right py-2 md:py-4 px-1 md:px-2"
-                                    on:click={() => toggleSort("price")}
+                                    onclick={() => toggleSort("price")}
                                 >
                                     <div
                                         class="flex items-center justify-end gap-0.5 md:gap-1"
@@ -413,7 +508,7 @@
 
                                 <th
                                     class="cursor-pointer hover:bg-base-200 hover:text-primary transition-colors text-center py-2 md:py-4 px-1 md:px-2"
-                                    on:click={() => toggleSort("stock")}
+                                    onclick={() => toggleSort("stock")}
                                 >
                                     <div
                                         class="flex items-center justify-center gap-0.5 md:gap-1"
@@ -521,7 +616,7 @@
                                                     >
                                                         <button
                                                             class="btn btn-sm btn-square btn-ghost hover:bg-primary/10 hover:text-primary"
-                                                            on:click={() =>
+                                                            onclick={() =>
                                                                 openEdit(a)}
                                                         >
                                                             <Pencil
@@ -535,7 +630,7 @@
                                                     >
                                                         <button
                                                             class="btn btn-sm btn-square btn-ghost text-error hover:bg-error/10"
-                                                            on:click={() =>
+                                                            onclick={() =>
                                                                 confirmDelete(
                                                                     a,
                                                                 )}
@@ -551,14 +646,14 @@
                                                 >
                                                     <button
                                                         class="btn btn-sm btn-primary"
-                                                        on:click={() =>
+                                                        onclick={() =>
                                                             openEdit(a)}
                                                     >
                                                         Modifier
                                                     </button>
                                                     <button
                                                         class="btn btn-sm btn-error"
-                                                        on:click={() =>
+                                                        onclick={() =>
                                                             confirmDelete(a)}
                                                     >
                                                         Supprimer
@@ -578,7 +673,6 @@
 
     {#if showForm}
         <ModalBox onClose={() => (showForm = false)}>
-            {#snippet children()}
                 {#if error}
                     <div class="alert alert-error mt-4 shadow-lg">{error}</div>
                 {/if}
@@ -609,7 +703,7 @@
                                             <button
                                                 type="button"
                                                 class="w-full h-full object-cover cursor-pointer p-0 border-0"
-                                                on:click={() =>
+                                                onclick={() =>
                                                     openImagePreview(image)}
                                                 title="Afficher l'image"
                                             >
@@ -622,7 +716,7 @@
                                             <button
                                                 type="button"
                                                 class="absolute top-1 right-1 btn btn-xs btn-circle btn-error"
-                                                on:click={() =>
+                                                onclick={() =>
                                                     removeImage(index)}
                                                 title="Supprimer l'image"
                                             >
@@ -634,7 +728,7 @@
                                 <button
                                     type="button"
                                     class="w-20 h-20 rounded-lg border-2 border-dashed border-base-300 flex items-center justify-center hover:border-primary hover:bg-primary/5 transition-colors"
-                                    on:click={() => fileInput.click()}
+                                    onclick={() => fileInput?.click()}
                                     disabled={uploading}
                                 >
                                     {#if uploading}
@@ -652,7 +746,7 @@
                                 multiple
                                 accept="image/*"
                                 bind:this={fileInput}
-                                on:change={handleImageUpload}
+                                onchange={handleImageUpload}
                                 class="hidden"
                             />
                             <p class="text-xs text-base-content/50 mt-1">
@@ -746,7 +840,7 @@
                                 <button
                                     type="button"
                                     class="btn btn-sm btn-primary"
-                                    on:click={addCategory}
+                                    onclick={addCategory}
                                     disabled={!newCategory}
                                 >
                                     +
@@ -760,7 +854,7 @@
                                             <button
                                                 type="button"
                                                 class="btn btn-xs btn-ghost"
-                                                on:click={() =>
+                                                onclick={() =>
                                                     removeCategory(cat)}
                                             >
                                                 ✕
@@ -775,12 +869,11 @@
                     <div class="modal-action mt-6">
                         <button
                             class="btn btn-ghost"
-                            on:click={() => (showForm = false)}>Annuler</button
-                        >
+                            onclick={() => (showForm = false)}>Annuler</button>
                         <button
                             class="btn btn-primary px-6"
                             disabled={!form.title}
-                            on:click={submit}
+                            onclick={submit}
                         >
                             {isEditing
                                 ? "Enregistrer les modifications"
@@ -788,13 +881,11 @@
                         </button>
                     </div>
                 </div>
-            {/snippet}
         </ModalBox>
     {/if}
 
     {#if toDelete}
         <ModalBox onClose={() => (toDelete = null)}>
-            {#snippet children()}
                 <div class="w-full p-4">
                     <h3
                         class="font-bold text-lg text-error flex items-center gap-2"
@@ -819,14 +910,12 @@
                     <div class="modal-action">
                         <button
                             class="btn btn-ghost"
-                            on:click={() => (toDelete = null)}>Annuler</button
-                        >
-                        <button class="btn btn-error px-6" on:click={doDelete}
+                            onclick={() => (toDelete = null)}>Annuler</button>
+                        <button class="btn btn-error px-6" onclick={doDelete}
                             >Confirmer la suppression</button
                         >
                     </div>
                 </div>
-            {/snippet}
         </ModalBox>
     {/if}
 
@@ -837,7 +926,6 @@
                 selectedImagePreview = null;
             }}
         >
-            {#snippet children()}
                 <div
                     class="w-full h-full flex flex-col items-center justify-center p-4"
                 >
@@ -848,13 +936,12 @@
                     />
                     <button
                         class="btn btn-primary mt-4"
-                        on:click={() => {
+                        onclick={() => {
                             imagePreviewModal = false;
                             selectedImagePreview = null;
                         }}>Fermer</button
                     >
                 </div>
-            {/snippet}
         </ModalBox>
     {/if}
 </div>
