@@ -14,15 +14,7 @@
         ChevronsUpDown,
         Image as ImageIcon,
     } from "@lucide/svelte";
-    import ModalBox from "./ModalBox.svelte";
-    import type {
-        articleDto,
-        createArticleDto,
-        updateAticleDto,
-    } from "../services/dtos/article";
-    import {
-        articles as articleStore,
-    } from "../store/articles";
+
 
     const TABLE = "Articles";
 
