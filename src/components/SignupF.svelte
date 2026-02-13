@@ -1,7 +1,7 @@
 <script>
     import { fade } from "svelte/transition";
-    import { backendFetch } from "../lib/backend";
     
+    const  url = "http://localhost:3000/user/register";
     let name = "";
     let email = "";
     let password = "";
@@ -11,7 +11,6 @@
     let errorMsg = "";
     let successMsg = "";
 
-    const request = new backendFetch();
 
     async function signUp(e) {
         e.preventDefault();
@@ -36,11 +35,18 @@
         loading = true;
 
         try {
-            const response = await request.post("/user/register", {
-                name,
-                email,
-                password,
-            });
+         const response = await fetch(url, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              "Accept": "application/json",
+            },
+            body: JSON.stringify({
+              name,
+              email,
+              password,
+            }),
+          });
 
             successMsg = "Compte créé avec succès !";
             console.log(response);
