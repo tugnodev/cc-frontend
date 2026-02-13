@@ -1,25 +1,25 @@
 <script lang="ts">
-import Main from "../../../components/Main.svelte";
-import SearchBar from "../../../components/SearchBar.svelte";
-import ProductByCategory from "../../../components/ProductByCategory.svelte";
-import Filtre from "../../../components/Filtre.svelte";
-import ModalBox from "../../../components/ModalBox.svelte";
-import { articles } from "../../../store/articles";
-import { searchResults } from "../../../store/articles";
-import { onMount } from 'svelte';
-    
-const categories = [
-    "Mode", 
-    "Informatique", 
-    "Électroménager", 
-    "Sport", 
-    "Supermarché", 
-    "Jeux vidéos & consoles"
+    import Main from "../../../components/Main.svelte";
+    import SearchBar from "../../../components/SearchBar.svelte";
+    import ProductByCategory from "../../../components/ProductByCategory.svelte";
+    import Filtre from "../../../components/Filtre.svelte";
+    import ModalBox from "../../../components/ModalBox.svelte";
+    import { articles } from "../../../store/articles";
+    import { searchResults } from "../../../store/articles";
+    import { onMount } from "svelte";
+
+    const categories = [
+        "Mode",
+        "Informatique",
+        "Électroménager",
+        "Sport",
+        "Supermarché",
+        "Jeux vidéos & consoles",
     ];
 
     async function loadArticles() {
         try {
-            const response = await fetch('http://localhost:3000/api/articles');
+            const response = await fetch("http://localhost:3000/api/articles");
             if (response.ok) {
                 const data = await response.json();
                 console.log(JSON.stringify);
@@ -83,35 +83,23 @@ const categories = [
     // --- ACTIONS ---
     const handleSearch = (q: string) => (search = q);
 
-<<<<<<< HEAD
-function setFilter(type: string) {
-    filterStatus = filterStatus === type ? "" : type;
-}
-
-// LIAISON AVEC LE STORE 
-$effect(() => {
-    searchResults.set(filteredItems);
-});
-
-// --- FONCTION DE MISE À ZÉRO (RESET) ---
-function resetFilters() {
-    search = "";
-    selectedCategory = "";
-    currentSort = "";
-    filterStatus = "";
-    maxPrice = 500000;
-}
-
-=======
-    function setSort(type: string) {
-        currentSort = type;
-        showSortModal = false;
-    }
-
     function setFilter(type: string) {
         filterStatus = filterStatus === type ? "" : type;
     }
->>>>>>> 64a2642 (acceuil redesign)
+
+    // LIAISON AVEC LE STORE
+    $effect(() => {
+        searchResults.set(filteredItems);
+    });
+
+    // --- FONCTION DE MISE À ZÉRO (RESET) ---
+    function resetFilters() {
+        search = "";
+        selectedCategory = "";
+        currentSort = "";
+        filterStatus = "";
+        maxPrice = 500000;
+    }
 </script>
 
 <Main>
