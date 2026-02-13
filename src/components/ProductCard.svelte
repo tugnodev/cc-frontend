@@ -47,12 +47,12 @@
     }}
     class=""
 >
-    <div class="avatar">
+    <div class="w-full">
         <span class="aspect-square flex-1 rounded">
             <img src="/profile.png " alt="profile" />
         </span>
     </div>
-    <div class="flex flex-col w-full">
+    <div class="flex flex-col h-full w-full">
         <h3 class="">{product.title}</h3>
         <h3 class="font-semibold">{product.price} FCFA</h3>
     </div>

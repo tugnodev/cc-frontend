@@ -6,23 +6,27 @@
     let modal = $state(false);
 </script>
 
-<section class="flex flex-col items-center justify-center w-full gap-4">
-    <div
-        class="flex flex-col items-center gap-2 justify-center indicator w-40 rounded-full bg-white"
-    >
-        <img class="rounded-full" src="/profile.png" alt="" />
-    </div>
-    <div class="flex flex-col items-center gap-1">
-        <div class="flex items-center">
-            <h2 class="font-semibold text-xl">Racine DIOP</h2>
-            <div class="badge badge-soft badge-success badge-sm">vendeur</div>
+<section class="w-full flex flex-col gap-2">
+    <div class="flex items-center justify-start w-full gap-4">
+        <div
+            class="flex flex-col items-center gap-2 justify-center indicator w-32 rounded-full bg-white"
+        >
+            <img class="rounded-full" src="/profile.png" alt="" />
         </div>
-        <h2 class="text-xs font-semibold flex items-center gap-1">
-            <AtSign size={16} /> mailofracine1@gmail.com
-        </h2>
-        <h2 class="text-xs font-semibold flex items-center gap-1">
-            <CardSim size={16} /> 78 475 45 28
-        </h2>
+        <div class="flex flex-col items-start gap-1">
+            <div class="flex items-center">
+                <h2 class="font-semibold text-xl">Racine DIOP</h2>
+                <div class="badge badge-soft badge-success badge-sm">
+                    vendeur
+                </div>
+            </div>
+            <h2 class="text-xs font-semibold flex items-center gap-1">
+                <AtSign size={16} /> mailofracine1@gmail.com
+            </h2>
+            <h2 class="text-xs font-semibold flex items-center gap-1">
+                <CardSim size={16} /> 78 475 45 28
+            </h2>
+        </div>
     </div>
     <div class="flex w-full items-center justify-center gap-2">
         <button
@@ -30,7 +34,8 @@
             class="btn btn-soft btn-sm btn-infos flex items-center gap-2"
             ><User /> Modifier le profile</button
         >
-        <button class="btn btn-soft btn-sm btn-warning flex items-center gap-2"
+        <button
+            class="btn btn-soft btn-sm btn-warning flex items-center gap-2"
             onclick={() => (window.location.href = "/shop")}
             >Voir ma boutique <Store /></button
         >

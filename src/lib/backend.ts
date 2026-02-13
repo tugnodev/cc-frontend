@@ -1,10 +1,6 @@
-export class backendFetch {
+export class BackendFetch {
   private url: string = "http://localhost:3000";
   private token: string = "your_token_here";
-
-  constructor(token: string) {
-    this.token = token;
-  }
 
   async post<T>(endPoint: string, data: T) {
     return await fetch(`${this.url}${endPoint}`, {
@@ -48,8 +44,6 @@ export class backendFetch {
     }).then((response) => response.json());
   }
 }
-
-
 
 // import { TokenManager } from "./token";
 
