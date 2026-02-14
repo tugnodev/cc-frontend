@@ -6,10 +6,17 @@
   "permissions": [
     "core:default",
     "opener:default",
-    "http:default",
     {
-      "identifier": "http:allow-host",
-      "allow": [{ "host": "localhost", "port": 3000 }]
+      "identifier": "http:default",
+      "allow": [
+        { "url": "https://wellborn-nonhabitually-alfonzo.ngrok-free.dev/*" }
+      ]
+    },
+    {
+      "identifier": "http:allow-fetch",
+      "allow": [
+        { "url": "https://wellborn-nonhabitually-alfonzo.ngrok-free.dev/*" }
+      ]
     }
   ]
 }

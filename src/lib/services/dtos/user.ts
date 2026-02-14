@@ -1,10 +1,9 @@
 enum address {
-  UADB = "Université Alioune Diop de Bambey",
-  UGB = "Université Gaston Berger de Saint-Louis",
-  UCAD = "Université Cheikh Anta Diop de Dakar",
-  UIDT = "Université Iba-Der-Thiam de Thiès",
-  UASZ = "Université Assane-Seck de Ziguinchor",
-  UAM = "Université Amadou Makhtar Mbow",
+  UADB = "UADB",
+  UGB = "UGB",
+  UCAD = "UCAD",
+  UT = "UT",
+  UASZ = "UASZ",
 }
 
 export interface createUserDto {
@@ -12,8 +11,6 @@ export interface createUserDto {
   email: string;
   password: string;
   address: address;
-  vendeur?: boolean;
-  code?: number;
 }
 
 export interface turnToAdminDto {
@@ -41,8 +38,8 @@ export interface userDto {
   code?: number | null;
   address?: string | null;
   image?: string | null;
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface userLoginDto {
