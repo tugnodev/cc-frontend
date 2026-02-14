@@ -14,7 +14,7 @@
             return;
         }
 
-        console.log({ email, password, rememberMe });
+        console.log({ email, password});
         try{
           const response = await fetch(url, {
             method: "POST",

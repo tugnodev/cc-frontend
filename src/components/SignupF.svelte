@@ -1,7 +1,7 @@
 <script>
     import { fade } from "svelte/transition";
     
-    const  url = "http://localhost:3000/user/register";
+    const  url = "http://localhost:3000/register";
     let name = "";
     let email = "";
     let password = "";
@@ -49,7 +49,7 @@
           });
 
             successMsg = "Compte créé avec succès !";
-            console.log(response);
+            console.log(response.json);
         } catch (err) {
             errorMsg = "Erreur lors de l'inscription.";
             console.error(err);
@@ -91,7 +91,7 @@
                     class="input input-bordered w-full"
                 />
             </div>
-
+        
             <!-- Email -->
             <div class="form-control mb-4">
                 <label class="label">
