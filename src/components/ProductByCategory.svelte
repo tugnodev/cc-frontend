@@ -1,11 +1,13 @@
 <script>
-    import { articles } from "../store/articles";
+    import { articles } from "$lib/store/articles";
     import ProductCard from "./ProductCard.svelte";
-    let {data = []}= $props();
-    
+    let { data = [] } = $props();
 </script>
-<div class="w-full flex flex-col justify-start mt-4 mb-24 px-1 transition-all duration-300 ease-in-out">
-    <div class="grid grid-cols-2 gap-1"> 
+
+<div
+    class="w-full flex flex-col justify-start mt-4 px-1 transition-all duration-300 ease-in-out"
+>
+    <div class="grid grid-cols-2 gap-1">
         {#each data as article (article.id)}
             <ProductCard product={article} />
         {:else}

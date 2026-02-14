@@ -1,15 +1,45 @@
-<script>
+<script lang="ts">
     import Chart from "chart.js/auto";
+    import { onMount } from "svelte";
+    import { commande } from "../../store/commande";
+    import { orderDto } from "../../services/dtos/order";
 
     // --- 1. Gestion des Données (Runes) ---
+
     let salesCanvas;
     let categoryCanvas;
     let salesChart;
     let categoryChart;
+    let salesData : number[] = $state([]);
+    let labels : string[] = $state(["janvier", "février", "mars", "avril", "mai", "juin", "juillet", "août", "septembre", "octobre", "novembre", "décembre"]);
+    let commandeData : orderDto[] = $state([]);
+    let total = 0;
+
+    onMount(() => {
+          commande.subscribe((data) => {
+        commandeData = data;
+      });
+          if(commandeData.length === 0){
+            return
+          }
+          commandeData.forEach(order => {
+           if(order.order_status === "completed"){
+             if(order.createdAt.getMonth() === Date.now()){
+               return;
+             }
+             order.article_details.forEach(art => {
+               total += art.article.price;
+             });
+
+            salesData.push(total);
+           }
+          });
+
+      
+    })
 
     // Vos données réactives
-    let salesData = $state([12000, 19000, 15000, 22000, 18000, 24500]);
-    let labels = $state(["Jan", "Fév", "Mar", "Avr", "Mai", "Juin"]);
+
 
     let kpi = {
         revenue: "24 500 €",

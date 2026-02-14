@@ -1,14 +1,13 @@
 <script lang="ts">
     import { fade } from "svelte/transition";
     import { backendFetch } from "../lib/backend";
-
+    const url = "http://localhost:3000/login";
     let email = "";
     let password = "";
     let rememberMe = false;
     let csrf_token = "";
-    const requeste = new backendFetch();
 
-    function login(event?: Event) {
+   async function login(event?: Event) {
         event?.preventDefault?.();
 
         if (!email.trim() || !password) {
@@ -17,15 +16,20 @@
         }
 
         console.log({ email, password, rememberMe });
+        try{
+          const response = await fetch(url, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ email, password }),
+          });
+          const data = await response.json();
+          console.log(data);
+        } catch (error) {
+          console.error(error);
+        }
 
-        requeste
-            .post("/user/login", { email, password })
-            .then((response) => {
-                console.log(response);
-            })
-            .catch((error) => {
-                console.error(error);
-            });
     }
 </script>
 

@@ -1,6 +1,8 @@
 <script lang="ts">
     import { House, Search, CircleUserRound } from "@lucide/svelte";
     import { page } from "$app/state";
+    import { goto } from "$app/navigation";
+    import { redirect } from "@sveltejs/kit";
 
     function isActive(path: string) {
         return page.url.pathname === path

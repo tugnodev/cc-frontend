@@ -1,8 +1,8 @@
 <script lang="ts">
     import { Filter, CheckCircle, Clock, XCircle } from "@lucide/svelte";
     import { onMount } from "svelte";
-    import { orders } from "../store/order";
-    import type { orderDto } from "../services/dtos/order";
+    import { orders } from "$lib/store/order";
+    import type { orderDto } from "$lib/services/dtos/order";
 
     let statusFilter = "Toutes";
     let selectedOrder: orderDto | null = null;

@@ -1,10 +1,9 @@
-export class backendFetch {
-  private url: string = "http://localhost:3000";
-  private token: string = "your_token_here";
+import { env } from "$env/dynamic/public";
+import { fetch } from "@tauri-apps/plugin-http";
 
-  constructor(token: string) {
-    this.token = token;
-  }
+export class BackendFetch {
+  private url: string = env.PUBLIC_API_URL;
+  private token: string = "your_token_here";
 
   async post<T>(endPoint: string, data: T) {
     return await fetch(`${this.url}${endPoint}`, {
@@ -48,8 +47,6 @@ export class backendFetch {
     }).then((response) => response.json());
   }
 }
-
-
 
 // import { TokenManager } from "./token";
 

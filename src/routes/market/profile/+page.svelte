@@ -6,17 +6,16 @@
         PackageOpen,
         MessageSquareWarning,
     } from "@lucide/svelte";
-    import { X } from "@lucide/svelte";
     import Main from "../../../components/Main.svelte";
     import ModalBox from "../../../components/ModalBox.svelte";
     import MsgModal from "../../../components/MsgModal.svelte";
     import CmdModal from "../../../components/CmdModal.svelte";
     import PanierModal from "../../../components/PanierModal.svelte";
-    import { blur, fade } from "svelte/transition";
-    import ReviewsModal from "../../../components/ReviewsModal.svelte"
+    import ReviewsModal from "../../../components/ReviewsModal.svelte";
+    import type { orderDto } from "$lib/services/dtos/order";
     let modal: boolean = $state(false);
     let activeRoute: any = $state(null);
-    let orders = [];
+    let orders: orderDto[] = [];
     let statusFilter = "all";
 
     // @ts-ignore
@@ -75,7 +74,7 @@
 
     {#if activeRoute == "Commandes"}
         <ModalBox onClose={() => (modal = false)}>
-            <CmdModal {orders} />
+            <CmdModal />
         </ModalBox>
     {/if}
 
