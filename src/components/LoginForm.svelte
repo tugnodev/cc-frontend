@@ -6,7 +6,7 @@
     let rememberMe = false;
     let csrf_token = "";
 
-   async function login(event?: Event) {
+    async function login(event?: Event) {
         event?.preventDefault?.();
 
         if (!email.trim() || !password) {
@@ -27,9 +27,8 @@
           console.log(data);
           window.location.href = "/market";
         } catch (error) {
-          console.error(error);
+            console.error(error);
         }
-
     }
 </script>
 

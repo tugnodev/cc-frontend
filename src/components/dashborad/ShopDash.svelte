@@ -45,7 +45,6 @@
 
     // Vos données réactives
 
-
     let kpi = {
         revenue: "24 500 €",
         orders: 342,

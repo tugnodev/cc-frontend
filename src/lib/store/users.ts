@@ -11,12 +11,14 @@ const teste = {
     name: "Racine Diop",
     image: "/profile.png",
     emailVerified: false,
+    vendeur: true,
+    address: "UADB",
     createdAt: "2026-02-06T01:31:13.579Z",
     updatedAt: "2026-02-06T01:31:13.579Z",
   },
 };
 
-export const users = readable<userDto>();
+export const user = readable<userDto>(teste.user);
 
 export class UserRepo implements StoreIO {
   token: string;

@@ -8,9 +8,7 @@
     "opener:default",
     {
       "identifier": "http:default",
-      "allow": [
-        { "url": "https://wellborn-nonhabitually-alfonzo.ngrok-free.dev/*" }
-      ]
+      "allow": [{ "url": "http://localhost:3000/*" }]
     },
     {
       "identifier": "http:allow-fetch",

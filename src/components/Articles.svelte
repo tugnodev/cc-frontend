@@ -2,8 +2,8 @@
     import { onMount } from "svelte";
     import ModalBox from "./ModalBox.svelte";
     import { supabase } from "$lib/supabaseClient";
-    import type { articleDto } from "../services/dtos/article";
-    import { userArticles as articleStore } from "../store/articles";
+    import type { articleDto } from "$lib/services/dtos/article";
+    import { userArticles } from "$lib/store/articles";
     import {
         X,
         Pencil,
@@ -14,7 +14,6 @@
         ChevronsUpDown,
         Image as ImageIcon,
     } from "@lucide/svelte";
-
 
     const TABLE = "Articles";
 
@@ -37,10 +36,16 @@
             price: Number(row.price ?? 0),
             stock: Number(row.stock ?? 0),
             images: Array.isArray(row.images) ? (row.images as string[]) : [],
-            category: Array.isArray(row.category) ? (row.category as string[]) : [],
+            category: Array.isArray(row.category)
+                ? (row.category as string[])
+                : [],
             rates: Number(row.rates ?? 0),
-            createdAt: row.createdAt ? new Date(row.createdAt as string) : new Date(),
-            updatedAt: row.updatedAt ? new Date(row.updatedAt as string) : new Date(),
+            createdAt: row.createdAt
+                ? new Date(row.createdAt as string)
+                : new Date(),
+            updatedAt: row.updatedAt
+                ? new Date(row.updatedAt as string)
+                : new Date(),
         };
     }
 
@@ -122,7 +127,9 @@
     }
 
     function updateArticle(id: string, updated: articleDto) {
-        articleStore.update((arr) => arr.map((it) => (it.id === id ? { ...it, ...updated } : it)));
+        articleStore.update((arr) =>
+            arr.map((it) => (it.id === id ? { ...it, ...updated } : it)),
+        );
     }
 
     function removeArticle(id: string) {
@@ -134,25 +141,38 @@
         const filename = `${Date.now()}_${Math.random().toString(36).slice(2)}_${file.name.replace(/\s+/g, "_")}`;
         const bucket = "articles";
 
-        const res: any = await supabase.storage.from(bucket).upload(filename, file, {
-            cacheControl: "3600",
-            upsert: false,
-        });
+        const res: any = await supabase.storage
+            .from(bucket)
+            .upload(filename, file, {
+                cacheControl: "3600",
+                upsert: false,
+            });
         if (res.error) throw res.error;
 
-        const path = (res && (res as any).data && (res as any).data.path) ? String((res as any).data.path) : filename;
+        const path =
+            res && (res as any).data && (res as any).data.path
+                ? String((res as any).data.path)
+                : filename;
 
         // Try to get a public URL
         try {
-            const publicRes: any = await supabase.storage.from(bucket).getPublicUrl(path as unknown as string);
-            const publicUrl = publicRes?.data?.publicUrl ?? publicRes?.data?.publicURL ?? publicRes?.publicURL ?? publicRes?.publicUrl;
+            const publicRes: any = await supabase.storage
+                .from(bucket)
+                .getPublicUrl(path as unknown as string);
+            const publicUrl =
+                publicRes?.data?.publicUrl ??
+                publicRes?.data?.publicURL ??
+                publicRes?.publicURL ??
+                publicRes?.publicUrl;
             if (publicUrl) return publicUrl;
         } catch (e) {
             // ignore and try signed url
         }
 
         // Fallback: signed URL for 7 days
-        const signedRes: any = await supabase.storage.from(bucket).createSignedUrl(path as unknown as string, 60 * 60 * 24 * 7);
+        const signedRes: any = await supabase.storage
+            .from(bucket)
+            .createSignedUrl(path as unknown as string, 60 * 60 * 24 * 7);
         if (signedRes.error) throw signedRes.error;
         return signedRes?.data?.signedUrl ?? signedRes?.signedUrl ?? path;
     }
@@ -171,7 +191,9 @@
             articleStore.set(list);
         } catch (e) {
             error =
-                e instanceof Error ? e.message : "Erreur lors du chargement des articles";
+                e instanceof Error
+                    ? e.message
+                    : "Erreur lors du chargement des articles";
             console.error("Erreur load:", e);
         } finally {
             loading = false;
@@ -222,13 +244,19 @@
 
     function addCategory() {
         if (newCategory && !form.category?.includes(newCategory)) {
-            form = { ...form, category: [...(form.category || []), newCategory] };
+            form = {
+                ...form,
+                category: [...(form.category || []), newCategory],
+            };
             newCategory = "";
         }
     }
 
     function removeCategory(cat: string) {
-        form = { ...form, category: (form.category || []).filter((c) => c !== cat) };
+        form = {
+            ...form,
+            category: (form.category || []).filter((c) => c !== cat),
+        };
     }
 
     /** Prépare l'objet pour Supabase (snake_case) */
@@ -665,249 +693,247 @@
 
     {#if showForm}
         <ModalBox onClose={() => (showForm = false)}>
-                {#if error}
-                    <div class="alert alert-error mt-4 shadow-lg">{error}</div>
-                {/if}
-                <div class="sm:max-w-lg w-full p-4">
-                    <h3 class="font-bold text-xl mb-4 flex items-center gap-2">
-                        {#if isEditing}<Pencil class="w-6 h-6 text-primary" />
-                        {:else}<Plus class="w-6 h-6 text-primary" />
-                        {/if}
-                        {isEditing
-                            ? "Modifier l'article"
-                            : "Créer un nouvel article"}
-                    </h3>
+            {#if error}
+                <div class="alert alert-error mt-4 shadow-lg">{error}</div>
+            {/if}
+            <div class="sm:max-w-lg w-full p-4">
+                <h3 class="font-bold text-xl mb-4 flex items-center gap-2">
+                    {#if isEditing}<Pencil class="w-6 h-6 text-primary" />
+                    {:else}<Plus class="w-6 h-6 text-primary" />
+                    {/if}
+                    {isEditing
+                        ? "Modifier l'article"
+                        : "Créer un nouvel article"}
+                </h3>
 
-                    <div class="flex flex-col gap-3">
-                        <!-- Image Upload Section -->
+                <div class="flex flex-col gap-3">
+                    <!-- Image Upload Section -->
+                    <div class="form-control">
+                        <label class="label" for="images"
+                            ><span class="label-text font-medium"
+                                >Images du produit</span
+                            ></label
+                        >
+                        <div class="flex flex-wrap gap-2 mb-2">
+                            {#if previewImages.length > 0}
+                                {#each previewImages as image, index}
+                                    <div
+                                        class="relative w-20 h-20 rounded-lg overflow-hidden border border-base-300"
+                                    >
+                                        <button
+                                            type="button"
+                                            class="w-full h-full object-cover cursor-pointer p-0 border-0"
+                                            onclick={() =>
+                                                openImagePreview(image)}
+                                            title="Afficher l'image"
+                                        >
+                                            <img
+                                                src={image}
+                                                alt="preview {index}"
+                                                class="w-full h-full object-cover"
+                                            />
+                                        </button>
+                                        <button
+                                            type="button"
+                                            class="absolute top-1 right-1 btn btn-xs btn-circle btn-error"
+                                            onclick={() => removeImage(index)}
+                                            title="Supprimer l'image"
+                                        >
+                                            <X class="w-3 h-3" />
+                                        </button>
+                                    </div>
+                                {/each}
+                            {/if}
+                            <button
+                                type="button"
+                                class="w-20 h-20 rounded-lg border-2 border-dashed border-base-300 flex items-center justify-center hover:border-primary hover:bg-primary/5 transition-colors"
+                                onclick={() => fileInput?.click()}
+                                disabled={uploading}
+                            >
+                                {#if uploading}
+                                    <span
+                                        class="loading loading-spinner loading-sm"
+                                    ></span>
+                                {:else}
+                                    <ImageIcon class="w-6 h-6" />
+                                {/if}
+                            </button>
+                        </div>
+                        <input
+                            id="images"
+                            type="file"
+                            multiple
+                            accept="image/*"
+                            bind:this={fileInput}
+                            onchange={handleImageUpload}
+                            class="hidden"
+                        />
+                        <p class="text-xs text-base-content/50 mt-1">
+                            Cliquez pour ajouter des images (PNG, JPG, etc.)
+                        </p>
+                    </div>
+
+                    <div class="form-control">
+                        <label class="label" for="name"
+                            ><span class="label-text font-medium"
+                                >Nom du produit *</span
+                            ></label
+                        > <br />
+                        <input
+                            id="name"
+                            class="input input-bordered focus:input-primary"
+                            placeholder="Ex: Laptop X1"
+                            bind:value={form.title}
+                        />
+                    </div>
+                    <div class="form-control">
+                        <label class="label" for="description"
+                            ><span class="label-text font-medium"
+                                >Description</span
+                            ></label
+                        > <br />
+                        <textarea
+                            id="description"
+                            class="textarea textarea-bordered h-24 focus:textarea-primary"
+                            placeholder="Courte description..."
+                            bind:value={form.description}
+                        ></textarea>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-4">
                         <div class="form-control">
-                            <label class="label" for="images"
+                            <label class="label" for="price"
                                 ><span class="label-text font-medium"
-                                    >Images du produit</span
+                                    >Prix (F CFA) *</span
                                 ></label
                             >
-                            <div class="flex flex-wrap gap-2 mb-2">
-                                {#if previewImages.length > 0}
-                                    {#each previewImages as image, index}
-                                        <div
-                                            class="relative w-20 h-20 rounded-lg overflow-hidden border border-base-300"
-                                        >
-                                            <button
-                                                type="button"
-                                                class="w-full h-full object-cover cursor-pointer p-0 border-0"
-                                                onclick={() =>
-                                                    openImagePreview(image)}
-                                                title="Afficher l'image"
-                                            >
-                                                <img
-                                                    src={image}
-                                                    alt="preview {index}"
-                                                    class="w-full h-full object-cover"
-                                                />
-                                            </button>
-                                            <button
-                                                type="button"
-                                                class="absolute top-1 right-1 btn btn-xs btn-circle btn-error"
-                                                onclick={() =>
-                                                    removeImage(index)}
-                                                title="Supprimer l'image"
-                                            >
-                                                <X class="w-3 h-3" />
-                                            </button>
-                                        </div>
-                                    {/each}
-                                {/if}
-                                <button
-                                    type="button"
-                                    class="w-20 h-20 rounded-lg border-2 border-dashed border-base-300 flex items-center justify-center hover:border-primary hover:bg-primary/5 transition-colors"
-                                    onclick={() => fileInput?.click()}
-                                    disabled={uploading}
-                                >
-                                    {#if uploading}
-                                        <span
-                                            class="loading loading-spinner loading-sm"
-                                        ></span>
-                                    {:else}
-                                        <ImageIcon class="w-6 h-6" />
-                                    {/if}
-                                </button>
-                            </div>
-                            <input
-                                id="images"
-                                type="file"
-                                multiple
-                                accept="image/*"
-                                bind:this={fileInput}
-                                onchange={handleImageUpload}
-                                class="hidden"
-                            />
-                            <p class="text-xs text-base-content/50 mt-1">
-                                Cliquez pour ajouter des images (PNG, JPG, etc.)
-                            </p>
-                        </div>
-
-                        <div class="form-control">
-                            <label class="label" for="name"
-                                ><span class="label-text font-medium"
-                                    >Nom du produit *</span
-                                ></label
-                            > <br />
-                            <input
-                                id="name"
-                                class="input input-bordered focus:input-primary"
-                                placeholder="Ex: Laptop X1"
-                                bind:value={form.title}
-                            />
-                        </div>
-                        <div class="form-control">
-                            <label class="label" for="description"
-                                ><span class="label-text font-medium"
-                                    >Description</span
-                                ></label
-                            > <br />
-                            <textarea
-                                id="description"
-                                class="textarea textarea-bordered h-24 focus:textarea-primary"
-                                placeholder="Courte description..."
-                                bind:value={form.description}
-                            ></textarea>
-                        </div>
-
-                        <div class="grid grid-cols-2 gap-4">
-                            <div class="form-control">
-                                <label class="label" for="price"
-                                    ><span class="label-text font-medium"
-                                        >Prix (F CFA) *</span
-                                    ></label
-                                >
-                                <label class="input-group">
-                                    <input
-                                        id="price"
-                                        type="number"
-                                        class="input input-bordered w-full focus:input-primary"
-                                        placeholder="0.00"
-                                        bind:value={form.price}
-                                        step="0.01"
-                                        min="0"
-                                    />
-                                </label>
-                            </div>
-                            <div class="form-control">
-                                <label class="label" for="stock"
-                                    ><span class="label-text font-medium"
-                                        >Stock initial *</span
-                                    ></label
-                                >
+                            <label class="input-group">
                                 <input
-                                    id="stock"
+                                    id="price"
                                     type="number"
-                                    class="input input-bordered focus:input-primary"
-                                    placeholder="0"
-                                    bind:value={form.stock}
+                                    class="input input-bordered w-full focus:input-primary"
+                                    placeholder="0.00"
+                                    bind:value={form.price}
+                                    step="0.01"
                                     min="0"
                                 />
-                            </div>
+                            </label>
                         </div>
-
-                        <!-- Categories -->
                         <div class="form-control">
-                            <label class="label" for="categories"
+                            <label class="label" for="stock"
                                 ><span class="label-text font-medium"
-                                    >Catégories</span
+                                    >Stock initial *</span
                                 ></label
                             >
-                            <div class="flex gap-2 mb-2">
-                                <select
-                                    id="categories"
-                                    bind:value={newCategory}
-                                    class="select select-bordered select-sm flex-1"
-                                >
-                                    <option value=""
-                                        >Ajouter une catégorie</option
-                                    >
-                                    {#each allCategories as cat}
-                                        <option value={cat}>{cat}</option>
-                                    {/each}
-                                </select>
-                                <button
-                                    type="button"
-                                    class="btn btn-sm btn-primary"
-                                    onclick={addCategory}
-                                    disabled={!newCategory}
-                                >
-                                    +
-                                </button>
-                            </div>
-                            {#if form.category && form.category.length > 0}
-                                <div class="flex flex-wrap gap-2">
-                                    {#each form.category as cat}
-                                        <div class="badge badge-primary gap-1">
-                                            <span>{cat}</span>
-                                            <button
-                                                type="button"
-                                                class="btn btn-xs btn-ghost"
-                                                onclick={() =>
-                                                    removeCategory(cat)}
-                                            >
-                                                ✕
-                                            </button>
-                                        </div>
-                                    {/each}
-                                </div>
-                            {/if}
+                            <input
+                                id="stock"
+                                type="number"
+                                class="input input-bordered focus:input-primary"
+                                placeholder="0"
+                                bind:value={form.stock}
+                                min="0"
+                            />
                         </div>
                     </div>
 
-                    <div class="modal-action mt-6">
-                        <button
-                            class="btn btn-ghost"
-                            onclick={() => (showForm = false)}>Annuler</button>
-                        <button
-                            class="btn btn-primary px-6"
-                            disabled={!form.title}
-                            onclick={submit}
+                    <!-- Categories -->
+                    <div class="form-control">
+                        <label class="label" for="categories"
+                            ><span class="label-text font-medium"
+                                >Catégories</span
+                            ></label
                         >
-                            {isEditing
-                                ? "Enregistrer les modifications"
-                                : "Créer l'article"}
-                        </button>
+                        <div class="flex gap-2 mb-2">
+                            <select
+                                id="categories"
+                                bind:value={newCategory}
+                                class="select select-bordered select-sm flex-1"
+                            >
+                                <option value="">Ajouter une catégorie</option>
+                                {#each allCategories as cat}
+                                    <option value={cat}>{cat}</option>
+                                {/each}
+                            </select>
+                            <button
+                                type="button"
+                                class="btn btn-sm btn-primary"
+                                onclick={addCategory}
+                                disabled={!newCategory}
+                            >
+                                +
+                            </button>
+                        </div>
+                        {#if form.category && form.category.length > 0}
+                            <div class="flex flex-wrap gap-2">
+                                {#each form.category as cat}
+                                    <div class="badge badge-primary gap-1">
+                                        <span>{cat}</span>
+                                        <button
+                                            type="button"
+                                            class="btn btn-xs btn-ghost"
+                                            onclick={() => removeCategory(cat)}
+                                        >
+                                            ✕
+                                        </button>
+                                    </div>
+                                {/each}
+                            </div>
+                        {/if}
                     </div>
                 </div>
+
+                <div class="modal-action mt-6">
+                    <button
+                        class="btn btn-ghost"
+                        onclick={() => (showForm = false)}>Annuler</button
+                    >
+                    <button
+                        class="btn btn-primary px-6"
+                        disabled={!form.title}
+                        onclick={submit}
+                    >
+                        {isEditing
+                            ? "Enregistrer les modifications"
+                            : "Créer l'article"}
+                    </button>
+                </div>
+            </div>
         </ModalBox>
     {/if}
 
     {#if toDelete}
         <ModalBox onClose={() => (toDelete = null)}>
-                <div class="w-full p-4">
-                    <h3
-                        class="font-bold text-lg text-error flex items-center gap-2"
+            <div class="w-full p-4">
+                <h3
+                    class="font-bold text-lg text-error flex items-center gap-2"
+                >
+                    <Trash2 class="w-6 h-6" />
+                    Confirmation de suppression
+                </h3>
+                <div class="py-4">
+                    <p>
+                        Voulez-vous vraiment supprimer définitivement l'article
+                        :
+                    </p>
+                    <p
+                        class="mt-2 p-3 bg-base-200 rounded-lg font-medium text-center"
                     >
-                        <Trash2 class="w-6 h-6" />
-                        Confirmation de suppression
-                    </h3>
-                    <div class="py-4">
-                        <p>
-                            Voulez-vous vraiment supprimer définitivement
-                            l'article :
-                        </p>
-                        <p
-                            class="mt-2 p-3 bg-base-200 rounded-lg font-medium text-center"
-                        >
-                            {toDelete?.title}
-                        </p>
-                        <p class="text-sm text-base-content/70 mt-4">
-                            Cette action est irréversible.
-                        </p>
-                    </div>
-                    <div class="modal-action">
-                        <button
-                            class="btn btn-ghost"
-                            onclick={() => (toDelete = null)}>Annuler</button>
-                        <button class="btn btn-error px-6" onclick={doDelete}
-                            >Confirmer la suppression</button
-                        >
-                    </div>
+                        {toDelete?.title}
+                    </p>
+                    <p class="text-sm text-base-content/70 mt-4">
+                        Cette action est irréversible.
+                    </p>
                 </div>
+                <div class="modal-action">
+                    <button
+                        class="btn btn-ghost"
+                        onclick={() => (toDelete = null)}>Annuler</button
+                    >
+                    <button class="btn btn-error px-6" onclick={doDelete}
+                        >Confirmer la suppression</button
+                    >
+                </div>
+            </div>
         </ModalBox>
     {/if}
 
@@ -918,22 +944,22 @@
                 selectedImagePreview = null;
             }}
         >
-                <div
-                    class="w-full h-full flex flex-col items-center justify-center p-4"
+            <div
+                class="w-full h-full flex flex-col items-center justify-center p-4"
+            >
+                <img
+                    src={selectedImagePreview}
+                    alt="preview"
+                    class="max-w-full max-h-[70vh] rounded-lg"
+                />
+                <button
+                    class="btn btn-primary mt-4"
+                    onclick={() => {
+                        imagePreviewModal = false;
+                        selectedImagePreview = null;
+                    }}>Fermer</button
                 >
-                    <img
-                        src={selectedImagePreview}
-                        alt="preview"
-                        class="max-w-full max-h-[70vh] rounded-lg"
-                    />
-                    <button
-                        class="btn btn-primary mt-4"
-                        onclick={() => {
-                            imagePreviewModal = false;
-                            selectedImagePreview = null;
-                        }}>Fermer</button
-                    >
-                </div>
+            </div>
         </ModalBox>
     {/if}
 </div>
