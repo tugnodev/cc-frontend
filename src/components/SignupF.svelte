@@ -49,10 +49,12 @@
           });
 
             successMsg = "Compte créé avec succès !";
-            console.log(response.json);
+            console.log(response.json());
+            window.location.href = "/login";
         } catch (err) {
             errorMsg = "Erreur lors de l'inscription.";
             console.error(err);
+          
         }
 
         loading = false;

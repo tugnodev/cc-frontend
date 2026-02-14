@@ -25,6 +25,7 @@
           });
           const data = await response.json();
           console.log(data);
+          window.location.href = "/market";
         } catch (error) {
           console.error(error);
         }
