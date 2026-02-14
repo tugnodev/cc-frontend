@@ -1,5 +1,5 @@
 <script>
-    import { articles } from "../store/articles";
+    import { articles } from "$lib/store/articles";
     import ProductCard from "./ProductCard.svelte";
     let { data = [] } = $props();
 </script>

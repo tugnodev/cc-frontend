@@ -1,5 +1,8 @@
+import { env } from "$env/dynamic/public";
+import { fetch } from "@tauri-apps/plugin-http";
+
 export class BackendFetch {
-  private url: string = "http://localhost:3000";
+  private url: string = env.PUBLIC_API_URL;
   private token: string = "your_token_here";
 
   async post<T>(endPoint: string, data: T) {

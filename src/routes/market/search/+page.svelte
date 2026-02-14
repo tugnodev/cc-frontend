@@ -4,8 +4,8 @@
     import ProductByCategory from "../../../components/ProductByCategory.svelte";
     import Filtre from "../../../components/Filtre.svelte";
     import ModalBox from "../../../components/ModalBox.svelte";
-    import { articles } from "../../../store/articles";
-    import { searchResults } from "../../../store/articles";
+    import { articles } from "$lib/store/articles";
+    import { searchResults } from "$lib/store/articles";
     import { onMount } from "svelte";
 
     const categories = [
@@ -17,23 +17,12 @@
         "Jeux vidéos & consoles",
     ];
 
-    async function loadArticles() {
-        try {
-            const response = await fetch("http://localhost:3000/api/articles");
-            if (response.ok) {
-                const data = await response.json();
-                console.log(JSON.stringify);
-                articles.set(data);
-            } else {
-                console.error("Erreur lors de la récupération");
-            }
-        } catch (error) {
-            console.error("Le serveur est injoignable", error);
-        }
-    }
+    const setSort = (data: string) => {
+        console.log(data);
+    };
 
     onMount(() => {
-        loadArticles();
+        // loadArticles();
     });
 
     // --- ÉTATS ---

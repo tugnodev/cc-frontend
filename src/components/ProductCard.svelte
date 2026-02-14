@@ -1,8 +1,9 @@
 <script lang="ts">
     import ModalBox from "./ModalBox.svelte";
-    import { type articleDto } from "../services/dtos/article";
-    import { type commentDto } from "../services/dtos/comment";
+    import { type articleDto } from "$lib/services/dtos/article";
+    import { type commentDto } from "$lib/services/dtos/comment";
 
+    const { product }: { product: articleDto } = $props();
     let modal = $state(false);
     let commentModal = $state(false);
 
@@ -12,28 +13,6 @@
     ];
 
     let comments: commentDto[] = [];
-
-    let exemple: articleDto = {
-        id: "xxxxxxxxx",
-        userId: "xxxxxxxxx",
-        title: "Nom du produit",
-        price: 99999,
-        stock: 10,
-        category: ["tag", "tag2", "tag3"],
-        rates: 4.5,
-        description:
-            "Description du produit Description du produit Description du produit",
-        images: [
-            "/profile.png",
-            "/profile.png",
-            "/profile.png",
-            "/profile.png",
-            "/profile.png",
-        ],
-        createdAt: new Date(),
-        updatedAt: new Date(),
-    };
-    const { product = exemple } = $props();
 </script>
 
 <div
@@ -48,12 +27,18 @@
     class=""
 >
     <div class="w-full">
-        <span class="aspect-square flex-1 rounded">
-            <img src="/profile.png " alt="profile" />
+        <span class="w-full rounded">
+            <img
+                class="object-cover aspect-square w-full h-full"
+                src={product.images[0]}
+                alt="profile"
+            />
         </span>
     </div>
     <div class="flex flex-col h-full w-full">
-        <h3 class="">{product.title}</h3>
+        <h3 class="text-nowrap overflow-hidden text-ellipsis">
+            {product.title}
+        </h3>
         <h3 class="font-semibold">{product.price} FCFA</h3>
     </div>
 </div>
