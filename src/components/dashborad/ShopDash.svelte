@@ -1,8 +1,8 @@
 <script lang="ts">
     import Chart from "chart.js/auto";
     import { onMount } from "svelte";
-    import { commande } from "../../store/commande";
-    import { orderDto } from "../../services/dtos/order";
+    import { orders } from "$lib/store/order";
+    import { type orderDto } from "$lib/services/dtos/order";
 
     // --- 1. Gestion des Données (Runes) ---
 
@@ -10,33 +10,38 @@
     let categoryCanvas;
     let salesChart;
     let categoryChart;
-    let salesData : number[] = $state([]);
-    let labels : string[] = $state(["janvier", "février", "mars", "avril", "mai", "juin", "juillet", "août", "septembre", "octobre", "novembre", "décembre"]);
+    let salesData = $state(new Array(12).fill(0)); // Initialise 12 mois à 0
+    let labels = ["janvier", "février", "mars", "avril", "mai", "juin", "juillet", "août", "septembre", "octobre", "novembre", "décembre"];
     let commandeData : orderDto[] = $state([]);
-    let total = 0;
-
+    
     onMount(() => {
-          commande.subscribe((data) => {
-        commandeData = data;
-      });
-          if(commandeData.length === 0){
-            return
-          }
-          commandeData.forEach(order => {
-           if(order.order_status === "completed"){
-             if(order.createdAt.getMonth() === Date.now()){
-               return;
-             }
-             order.article_details.forEach(art => {
-               total += art.article.price;
-             });
-
-            salesData.push(total);
-           }
-          });
-
-      
-    })
+        const unsubscribe = orders.subscribe((data) => {
+            if (!data || data.length === 0) return;
+            
+            commandeData = data;
+    
+            const monthlyTotals = new Array(12).fill(0);
+    
+            commandeData.forEach(order => {
+                if (order.order_status === "completed") {
+                    const monthIndex = new Date(order.createdAt).getMonth();
+                    
+                    
+                    let orderTotal = 0;
+                    order.article_details.forEach(art => {
+                        orderTotal += art.article.price;
+                    });
+    
+                    monthlyTotals[monthIndex] += orderTotal;
+                }
+            });
+    
+            // 4. Mise à jour de la rune réactive
+            salesData = monthlyTotals;
+        });
+    
+        return unsubscribe; // Nettoyage de l'abonnement
+    });
 
     // Vos données réactives
 

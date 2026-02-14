@@ -1,6 +1,5 @@
 <script lang="ts">
     import { fade } from "svelte/transition";
-    import { backendFetch } from "../lib/backend";
     const url = "http://localhost:3000/login";
     let email = "";
     let password = "";
