@@ -1,4 +1,8 @@
 <script>
+    import { user as User } from "$lib/store/users";
+
+    const usr = User.get();
+    const user = $usr;
 </script>
 
 <form
@@ -15,33 +19,25 @@
 
     <div class="w-full flex flex-col item-center gap-2 justify-center">
         <input
-            value={`Racine DIOP`}
+            value={user.name}
             class="input input-sm input-border bg-transparent w-full"
             type="text"
             placeholder="Nom Complet"
         />
         <input
-            value={`tugnodev`}
-            class="w-full input input-sm input-border bg-transparent"
-            type="text"
-            placeholder="Nom d'utilisateur"
-        />
-        <input
-            value={`mailofracine1@gmail.com`}
+            value={user.email}
             class="input input-sm input-border bg-transparent w-full"
             type="email"
             placeholder="Email"
         />
-    </div>
-    <div class="w-full flex item-center justify-center gap-2">
         <input
-            value={`781234567`}
+            value={user.address}
             class="w-full input input-sm input-border bg-transparent"
-            type="number"
-            placeholder="Numero de telephone"
+            type="text"
+            placeholder="Nom d'utilisateur"
         />
-        <button class="btn btn-soft btn-sm btn-info"> Ajouter </button>
     </div>
+    <div class="divider my-0 py-0"></div>
     <div class="flex flex-col item-center gap-2 justify-center w-full">
         <input
             type="password"
