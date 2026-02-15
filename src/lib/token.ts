@@ -8,11 +8,11 @@ export class TokenManager {
         defaults: {},
       });
 
-      {
-        await store.set("token", token);
-        await store.save();
-        return "success!";
-      }
+      console.log(JSON.stringify(store));
+
+      await store.set("token", token);
+      await store.save();
+      return "success!";
     } catch (error) {
       console.error("Error saving token:", error);
     }

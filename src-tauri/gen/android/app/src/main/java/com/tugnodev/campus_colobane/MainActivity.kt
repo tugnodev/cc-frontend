@@ -1,4 +1,4 @@
-package com.tugnodev.campus_colobane_frontend
+package com.tugnodev.campus_colobane
 
 import android.os.Bundle
 import androidx.activity.enableEdgeToEdge

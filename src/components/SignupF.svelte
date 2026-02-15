@@ -1,7 +1,13 @@
-<script>
+<script lang="ts">
+    import { env } from "$env/dynamic/public";
     import { fade } from "svelte/transition";
-    
-    const  url = "http://localhost:3000/user/register";
+    import { type authPack } from "$lib/services/dtos/user";
+    import { TokenManager } from "$lib/token";
+    import { user } from "$lib/store/users";
+    import { goto } from "$app/navigation";
+    import { fetch } from "@tauri-apps/plugin-http";
+
+    const url = `${env.PUBLIC_API_URL}/register`;
     let name = "";
     let email = "";
     let password = "";
@@ -11,9 +17,7 @@
     let errorMsg = "";
     let successMsg = "";
 
-
-    async function signUp(e) {
-        e.preventDefault();
+    async function signUp() {
         errorMsg = "";
         successMsg = "";
 
@@ -35,21 +39,29 @@
         loading = true;
 
         try {
-         const response = await fetch(url, {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              "Accept": "application/json",
-            },
-            body: JSON.stringify({
-              name,
-              email,
-              password,
-            }),
-          });
-
+            const response = await fetch(url, {
+                method: "POST",
+                body: JSON.stringify({
+                    name,
+                    email,
+                    password,
+                    image: "/profile.png",
+                }),
+            });
+            const data: authPack | string = await response.json();
+            switch (typeof data) {
+                case "object":
+                    const tokenManager = new TokenManager();
+                    const check = await tokenManager.saveToken(data.token);
+                    console.log(check);
+                    user.set(data.user);
+                    goto("/market");
+                    break;
+                default:
+                    errorMsg = "Erreur lors de l'inscription.";
+            }
             successMsg = "Compte créé avec succès !";
-            console.log(response);
+            loading = false;
         } catch (err) {
             errorMsg = "Erreur lors de l'inscription.";
             console.error(err);
@@ -78,7 +90,7 @@
             </div>
         {/if}
 
-        <form on:submit={signUp}>
+        <form>
             <!-- Name -->
             <div class="form-control mb-4">
                 <label class="label">
@@ -153,7 +165,11 @@
             </label>
 
             <!-- Submit -->
-            <button class="btn btn-success w-full" disabled={loading}>
+            <button
+                onclick={() => signUp()}
+                class="btn btn-success w-full"
+                disabled={loading}
+            >
                 {loading ? "Chargement..." : "S'inscrire"}
             </button>
 

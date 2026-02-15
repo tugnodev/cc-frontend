@@ -2,6 +2,7 @@
     import ModalBox from "./ModalBox.svelte";
     import { type articleDto } from "$lib/services/dtos/article";
     import { type commentDto } from "$lib/services/dtos/comment";
+    import Main from "./Main.svelte";
 
     const { product }: { product: articleDto } = $props();
     let modal = $state(false);
@@ -70,7 +71,7 @@
                 </span>
                 <span class="flex items-center justify-between">
                     <h3 class="font-semibold">{product.price} FCFA</h3>
-                    <span>{product.rates} 🌟</span>
+                    <span>{Math.round(product.rates)} 🌟</span>
                 </span>
                 <div class="flex gap-2">
                     {#each product.category as tag}
