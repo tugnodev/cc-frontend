@@ -10,13 +10,15 @@
     {
       "identifier": "http:default",
       "allow": [
-        { "url": "https://wellborn-nonhabitually-alfonzo.ngrok-free.dev/*" }
+        { "url": "https://wellborn-nonhabitually-alfonzo.ngrok-free.dev/*" },
+        { "url": "http://localhost:3000/*" }
       ]
     },
     {
       "identifier": "http:allow-fetch",
       "allow": [
-        { "url": "https://wellborn-nonhabitually-alfonzo.ngrok-free.dev/*" }
+        { "url": "https://wellborn-nonhabitually-alfonzo.ngrok-free.dev/*" },
+        { "url": "http://localhost:3000/*" }
       ]
     }
   ]

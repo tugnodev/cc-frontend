@@ -12,6 +12,7 @@
   "app": {
     "windows": [
       {
+        "label": "main",
         "title": "campus colobane",
         "width": 414,
         "height": 896,
