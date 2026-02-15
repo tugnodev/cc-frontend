@@ -1,9 +1,12 @@
-<script>
+<script lang="ts">
     import { AtSign, LocateIcon, User, Store } from "@lucide/svelte";
     import ModalBox from "./ModalBox.svelte";
     import UserModal from "./UserModal.svelte";
-    import { user } from "$lib/store/users";
+    import { user as usr } from "$lib/store/users";
     import { goto } from "$app/navigation";
+    import type { authPack } from "$lib/services/dtos/user";
+
+    const user = usr.get();
 
     let modal = $state(false);
 </script>

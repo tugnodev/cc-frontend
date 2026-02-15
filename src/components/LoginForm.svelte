@@ -1,6 +1,12 @@
 <script lang="ts">
     import { fade } from "svelte/transition";
-    const url = "http://localhost:3000/login";
+    import { TokenManager } from "$lib/token";
+    import { env } from "$env/dynamic/public";
+    import type { authPack } from "$lib/services/dtos/user";
+    import { user } from "$lib/store/users";
+    import { goto } from "$app/navigation";
+    import { fetch } from "@tauri-apps/plugin-http";
+    const url = `${env.PUBLIC_API_URL}/login`;
     let email = "";
     let password = "";
     let rememberMe = false;
@@ -14,18 +20,23 @@
             return;
         }
 
-        console.log({ email, password});
-        try{
-          const response = await fetch(url, {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ email, password }),
-          });
-          const data = await response.json();
-          console.log(data);
-          window.location.href = "/market";
+        try {
+            const response = await fetch(url, {
+                method: "POST",
+                body: JSON.stringify({ email, password }),
+            });
+            const data: authPack | string = await response.json();
+            switch (typeof data) {
+                case "object":
+                    const tokenManager = new TokenManager();
+                    await tokenManager.saveToken(data.token);
+                    user.set(data.user);
+                    goto("/market");
+                    break;
+                default:
+                    console.log("Erreur lors de l'inscription.");
+            }
+            //window.location.href = "/market";
         } catch (error) {
             console.error(error);
         }

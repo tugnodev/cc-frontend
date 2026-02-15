@@ -1,4 +1,4 @@
-enum address {
+export enum address {
   UADB = "UADB",
   UGB = "UGB",
   UCAD = "UCAD",
@@ -34,9 +34,11 @@ export interface userDto {
   id: string;
   name: string;
   email: string;
+  emailVerified: false;
   vendeur?: boolean;
   code?: number | null;
   address?: string | null;
+  certified: boolean;
   image?: string | null;
   createdAt: string;
   updatedAt: string;
@@ -48,6 +50,6 @@ export interface userLoginDto {
 }
 
 export interface authPack {
-  token: string | null;
+  token: string;
   user: userDto;
 }
