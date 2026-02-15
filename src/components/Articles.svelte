@@ -82,7 +82,7 @@
 
     // Synchroniser le store vers l'état local
     $effect(() => {
-        const unsub = articleStore.subscribe((data) => {
+        const unsub = userArticles.subscribe((data) => {
             articles = data;
         });
         return unsub;
@@ -123,17 +123,17 @@
 
     // Helpers to manipulate the articles store locally
     function addArticle(a: articleDto) {
-        articleStore.update((arr) => [a, ...arr]);
+        userArticles.update((arr) => [a, ...arr]);
     }
 
     function updateArticle(id: string, updated: articleDto) {
-        articleStore.update((arr) =>
+        userArticles.update((arr) =>
             arr.map((it) => (it.id === id ? { ...it, ...updated } : it)),
         );
     }
 
     function removeArticle(id: string) {
-        articleStore.update((arr) => arr.filter((it) => it.id !== id));
+        userArticles.update((arr) => arr.filter((it) => it.id !== id));
     }
 
     // Upload helper for Supabase Storage (bucket: 'articles')
@@ -156,7 +156,7 @@
 
         // Try to get a public URL
         try {
-            const publicRes: any = await supabase.storage
+            const publicRes: any = supabase.storage
                 .from(bucket)
                 .getPublicUrl(path as unknown as string);
             const publicUrl =
@@ -188,7 +188,7 @@
 
             if (err) throw err;
             const list = (data ?? []).map((row) => rowToArticle(row));
-            articleStore.set(list);
+            userArticles.set(list);
         } catch (e) {
             error =
                 e instanceof Error

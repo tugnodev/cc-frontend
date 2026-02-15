@@ -17,7 +17,8 @@
         "width": 414,
         "height": 896,
         "fullscreen": false,
-        "transparent": true
+        "transparent": true,
+        "alwaysOnTop": true
       }
     ],
     "security": {

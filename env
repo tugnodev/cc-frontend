@@ -1,6 +1,0 @@
-# Provides the URL and anon key for the Supabase project. 
-# These values are used to connect to the Supabase database and perform operations such as authentication, data retrieval, and data manipulation.
-
-PUBLIC_SUPABASE_URL="https://hepleklugynzybyqbpdr.supabase.co"
-
-PUBLIC_SUPABASE_ANON_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhlcGxla2x1Z3luenlieXFicGRyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjkzNjIzOTIsImV4cCI6MjA4NDkzODM5Mn0.R89WlUD11XaK7zWYuchQPQToqBFa4JvQTA7l_Jvf1zs"
