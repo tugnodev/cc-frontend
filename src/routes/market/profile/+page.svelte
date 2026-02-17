@@ -13,6 +13,10 @@
     import PanierModal from "../../../components/PanierModal.svelte";
     import ReviewsModal from "../../../components/ReviewsModal.svelte";
     import type { orderDto } from "$lib/services/dtos/order";
+    import { TokenManager } from "$lib/token";
+    import { BackendFetch } from "$lib/backend";
+    import { goto } from "$app/navigation";
+    import { user } from "$lib/store/users";
     let modal: boolean = $state(false);
     let activeRoute: any = $state(null);
     let orders: orderDto[] = [];
@@ -54,7 +58,26 @@
             {/each}
         </div>
 
-        <button class="w-full btn btn-error">Se deconnecter</button>
+        <button
+            onclick={async () => {
+                const tm = new TokenManager();
+                {
+                    const token = await tm.loadToken().then((tk) => {
+                        if (!tk) return null;
+                        return tk;
+                    });
+                    console.log(token!);
+                    const fetch = new BackendFetch(token!);
+                    const res = await fetch.post("/logout", {});
+                    console.log(res);
+                    if (res.success === true) {
+                        await tm.clearToken();
+                        goto("/auth/login");
+                    }
+                }
+            }}
+            class="w-full btn btn-error">Se deconnecter</button
+        >
     </div>
 </Main>
 

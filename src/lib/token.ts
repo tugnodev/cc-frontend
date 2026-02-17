@@ -29,7 +29,7 @@ export class TokenManager {
 
       if (!token) return null;
 
-      return token;
+      return token as string;
     } catch (error) {
       console.error("Error loading token:", error);
     }

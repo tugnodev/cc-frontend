@@ -56,11 +56,11 @@
                     console.log(check);
                     user.set(data.user);
                     goto("/market");
-                    break;
+                    return;
                 default:
+                    console.log(data);
                     errorMsg = "Erreur lors de l'inscription.";
             }
-            successMsg = "Compte créé avec succès !";
             loading = false;
         } catch (err) {
             errorMsg = "Erreur lors de l'inscription.";
@@ -93,9 +93,7 @@
         <form>
             <!-- Name -->
             <div class="form-control mb-4">
-                <label class="label">
-                    <span class="label-text">Nom</span>
-                </label>
+                <span class="label-text">Nom</span>
                 <input
                     type="text"
                     bind:value={name}
@@ -106,9 +104,7 @@
 
             <!-- Email -->
             <div class="form-control mb-4">
-                <label class="label">
-                    <span class="label-text">Email</span>
-                </label>
+                <span class="label-text">Email</span>
                 <input
                     type="email"
                     bind:value={email}
@@ -119,9 +115,7 @@
 
             <!-- Password -->
             <div class="form-control mb-4">
-                <label class="label">
-                    <span class="label-text">Mot de passe</span>
-                </label>
+                <span class="label-text">Mot de passe</span>
                 <input
                     type="password"
                     bind:value={password}
@@ -132,9 +126,7 @@
 
             <!-- Confirm password -->
             <div class="form-control mb-4">
-                <label class="label">
-                    <span class="label-text">Confirmer le mot de passe</span>
-                </label>
+                <span class="label-text">Confirmer le mot de passe</span>
                 <input
                     type="password"
                     bind:value={confirmPassword}

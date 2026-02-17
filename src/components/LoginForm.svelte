@@ -28,15 +28,17 @@
             const data: authPack | string = await response.json();
             switch (typeof data) {
                 case "object":
-                    const tokenManager = new TokenManager();
-                    await tokenManager.saveToken(data.token);
-                    user.set(data.user);
-                    goto("/market");
+                    console.log(JSON.stringify(data));
+                    if (data.user) {
+                        const tokenManager = new TokenManager();
+                        await tokenManager.saveToken(data.token);
+                        user.set(data.user);
+                        goto("/market");
+                    }
                     break;
                 default:
                     console.log("Erreur lors de l'inscription.");
             }
-            //window.location.href = "/market";
         } catch (error) {
             console.error(error);
         }
