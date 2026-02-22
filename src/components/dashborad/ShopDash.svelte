@@ -1,169 +1,120 @@
 <script lang="ts">
-    import Chart from "chart.js/auto";
-    import { onMount } from "svelte";
-    import { orders } from "$lib/store/order";
-    import { type orderDto } from "$lib/services/dtos/order";
-
-    // --- 1. Gestion des Données (Runes) ---
-    let salesCanvas;
-    let categoryCanvas;
-    let salesChart;
-    let categoryChart;
-
-    let labels = ["janvier", "février", "mars", "avril", "mai", "juin", "juillet", "août", "septembre", "octobre", "novembre", "décembre"];
-
-    // Données brutes du store
-    let commandeData: orderDto[] = $state([]);
-
-    // Données pour les graphiques
-    let salesData = $state(new Array(12).fill(0));
-    let categoryData = $state({ labels: [], values: [] });
-
-    // --- 2. KPIs Dérivés (Automatiquement mis à jour) ---
-    let totalRevenue = $derived(
-        commandeData
-            .filter(o => o.order_status === "completed")
-            .reduce((acc, order) => acc + order.article_details.reduce((sum, art) => sum + art.article.price, 0), 0)
-    );
-
-    let totalOrdersCount = $derived(commandeData.length);
-
-    let avgBasket = $derived(
-        totalOrdersCount > 0 ? (totalRevenue / totalOrdersCount).toFixed(2) : 0
-    );
-
-    onMount(() => {
-        const unsubscribe = orders.subscribe((data) => {
-            if (!data) return;
-            commandeData = data;
-
-            // --- Calcul Ventes Mensuelles ---
-            const monthlyTotals = new Array(12).fill(0);
-            const categoriesMap = new Map();
-
-            commandeData.forEach(order => {
-                // Calcul du total par commande
-                let orderTotal = order.article_details.reduce((sum, art) => sum + art.article.price, 0);
-
-                if (order.order_status === "completed") {
-                    const monthIndex = new Date(order.createdAt).getMonth();
-                    monthlyTotals[monthIndex] += orderTotal;
-                }
-
-                // --- Calcul Répartition par Catégorie ---
-                order.article_details.forEach(item => {
-                    const catName = item.article.category || "Inconnu";
-                    categoriesMap.set(catName, (categoriesMap.get(catName) || 0) + 1);
-                });
-            });
-
-            salesData = monthlyTotals;
-            categoryData = {
-                labels: Array.from(categoriesMap.keys()),
-                values: Array.from(categoriesMap.values())
-            };
-        });
-
-        return unsubscribe;
-    });
-
-    // --- 3. Initialisation et Mise à jour des Graphiques ---
-    $effect(() => {
-        if (!salesCanvas || !categoryCanvas) return;
-
-        const style = getComputedStyle(document.documentElement);
-        const colorPrimary = style.getPropertyValue("--color-primary").trim() || "#3b82f6";
-        const colorSecondary = style.getPropertyValue("--color-secondary").trim() || "#641ae3";
-        const colorAccent = style.getPropertyValue("--color-accent").trim() || "#1fb2a6";
-        const colorBaseContent = style.getPropertyValue("--color-base-content").trim() || "#1f2937";
-
-        // Chart de Ventes
-        if (!salesChart) {
-            salesChart = new Chart(salesCanvas, {
-                type: "line",
-                data: {
-                    labels: [...labels],
-                    datasets: [{
-                        label: "Revenus",
-                        data: [...salesData],
-                        borderColor: colorPrimary,
-                        backgroundColor: colorPrimary,
-                        tension: 0.4,
-                        fill: false,
-                    }]
-                },
-                options: { responsive: true, maintainAspectRatio: false }
-            });
-        } else {
-            salesChart.data.datasets[0].data = salesData;
-            salesChart.update();
-        }
-
-        // Chart de Catégories
-        if (!categoryChart) {
-            categoryChart = new Chart(categoryCanvas, {
-                type: "doughnut",
-                data: {
-                    labels: categoryData.labels,
-                    datasets: [{
-                        data: categoryData.values,
-                        backgroundColor: [colorPrimary, colorSecondary, colorAccent, "#fbbf24", "#ef4444"],
-                    }]
-                },
-                options: { responsive: true, maintainAspectRatio: false, cutout: "75%" }
-            });
-        } else {
-            categoryChart.data.labels = categoryData.labels;
-            categoryChart.data.datasets[0].data = categoryData.values;
-            categoryChart.update();
-        }
+    // Utilisation des runes Svelte 5 pour la réactivité des données
+    // Dans un cas réel, ces données viendraient probablement d'une API ou d'une prop
+    let dashboardData = $state({
+        articles: {
+            total: 1254,
+            rupture: 18,
+        },
+        commandes: {
+            total: 482,
+            attente: 35,
+            acceptees: 412,
+            annulees: 35,
+        },
     });
 </script>
 
-<div class="text-base-content mb-8 p-4 md:p-8">
-    <div class="flex justify-between items-center mb-6">
+<div class="text-base-content w-full flex flex-col mb-8 gap-8 p-4 md:p-8">
+    <div class="flex justify-between items-end border-b border-base-300 pb-4">
         <div>
             <h1 class="text-3xl font-bold">Tableau de Bord</h1>
-            <p class="opacity-60">Basé sur {totalOrdersCount} commandes enregistrées.</p>
+            <p class="text-base-content/70 mt-1">
+                Aperçu général de votre activité
+            </p>
         </div>
+        <button class="btn btn-primary btn-sm">Actualiser</button>
     </div>
 
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-        <div class="card bg-base-200/50 border border-base-300 p-6">
-            <p class="text-sm opacity-70 font-medium">Revenu Total</p>
-            <h3 class="text-3xl font-bold text-primary mt-1">{totalRevenue.toLocaleString()} FCFA</h3>
-        </div>
+    <section class="w-full flex flex-col gap-4">
+        <h2 class="text-xl font-semibold">Inventaire</h2>
 
-        <div class="card bg-base-200/50 border border-base-300 p-6">
-            <p class="text-sm opacity-70 font-medium">Commandes</p>
-            <h3 class="text-3xl font-bold text-secondary mt-1">{totalOrdersCount}</h3>
-        </div>
-
-        <div class="card bg-base-200/50 border border-base-300 p-6">
-            <p class="text-sm opacity-70 font-medium">Panier Moyen</p>
-            <h3 class="text-3xl font-bold text-accent mt-1">{avgBasket} FCFA</h3>
-        </div>
-    </div>
-
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <div class="card lg:col-span-2 bg-base-100 border border-base-300 shadow-xl p-6">
-            <h2 class="card-title text-lg mb-4">Analyse des Ventes Mensuelles</h2>
-            <div class="relative h-[300px] w-full">
-                <canvas bind:this={salesCanvas}></canvas>
+        <div
+            class="stats stats-vertical lg:stats-horizontal shadow w-full border border-base-200 bg-base-100"
+        >
+            <div class="stat">
+                <div class="stat-figure text-primary">
+                    <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        class="inline-block w-8 h-8 stroke-current"
+                        ><path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"
+                        ></path></svg
+                    >
+                </div>
+                <div class="stat-title">Total des articles</div>
+                <div class="stat-value text-primary">
+                    {dashboardData.articles.total}
+                </div>
+                <div class="stat-desc">Articles actifs au catalogue</div>
             </div>
-        </div>
 
-        <div class="card bg-base-100 border border-base-300 shadow-xl p-6">
-            <h2 class="card-title text-lg mb-4">Répartition Catégories</h2>
-            <div class="relative h-[250px] w-full flex justify-center">
-                <canvas bind:this={categoryCanvas}></canvas>
-                <div class="absolute inset-0 flex items-center justify-center pointer-events-none text-center">
-                    <div>
-                        <span class="block text-xl font-bold">{categoryData.labels.length}</span>
-                        <span class="text-xs opacity-50">Types</span>
-                    </div>
+            <div class="stat">
+                <div class="stat-figure text-error">
+                    <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        class="inline-block w-8 h-8 stroke-current"
+                        ><path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+                        ></path></svg
+                    >
+                </div>
+                <div class="stat-title">En rupture de stock</div>
+                <div class="stat-value text-error">
+                    {dashboardData.articles.rupture}
+                </div>
+                <div class="stat-desc text-error font-medium">
+                    Réapprovisionnement urgent
                 </div>
             </div>
         </div>
-    </div>
+    </section>
+
+    <section class="w-full flex flex-col gap-4">
+        <h2 class="text-xl font-semibold">Commandes</h2>
+
+        <div
+            class="stats stats-vertical lg:stats-horizontal shadow w-full border border-base-200 bg-base-100"
+        >
+            <div class="stat">
+                <div class="stat-title">Total des commandes</div>
+                <div class="stat-value">{dashboardData.commandes.total}</div>
+                <div class="stat-desc">Sur les 30 derniers jours</div>
+            </div>
+
+            <div class="stat">
+                <div class="stat-title">En attente</div>
+                <div class="stat-value text-warning">
+                    {dashboardData.commandes.attente}
+                </div>
+                <div class="stat-desc">À traiter aujourd'hui</div>
+            </div>
+
+            <div class="stat">
+                <div class="stat-title">Acceptées</div>
+                <div class="stat-value text-success">
+                    {dashboardData.commandes.acceptees}
+                </div>
+                <div class="stat-desc">Prêtes pour expédition</div>
+            </div>
+
+            <div class="stat">
+                <div class="stat-title">Annulées</div>
+                <div class="stat-value text-error">
+                    {dashboardData.commandes.annulees}
+                </div>
+                <div class="stat-desc text-base-content/50">Motifs divers</div>
+            </div>
+        </div>
+    </section>
 </div>
