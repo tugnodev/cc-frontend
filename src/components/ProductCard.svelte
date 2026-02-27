@@ -2,7 +2,7 @@
     import ModalBox from "./ModalBox.svelte";
     import { type articleDto } from "$lib/services/dtos/article";
     import { type commentDto } from "$lib/services/dtos/comment";
-    import Main from "./Main.svelte";
+    import { panier } from "$lib/store/articles";
 
     const { product }: { product: articleDto } = $props();
     let modal = $state(false);

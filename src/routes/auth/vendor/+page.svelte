@@ -2,7 +2,7 @@
     import Main from "../../../components/Main.svelte";
     import { address, type userDto } from "$lib/services/dtos/user";
     import { goto } from "$app/navigation";
-    import { HomeIcon } from "@lucide/svelte";
+    import { House } from "@lucide/svelte";
     import { BackendFetch } from "$lib/backend";
     import { TokenManager } from "$lib/token";
     import { user as usr } from "$lib/store/users";
@@ -98,7 +98,7 @@
                 onclick={() => goto("/market/profile")}
                 class="btn flex-1 btn-error btn-md"
             >
-                <HomeIcon />
+                <House />
             </button>
             <button
                 onclick={handleSubmit}

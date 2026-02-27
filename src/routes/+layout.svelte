@@ -20,7 +20,7 @@
                 break;
             case false:
                 if (typeof token === "string") {
-                    console.log(token);
+                    console.log("token seen");
                     const fetch = new BackendFetch(token);
                     const session = await fetch.get<userDto>("/session");
                     console.log(JSON.stringify(session));

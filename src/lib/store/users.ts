@@ -29,6 +29,15 @@ class User {
     await store.set("user", JSON.stringify(user));
     this.user = readable(user);
   }
+
+  async clear() {
+    const store = await load("settings.json", {
+      autoSave: false,
+      defaults: {},
+    });
+    await store.clear();
+    this.user = readable(null);
+  }
 }
 
 export const user = new User(null);

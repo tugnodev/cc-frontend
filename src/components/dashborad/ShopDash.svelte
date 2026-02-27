@@ -1,17 +1,47 @@
 <script lang="ts">
-    // Utilisation des runes Svelte 5 pour la réactivité des données
-    // Dans un cas réel, ces données viendraient probablement d'une API ou d'une prop
-    let dashboardData = $state({
+    import { BackendFetch } from "$lib/backend";
+    import { user } from "$lib/store/users";
+    import { TokenManager } from "$lib/token";
+    import { onMount } from "svelte";
+
+    interface stats {
         articles: {
-            total: 1254,
-            rupture: 18,
+            total: number;
+            rupture: number;
+        };
+        commandes: {
+            total: number;
+            attente: number;
+            acceptees: number;
+            annulees: number;
+        };
+    }
+
+    let dashboardData = $state<stats>({
+        articles: {
+            total: 0,
+            rupture: 0,
         },
         commandes: {
-            total: 482,
-            attente: 35,
-            acceptees: 412,
-            annulees: 35,
+            total: 0,
+            attente: 0,
+            acceptees: 0,
+            annulees: 0,
         },
+    });
+
+    onMount(async () => {
+        (await user.get()).subscribe(async (usr) => {
+            let fetch: BackendFetch;
+            {
+                const tm = new TokenManager();
+                const token = await tm.loadToken();
+                fetch = new BackendFetch(token!);
+            }
+
+            const stats = (await fetch.get(`/stats/${usr?.id}`)) as stats;
+            dashboardData = stats;
+        });
     });
 </script>
 
@@ -29,9 +59,7 @@
     <section class="w-full flex flex-col gap-4">
         <h2 class="text-xl font-semibold">Inventaire</h2>
 
-        <div
-            class="stats stats-vertical lg:stats-horizontal shadow w-full border border-base-200 bg-base-100"
-        >
+        <div class="w-full rounded shadow border border-base-300 bg-base-100">
             <div class="stat">
                 <div class="stat-figure text-primary">
                     <svg
@@ -83,9 +111,7 @@
     <section class="w-full flex flex-col gap-4">
         <h2 class="text-xl font-semibold">Commandes</h2>
 
-        <div
-            class="stats stats-vertical lg:stats-horizontal shadow w-full border border-base-200 bg-base-100"
-        >
+        <div class="rounded shadow w-full border border-base-200 bg-base-100">
             <div class="stat">
                 <div class="stat-title">Total des commandes</div>
                 <div class="stat-value">{dashboardData.commandes.total}</div>

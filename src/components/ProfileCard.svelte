@@ -76,6 +76,6 @@
 
 {#if modal}
     <ModalBox onClose={() => (modal = false)}>
-        <UserModal />
+        <UserModal user={$user} />
     </ModalBox>
 {/if}
