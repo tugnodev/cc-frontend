@@ -28,10 +28,11 @@
             const data: authPack | string = await response.json();
             switch (typeof data) {
                 case "object":
-                    console.log(JSON.stringify(data));
+                    console.log(`returned ${JSON.stringify(data)}`);
                     if (data.user) {
                         const tokenManager = new TokenManager();
                         await tokenManager.saveToken(data.token);
+                        console.log(`user data: ${JSON.stringify(data.user)}`);
                         user.set(data.user);
                         goto("/market");
                     }

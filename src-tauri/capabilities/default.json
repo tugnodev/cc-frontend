@@ -9,11 +9,7 @@
     "opener:default",
     {
       "identifier": "http:default",
-      "allow": [
-        { "url": "https://wellborn-nonhabitually-alfonzo.ngrok-free.dev/*" },
-        { "url": "http://localhost:3000/*" },
-        { "url": "https://6367-41-82-212-194.ngrok-free.app/*" }
-      ]
+      "allow": [{ "url": "https://campus-colobane-backend.onrender.com/*" }]
     }
   ]
 }

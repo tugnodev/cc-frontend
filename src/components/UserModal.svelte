@@ -1,8 +1,10 @@
-<script>
-    import { user as User } from "$lib/store/users";
+<script lang="ts">
+    import type { userDto } from "$lib/services/dtos/user";
+    import { user as usr } from "$lib/store/users";
+    import { onMount } from "svelte";
+    import type { Readable } from "svelte/store";
 
-    const usr = User.get();
-    const user = $usr;
+    const { user }: { user: userDto | null } = $props();
 </script>
 
 <form
@@ -19,19 +21,19 @@
 
     <div class="w-full flex flex-col item-center gap-2 justify-center">
         <input
-            value={user.name}
+            value={user!.name}
             class="input input-sm input-border bg-transparent w-full"
             type="text"
             placeholder="Nom Complet"
         />
         <input
-            value={user.email}
+            value={user!.email}
             class="input input-sm input-border bg-transparent w-full"
             type="email"
             placeholder="Email"
         />
         <input
-            value={user.address}
+            value={user!.address}
             class="w-full input input-sm input-border bg-transparent"
             type="text"
             placeholder="Nom d'utilisateur"

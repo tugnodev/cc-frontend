@@ -1,35 +1,31 @@
 <script>
     import { Search } from "@lucide/svelte";
-    export let placeholder = "Rechercher...";
-    export let onSearch = (/** @type {string} */ query) => {};
+    import { articles, searchResults } from "$lib/store/articles";
 
-    let query = "";
+    let query = $state("");
 
-    function handleSearch() {
-        onSearch(query);
-    }
+    const handleSearch = () => {
+        console.log(query);
+        searchResults.set(
+            $articles.filter((article) =>
+                article.title.toLowerCase().includes(query.toLowerCase()),
+            ),
+        );
 
-    /**
-     * @param {{ key: string; }} event
-     */
-    function handleKey(event) {
-        if (event.key === "Enter") {
-            handleSearch();
-        }
-    }
+        console.log($searchResults);
+    };
 </script>
 
-<div class="flex w-11/12 m-2.5">
+<div class="flex w-full">
     <input
         type="text"
         bind:value={query}
-        {placeholder}
+        placeholder="Rechercher un produit..."
         class="input input-bordered flex-1 rounded-l-lg rounded-r-none"
-        on:keydown={handleKey}
     />
     <button
         class="btn btn-primary rounded-l-none rounded-r-lg"
-        on:click={handleSearch}
+        onclick={handleSearch}
     >
         <Search class="w-5 h-5" />
     </button>

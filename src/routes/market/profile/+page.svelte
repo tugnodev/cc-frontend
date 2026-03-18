@@ -71,6 +71,7 @@
                     const res = await fetch.post("/logout", {});
                     console.log(res);
                     if (res.success === true) {
+                        await user.clear();
                         await tm.clearToken();
                         goto("/auth/login");
                     }

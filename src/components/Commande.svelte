@@ -14,11 +14,29 @@
     import { onMount } from "svelte";
     import { orders } from "$lib/store/order";
     import type { orderDto } from "$lib/services/dtos/order";
+    import { BackendFetch } from "$lib/backend";
+    import { TokenManager } from "$lib/token";
+    import { user } from "$lib/store/users";
+    import Spinner from "./Spinner.svelte";
 
-    let statutActif = "Toutes";
+    let statutActif = $state("Toutes");
+    let loading = $state(true);
 
-    onMount(() => {
-        console.log("mounted");
+    onMount(async () => {
+        let fetch: BackendFetch;
+        {
+            const tm = new TokenManager();
+            const token = await tm.loadToken();
+            fetch = new BackendFetch(token!);
+        }
+        const usr = await user.get();
+        usr.subscribe(async (user) => {
+            const res = (await fetch.get(`/order/${user!.id}`)) as orderDto[];
+            if (typeof res === "string") return [];
+            if (!res) return [];
+            orders.set(res);
+            loading = false;
+        });
     });
 
     async function changerStatut(id: string, nouveauStatut: string) {
@@ -30,10 +48,11 @@
     }
 
     // Filtrer selon le statut
-    $: commandesFiltrees =
+    let commandesFiltrees = $derived(
         statutActif === "Toutes"
             ? $orders
-            : $orders.filter((c: orderDto) => c.order_status === statutActif);
+            : $orders.filter((c: orderDto) => c.order_status === statutActif),
+    );
 </script>
 
 <div
@@ -81,73 +100,71 @@
             <XCircle class="w-4 h-4" /> Annulé
         </button>
     </div>
+</div>
+<!-- COMMANDES -->
+{#if loading}
+    <Spinner />
+{:else if $orders.length === 0}
+    <p class="text-center text-gray-500 mt-10">Aucune commande trouvée</p>
+{:else if commandesFiltrees.length === 0}
+    <p class="text-center text-gray-500 mt-10">Aucune commande trouvée</p>
+{:else}
+    <div class="w-full max-w-3xl space-y-2 mt-6">
+        {#each commandesFiltrees as commande}
+            <div
+                class="collapse border-2 rounded-xl border-base-300 bg-base-100/60"
+            >
+                <input type="checkbox" />
 
-    <!-- COMMANDES -->
-    {#if commandesFiltrees.length === 0}
-        <p class="text-center text-gray-500 mt-10">Aucune commande trouvée</p>
-    {:else}
-        <div class="w-full max-w-3xl space-y-2 mt-6">
-            {#each commandesFiltrees as commande}
                 <div
-                    class="collapse border-2 rounded-xl border-base-300 bg-base-100/60"
+                    class="collapse-title text-lg font-semibold flex justify-between items-center"
                 >
-                    <input type="checkbox" />
-
-                    <div
-                        class="collapse-title text-lg font-semibold flex justify-between items-center"
-                    >
-                        <span
-                            >Commande #{commande.id} – {commande.buyer_id}</span
-                        >
-                        <div class="flex items-center gap-2">
-                            <span class="badge">{commande.order_status}</span>
-                            <ChevronDown class="w-5 h-5" />
-                        </div>
-                    </div>
-
-                    <div class="collapse-content">
-                        <p>
-                            <strong>Date :</strong>
-                            {new Date(commande.createdAt).toLocaleDateString()}
-                        </p>
-
-                        <p class="mt-2 font-semibold">Articles :</p>
-                        <ul class="list-disc ml-5">
-                            {#each commande.article_details as article}
-                                <li>
-                                    {article.quantity} – Qté: {article.quantity}
-                                </li>
-                            {/each}
-                        </ul>
-
-                        <div class="mt-4 flex gap-2 flex-wrap">
-                            <button
-                                class="btn btn-success btn-sm flex gap-1"
-                                onclick={() =>
-                                    changerStatut(commande.id, "Validé")}
-                            >
-                                <Check class="w-4 h-4" /> Valider
-                            </button>
-
-                            <button
-                                class="btn btn-error btn-sm flex gap-1"
-                                onclick={() =>
-                                    changerStatut(commande.id, "Annulé")}
-                            >
-                                <X class="w-4 h-4" /> Annuler
-                            </button>
-
-                            <button
-                                class="btn btn-outline btn-sm flex gap-1"
-                                onclick={() =>
-                                    contacterClient(commande.buyer_id)}
-                            >
-                                <MessageCircle class="w-4 h-4" /> Contacter
-                            </button>
-                        </div>
+                    <span>Commande #{commande.id} – {commande.buyer_id}</span>
+                    <div class="flex items-center gap-2">
+                        <span class="badge">{commande.order_status}</span>
+                        <ChevronDown class="w-5 h-5" />
                     </div>
                 </div>
-            {/each}
-        </div>
-    {/if}
-</div>
+
+                <div class="collapse-content">
+                    <p>
+                        <strong>Date :</strong>
+                        {new Date(commande.createdAt).toLocaleDateString()}
+                    </p>
+
+                    <p class="mt-2 font-semibold">Articles :</p>
+                    <ul class="list-disc ml-5">
+                        {#each commande.article_details as article}
+                            <li>
+                                {article.quantity} – Qté: {article.quantity}
+                            </li>
+                        {/each}
+                    </ul>
+
+                    <div class="mt-4 flex gap-2 flex-wrap">
+                        <button
+                            class="btn btn-success btn-sm flex gap-1"
+                            onclick={() => changerStatut(commande.id, "Validé")}
+                        >
+                            <Check class="w-4 h-4" /> Valider
+                        </button>
+
+                        <button
+                            class="btn btn-error btn-sm flex gap-1"
+                            onclick={() => changerStatut(commande.id, "Annulé")}
+                        >
+                            <X class="w-4 h-4" /> Annuler
+                        </button>
+
+                        <button
+                            class="btn btn-outline btn-sm flex gap-1"
+                            onclick={() => contacterClient(commande.buyer_id)}
+                        >
+                            <MessageCircle class="w-4 h-4" /> Contacter
+                        </button>
+                    </div>
+                </div>
+            </div>
+        {/each}
+    </div>
+{/if}

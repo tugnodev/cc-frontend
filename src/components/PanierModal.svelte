@@ -3,6 +3,9 @@
     import { panier } from "$lib/store/articles";
     import type { cartDto } from "$lib/services/dtos/cart";
     import { onMount } from "svelte";
+    import { TokenManager } from "$lib/token";
+    import { BackendFetch } from "$lib/backend";
+    import { user as usr } from "$lib/store/users";
 
     let cart = $state($panier);
 

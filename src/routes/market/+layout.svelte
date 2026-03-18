@@ -10,6 +10,29 @@
     import { goto } from "$app/navigation";
     import { panier } from "$lib/store/articles";
 
+    const load = async () => {
+        const tm = new TokenManager();
+        const token = await tm.loadToken().then((token) => {
+            if (typeof token === "string") {
+                return token;
+            } else {
+                return null;
+            }
+        });
+        const fetch = new BackendFetch(token!);
+        const user = await usr.get();
+        if (user === null) return;
+        user.subscribe(async (user) => {
+            const cart = await fetch.get<cartDto>(`/cart/${user?.id}`);
+            console.log(cart);
+            if (typeof cart === "string") window.location.reload();
+            panier.set(cart);
+            return;
+        });
+    };
+
+    load();
+
     let { children } = $props();
 </script>
 
