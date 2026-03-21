@@ -6,39 +6,6 @@
     import { TokenManager } from "$lib/token";
     import Main from "../components/Main.svelte";
     import Spinner from "../components/Spinner.svelte";
-
-    const load = async () => {
-        const tm = new TokenManager();
-        const token = (await tm.loadToken()) as string;
-        switch (!token) {
-            case true:
-                goto("/auth/login");
-                break;
-            case false:
-                if (typeof token === "string") {
-                    const fetch = new BackendFetch(token);
-                    const session = await fetch.get<userDto>("/session");
-                    switch (typeof session) {
-                        case "string":
-                            goto("/auth/login");
-                            break;
-                        case "object":
-                            if (session.message) {
-                                goto("/auth/login");
-                            }
-                            user.set(session);
-                            goto("/market");
-                            break;
-                        default:
-                            window.location.reload();
-                            break;
-                    }
-                }
-                break;
-        }
-    };
-
-    load();
 </script>
 
 <Main>

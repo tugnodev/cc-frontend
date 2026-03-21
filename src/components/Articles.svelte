@@ -14,6 +14,9 @@
         ChevronsUpDown,
         Image as ImageIcon,
     } from "@lucide/svelte";
+    import { user } from "$lib/store/users";
+    import { BackendFetch } from "$lib/backend";
+    import { TokenManager } from "$lib/token";
 
     const TABLE = "Articles";
 
@@ -82,10 +85,7 @@
 
     // Synchroniser le store vers l'état local
     $effect(() => {
-        const unsub = userArticles.subscribe((data) => {
-            articles = data;
-        });
-        return unsub;
+        articles = $userArticles;
     });
 
     // Modal / form
@@ -181,14 +181,19 @@
         loading = true;
         error = null;
         try {
-            const { data, error: err } = await supabase
-                .from(TABLE)
-                .select("*")
-                .order("updatedAt", { ascending: false });
+            (await user.get()).subscribe(async (usr) => {
+                let fetch: BackendFetch;
+                {
+                    const tm = new TokenManager();
+                    const token = (await tm.loadToken()) as string;
+                    fetch = new BackendFetch(token);
+                }
 
-            if (err) throw err;
-            const list = (data ?? []).map((row) => rowToArticle(row));
-            userArticles.set(list);
+                const res = (await fetch.get(
+                    `/articles/user/${usr?.id}`,
+                )) as articleDto[];
+                articles = res;
+            });
         } catch (e) {
             error =
                 e instanceof Error
@@ -305,7 +310,7 @@
                 price: form.price,
                 stock: form.stock,
                 images: previewImages,
-                category: form.category || [],
+                category: form.category,
             });
 
             if (isEditing && form.id) {
