@@ -9,15 +9,7 @@
     "opener:default",
     {
       "identifier": "http:default",
-<<<<<<< HEAD
-      "allow": [
-        { "url": "https://wellborn-nonhabitually-alfonzo.ngrok-free.dev/*" },
-        { "url": "http://localhost:3000/*" },
-        { "url": " https://paripinnate-nonlibelously-emely.ngrok-free.dev/*" }
-      ]
-=======
       "allow": [{ "url": "https://campus-colobane-backend.onrender.com/*" }]
->>>>>>> 5fe4a3ac25bbccf4ef0348b9f209805cb8976c32
     }
   ]
 }

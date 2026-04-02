@@ -14,7 +14,7 @@ export const load = async () => {
     }
   });
   const fetch = new BackendFetch(token!);
-  usr.get().subscribe(async (user) => {
+  (await usr.get()).subscribe(async (user) => {
     const cart = await fetch.get<cartDto>(`/cart/${user?.id}`);
     console.log(cart);
     if (typeof cart === "string") window.location.reload();
