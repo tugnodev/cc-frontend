@@ -20,6 +20,7 @@
     "@tauri-apps/plugin-http": "^2.5.7",
     "@tauri-apps/plugin-opener": "^2.5.3",
     "@tauri-apps/plugin-store": "^2.4.2",
+    "@tauri-apps/plugin-websocket": "^2.4.2",
     "argon2": "^0.44.0",
     "chart.js": "^4.5.1",
     "daisyui": "^5.5.5",

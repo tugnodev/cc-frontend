@@ -1,130 +1,158 @@
+import { socket } from "$lib/Socket";
+
 export type Message = {
-    id: number;
-    text: string;
-    sender: "me" | "them";
-    timestamp: Date;
+  id: string;
+  roomId: string;
+  userId: string;
+  message: string;
+  articleId: string | null;
+  createdAt: Date;
+  updatedAt: Date;
 };
 
 export type Discussion = {
-    id: number;
-    sender: string;
-    avatar: string;
-    messages: Message[];
-    unreadCount: number;
+  id: string;
+  sender: string;
+  avatar: string;
+  messages: Message[];
+  unreadCount: number;
 };
 
-// State réactif global
-let discussions = $state<Discussion[]>([
-    {
-        id: 1,
-        sender: "Wourry Diallo",
-        avatar: "https://img.daisyui.com/images/profile/demo/kenobee@192.webp",
-        unreadCount: 2,
-        messages: [
-            { id: 1, text: "Bonjour, comment allez-vous ?", sender: "them", timestamp: new Date("2026-01-27T10:00:00") },
-            { id: 2, text: "Salut, les bouteilles sont dispo ?", sender: "them", timestamp: new Date("2026-01-27T15:30:00") }
-        ]
-    },
-    {
-        id: 2,
-        sender: "Devprocode ",
-        avatar: "https://img.daisyui.com/images/profile/demo/anakeen@192.webp",
-        unreadCount: 0,
-        messages: [
-            { id: 1, text: "Tu étais l'élu !", sender: "them", timestamp: new Date("2026-01-26T12:45:00") },
-            { id: 3, text: "Calme-toi, Anakin.", sender: "me", timestamp: new Date("2026-01-26T12:47:00") }
-        ]
-    },
-    {
-        id: 3,
-        sender: "Seira Dieng",
-        avatar: "https://i.pravatar.cc/150?u=seira",
-        unreadCount: 5,
-        messages: [
-            { id: 1, text: "Coucou ! On se voit demain pour le projet ?", sender: "them", timestamp: new Date("2026-01-27T09:10:00") },
-            { id: 2, text: "N'oublie pas les documents.", sender: "them", timestamp: new Date("2026-01-27T09:11:00") }
-        ]
-    },
-    {
-        id: 4,
-        sender: "Mamadou Ba",
-        avatar: "https://i.pravatar.cc/150?u=mamadou",
-        unreadCount: 0,
-        messages: [
-            { id: 1, text: "Le virement a été effectué.", sender: "them", timestamp: new Date("2026-01-25T20:30:00") },
-            { id: 2, text: "Bien reçu, merci !", sender: "me", timestamp: new Date("2026-01-25T21:00:00") }
-        ]
-    },
-    {
-        id: 5,
-        sender: "Fatou Ndiaye",
-        avatar: "https://i.pravatar.cc/150?u=fatou",
-        unreadCount: 1,
-        messages: [
-            { id: 1, text: "La machine est-elle de bonne qualité ?", sender: "them", timestamp: new Date("2026-01-28T08:15:00") }
-        ]
-    },
-    {
-        id: 6,
-        sender: "Abdoulaye Sow",
-        avatar: "https://i.pravatar.cc/150?u=abdou",
-        unreadCount: 0,
-        messages: [
-            { id: 1, text: "Les foulards c'est à combien ?", sender: "them", timestamp: new Date("2026-01-24T22:45:00") },
-            { id: 2, text: "C'est 5000 FCFA l'unité.", sender: "me", timestamp: new Date("2026-01-24T22:50:00") },
-            { id: 3, text: "Ok c'est noté.", sender: "them", timestamp: new Date("2026-01-24T22:55:00") }
-        ]
-    },
-    {
-        id: 7,
-        sender: "Ebaidy Fall",
-        avatar: "https://i.pravatar.cc/150?u=seira",
-        unreadCount: 5,
-        messages: [
-            { id: 1, text: "Coucou ! On se voit demain pour le projet ?", sender: "them", timestamp: new Date("2026-01-27T09:10:00") },
-            { id: 2, text: "N'oublie pas les documents.", sender: "them", timestamp: new Date("2026-01-27T09:11:00") },
-            { id: 3, text: "Et le café aussi haha", sender: "them", timestamp: new Date("2026-01-27T09:12:00") }
-        ]
-    },
-    {
-        id: 8,
-        sender: "Racine Diop ",
-        avatar: "https://i.pravatar.cc/150?u=mamadou",
-        unreadCount: 0,
-        messages: [
-            { id: 1, text: "Le virement a été effectué.", sender: "them", timestamp: new Date("2026-01-25T20:30:00") },
-            { id: 2, text: "Bien reçu, merci !", sender: "me", timestamp: new Date("2026-01-25T21:00:00") }
-        ]
-    },
-    {
-        id: 9,
-        sender: "Racine Diop ",
-        avatar: "https://i.pravatar.cc/150?u=mamadou",
-        unreadCount: 0,
-        messages: [
-            { id: 1, text: "Le virement a été effectué.", sender: "them", timestamp: new Date("2026-01-25T20:30:00") },
-            { id: 2, text: "Bien reçu, merci !", sender: "me", timestamp: new Date("2026-01-25T21:00:00") }
-        ]
-    }
+class ChatStore {
+  discussions = $state<Discussion[]>([
+  {
+    id: "1",
+    sender: "Racine Diop",
+    avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Racine",
+    messages: [
+      {
+        id: crypto.randomUUID(),
+        roomId: "1",
+        userId: "2",
+        message: "Naka mou ame gua pochette iPhone 13 bi ?",
+        articleId: "art_123",
+        createdAt: new Date(Date.now() - 3600000 * 2), 
+        updatedAt: new Date(),
+      },
+      {
+        id: crypto.randomUUID(),
+        roomId: "1",
+        userId: "1",
+        message: "Waouh, mangui koy diay 5000 f.",
+        articleId: null,
+        createdAt: new Date(Date.now() - 3600000), 
+        updatedAt: new Date(),
+      }
+    ],
+    unreadCount: 0,
+  },
+  {
+    id: "2",
+    sender: "Fatou Kiné Sarr",
+    avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Fatou",
+    messages: [
+      {
+        id: crypto.randomUUID(),
+        roomId: "2",
+        userId: "2",
+        message: "Est-ce que le livre de calcul intégral est toujours dispo ?",
+        articleId: "book_456",
+        createdAt: new Date(Date.now() - 1800000), 
+        updatedAt: new Date(),
+      }
+    ],
+    unreadCount: 1, 
+  },
+  {
+    id: "3",
+    sender: "Moussa NDIAYE",
+    avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Moussa",
+    messages: [
+      {
+        id: crypto.randomUUID(),
+        roomId: "3",
+        userId: "1",
+        message: "On se voit devant le resto U à 13h ?",
+        articleId: null,
+        createdAt: new Date(Date.now() - 900000), 
+        updatedAt: new Date(),
+      },
+      {
+        id: crypto.randomUUID(),
+        roomId: "3",
+        userId: "2",
+        message: "D'accord, j'amène l'ordinateur.",
+        articleId: null,
+        createdAt: new Date(Date.now() - 300000), 
+        updatedAt: new Date(),
+      }
+    ],
+    unreadCount: 0,
+  },
+  {
+    id: "4",
+    sender: "Ami Collé",
+    avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Ami",
+    messages: [
+      {
+        id: crypto.randomUUID(),
+        roomId: "4",
+        userId: "2",
+        message: "Ton prix final pour les chaussures c'est combien ?",
+        articleId: "shoes_789",
+        createdAt: new Date(Date.now() - 60000), 
+        updatedAt: new Date(),
+      }
+    ],
+    unreadCount: 1,
+  }
 ]);
 
-export const chatStore = {
-    get discussions() { return discussions; },
-    
-    sendMessage(discussionId: number, text: string) {
-        const d = discussions.find(d => d.id === discussionId);
-        if (d) {
-            d.messages.push({
-                id: Date.now(),
-                text,
-                sender: "me",
-                timestamp: new Date()
-            });
-        }
-    },
-
-    markAsRead(discussionId: number) {
-        const d = discussions.find(d => d.id === discussionId);
-        if (d) d.unreadCount = 0;
+  receiveMessage(discussionId: string, text: string) {
+    const d = this.discussions.find((d) => d.id === discussionId);
+    if (d) {
+      d.messages.push({
+        id: crypto.randomUUID(),
+        roomId: discussionId,
+        userId: "2",
+        message: text,
+        articleId: null,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      });
+      d.unreadCount++;
     }
-};
+  }
+
+  async sendMessage(discussionId: string, text: string) {
+    const d = this.discussions.find((d) => d.id === discussionId);
+    if (d) {
+      const newMessage: Message = {
+        id: crypto.randomUUID(),
+        roomId: discussionId,
+        userId: "1", 
+        message: text,
+        articleId: null,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      };
+
+      d.messages.push(newMessage);
+
+      await socket.send(
+        JSON.stringify({
+          type: "chat",
+          roomId: discussionId,
+          message: text,
+        })
+      );
+    }
+  }
+
+  markAsRead(discussionId: string) {
+    const d = this.discussions.find((d) => d.id === discussionId);
+    if (d) d.unreadCount = 0;
+  }
+}
+
+export const chatStore = new ChatStore();

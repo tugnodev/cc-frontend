@@ -7,10 +7,12 @@
 
     const sortedDiscussions = $derived(
         [...chatStore.discussions].sort((a, b) => {
-            const dateA =
-                a.messages[a.messages.length - 1]?.timestamp.getTime() || 0;
-            const dateB =
-                b.messages[b.messages.length - 1]?.timestamp.getTime() || 0;
+            const lastMsgA = a.messages[a.messages.length - 1];
+            const lastMsgB = b.messages[b.messages.length - 1];
+            
+            const dateA = lastMsgA ? new Date(lastMsgA.createdAt).getTime() : 0;
+            const dateB = lastMsgB ? new Date(lastMsgB.createdAt).getTime() : 0;
+            
             return dateB - dateA;
         }),
     );
@@ -31,52 +33,68 @@
             >
                 <ArrowLeft size={35} strokeWidth={2.5} />
             </button>
-            <h1 class="text-2xl font-bold">Discussions</h1>
+            <h1 class="text-2xl font-bold">Messages</h1>
         </div>
 
         <div class="flex gap-2 mb-3 px-3">
             <button
-                class="btn btn-sm {filter === 'all' ? 'btn-primary' : ''}"
+                class="btn btn-sm rounded-full {filter === 'all' ? 'btn-primary' : 'btn-ghost bg-base-200'}"
                 onclick={() => (filter = "all")}>Toutes</button
             >
             <button
-                class="btn btn-sm {filter === 'unread' ? 'btn-primary' : ''}"
-                onclick={() => (filter = "unread")}>Non lues</button
-            >
+                class="btn btn-sm rounded-full {filter === 'unread' ? 'btn-primary' : 'btn-ghost bg-base-200'}"
+                onclick={() => (filter = "unread")}>
+                Non lues  
+                {chatStore.discussions.reduce((acc, d) => acc + d.unreadCount, 0)}
+            
+            </button>
         </div>
     </div>
+
     <div class="flex-1 overflow-y-auto no-scrollbar pb-20 p-3">
         {#each filteredDiscussions as d (d.id)}
+            {@const lastMessage = d.messages[d.messages.length - 1]}
             <a
                 href="/chat/{d.id}"
-                class="flex items-center gap-3 p-4 mb-2 rounded-xl border hover:bg-base-300 transition bg-base-200"
+                class="flex items-center gap-3 p-4 mb-2 rounded-2xl border border-base-300 hover:border-primary/50 transition-all bg-base-100 hover:bg-base-200 shadow-sm"
             >
                 <div class="avatar">
-                    <div class="w-12 rounded-full">
-                        <img src={d.avatar} alt={d.sender} />
+                    <div class="w-14 rounded-full bg-neutral text-neutral-content">
+                        {#if d.avatar}
+                            <img src={d.avatar} alt={d.sender} />
+                        {:else}
+                            <span class="text-xl">{d.sender[0]}</span>
+                        {/if}
                     </div>
                 </div>
+                
                 <div class="flex-1 min-w-0">
-                    <div class="flex justify-between items-center">
-                        <span class="font-bold truncate">{d.sender}</span>
-                        <span class="text-xs opacity-60">
-                            {d.messages[
-                                d.messages.length - 1
-                            ]?.timestamp.toLocaleTimeString([], {
-                                hour: "2-digit",
-                                minute: "2-digit",
-                            })}
-                        </span>
+                    <div class="flex justify-between items-center mb-1">
+                        <span class="font-bold text-base truncate">{d.sender}</span>
+                        {#if lastMessage}
+                            <span class="text-xs opacity-60">
+                                {new Date(lastMessage.createdAt).toLocaleTimeString([], {
+                                    hour: "2-digit",
+                                    minute: "2-digit",
+                                })}
+                            </span>
+                        {/if}
                     </div>
-                    <p class="text-sm truncate opacity-80">
-                        {d.messages[d.messages.length - 1]?.text ||
-                            "Pas de message"}
-                    </p>
+                    
+                    <div class="flex justify-between items-center gap-2">
+                        <p class="text-sm truncate opacity-70 {d.unreadCount > 0 ? 'font-semibold text-base-content' : ''}">
+                            {lastMessage?.message || "Aucun message"}
+                        </p>
+                        {#if d.unreadCount > 0}
+                            <span class="badge badge-primary badge-sm font-bold">{d.unreadCount}</span>
+                        {/if}
+                    </div>
                 </div>
-                {#if d.unreadCount > 0}
-                    <span class="badge badge-primary">{d.unreadCount}</span>
-                {/if}
             </a>
+        {:else}
+            <div class="flex flex-col items-center justify-center mt-20 opacity-40">
+                <p>Aucune discussion trouvée.</p>
+            </div>
         {/each}
     </div>
 </div>
