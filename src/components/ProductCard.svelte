@@ -3,14 +3,33 @@
     import { type articleDto } from "$lib/services/dtos/article";
     import { type commentDto } from "$lib/services/dtos/comment";
     import { panier } from "$lib/store/articles";
+    import { type item } from "$lib/services/dtos/cart";
 
     const { product }: { product: articleDto } = $props();
     let modal = $state(false);
     let commentModal = $state(false);
 
+    const addToCart = (product: articleDto) => {
+        const item: item = {
+            articleId: product.id,
+            name: product.title,
+            price: product.price,
+            image: product.images[0],
+        };
+        panier.update((cart) => {
+            for (let item of cart.cart) {
+                if (item.articleId === product.id) {
+                    return cart;
+                }
+            }
+            cart.cart = [...cart.cart, item];
+            return cart;
+        });
+    };
+
     const actions = [
         { label: "Commander", callback: () => "void" },
-        { label: "Ajouter au panier", callback: () => "void" },
+        { label: "Ajouter au panier", callback: addToCart },
     ];
 
     let comments: commentDto[] = [];
@@ -50,13 +69,13 @@
             class="flex flex-col items-center justify-center gap-2 w-full p-2 overflow-scroll"
         >
             <div
-                class="carousel carousel-center w-full max-w-md md:max-w-2xl h-[50vh] md:h-[80vh] max-h-48 md:max-h-72 space-x-2 rounded"
+                class="max-w-4xl flex h-56 overflow-x-auto snap-x snap-mandatory scroll-smooth gap-2 rounded"
             >
                 {#each product.images as image}
-                    <div class="carousel-item h-full">
+                    <div class="h-full shrink-0 snap-center">
                         <img
                             src={image}
-                            class="aspect-square object-cover"
+                            class="h-full aspect-square object-cover"
                             alt=""
                         />
                     </div>
@@ -99,7 +118,7 @@
             >
                 {#each actions as action}
                     <button
-                        onclick={() => action.callback()}
+                        onclick={() => action.callback(product)}
                         class={`btn flex-1 btn-soft ${action.label === "Ajouter au panier" ? "btn-primary" : "btn-accent"}`}
                         >{action.label}</button
                     >

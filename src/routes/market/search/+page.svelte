@@ -43,7 +43,7 @@
 </script>
 
 <Main>
-    <section class="w-full px-2 flex flex-col gap-2">
+    <section class="w-full px-2 mt-1 flex flex-col gap-2">
         <SearchBar />
 
         <div class="flex justify-between items-center w-full">

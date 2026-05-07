@@ -33,3 +33,8 @@ export type Message = {
   createdAt: Date;
   updatedAt: Date;
 };
+
+export interface socketData {
+  type: string;
+  payload: string;
+}

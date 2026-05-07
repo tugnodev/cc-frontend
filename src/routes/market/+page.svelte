@@ -28,26 +28,11 @@
             loading = false;
         }
     });
-    let newArticles = $state($articles);
     let loading = $state(true);
 
-    let informatique = $state(
-        newArticles.filter((article) =>
+    let informatique = $derived(
+        $articles.filter((article) =>
             article.category.includes("Informatique"),
-        ),
-    );
-
-    let electronics = $state(
-        newArticles.filter((article) =>
-            article.category.includes("Maison & Électronique"),
-        ),
-    );
-
-    let others = $state(
-        newArticles.filter(
-            (article) =>
-                !article.category.includes("Informatique") &&
-                !article.category.includes("Maison & Électronique"),
         ),
     );
 </script>
@@ -73,10 +58,10 @@
                 </h2>
             </div>
             <div
-                class="flex carousel gap-4 carousel-center h-56 overflow-y-hidden"
+                class="flex gap-4 h-56 overflow-x-auto snap-x snap-mandatory scroll-smooth overflow-y-hidden"
             >
                 {#each informatique as inf}
-                    <div class="carousel-item max-w-44">
+                    <div class="w-44 shrink-0 snap-center h-full">
                         <ProductCard product={inf} />
                     </div>
                 {/each}
