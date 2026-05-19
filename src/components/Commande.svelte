@@ -14,6 +14,7 @@
     import { onMount } from "svelte";
     import { orders } from "$lib/store/order";
     import type { orderDto } from "$lib/services/dtos/order";
+    import { OrderStatus } from "$lib/services/dtos/order";
     import { BackendFetch } from "$lib/backend";
     import { TokenManager } from "$lib/token";
     import { user } from "$lib/store/users";
@@ -39,8 +40,33 @@
         });
     });
 
-    async function changerStatut(id: string, nouveauStatut: string) {
-        console.log("changerStatut", id, nouveauStatut);
+    async function changerStatut(id: string, statut: string) {
+        let fetch: BackendFetch;
+        {
+            const tm = new TokenManager();
+            const token = await tm.loadToken();
+            fetch = new BackendFetch(token!);
+        }
+        const usr = await user.get();
+        usr.subscribe(async (user) => {
+            const res = await fetch.patch(`/order`, {
+                id: id,
+                status: statut,
+            });
+            if (typeof res === "string") {
+                alert(res);
+                return 0;
+            }
+            orders.update((orders) => {
+                return orders.map((order) => {
+                    if (order.id === id) {
+                        return { ...order, status: statut };
+                    }
+                    return order;
+                });
+            });
+            loading = false;
+        });
     }
 
     function contacterClient(clientId: string) {
@@ -51,7 +77,7 @@
     let commandesFiltrees = $derived(
         statutActif === "Toutes"
             ? $orders
-            : $orders.filter((c: orderDto) => c.order_status === statutActif),
+            : $orders.filter((c: orderDto) => c.status === statutActif),
     );
 </script>
 
@@ -78,24 +104,24 @@
 
         <button
             class="btn btn-sm flex gap-1"
-            class:btn-success={statutActif === "Validé"}
-            onclick={() => (statutActif = "Validé")}
+            class:btn-success={statutActif === OrderStatus.VALIDEE}
+            onclick={() => (statutActif = OrderStatus.VALIDEE)}
         >
             <CheckCircle class="w-4 h-4" /> Validé
         </button>
 
         <button
             class="btn btn-sm flex gap-1"
-            class:btn-warning={statutActif === "En attente"}
-            onclick={() => (statutActif = "En attente")}
+            class:btn-warning={statutActif === OrderStatus.ATTENTE}
+            onclick={() => (statutActif = OrderStatus.ATTENTE)}
         >
             <Clock class="w-4 h-4" /> En attente
         </button>
 
         <button
             class="btn btn-sm flex gap-1"
-            class:btn-error={statutActif === "Annulé"}
-            onclick={() => (statutActif = "Annulé")}
+            class:btn-error={statutActif === OrderStatus.ANNULEE}
+            onclick={() => (statutActif = OrderStatus.ANNULEE)}
         >
             <XCircle class="w-4 h-4" /> Annulé
         </button>
@@ -119,10 +145,12 @@
                 <div
                     class="collapse-title text-lg font-semibold flex justify-between items-center"
                 >
-                    <span>Commande #{commande.id} – {commande.buyer_id}</span>
+                    <span>Commande #{commande.id.slice(-8)}...</span>
                     <div class="flex items-center gap-2">
-                        <span class="badge">{commande.order_status}</span>
-                        <ChevronDown class="w-5 h-5" />
+                        <span
+                            class={`badge ${commande.status === OrderStatus.ATTENTE ? "badge-warning" : commande.status === OrderStatus.VALIDEE ? "badge-success" : "badge-error"}`}
+                            >{commande.status}</span
+                        >
                     </div>
                 </div>
 
@@ -132,33 +160,48 @@
                         {new Date(commande.createdAt).toLocaleDateString()}
                     </p>
 
-                    <p class="mt-2 font-semibold">Articles :</p>
                     <ul class="list-disc ml-5">
-                        {#each commande.article_details as article}
-                            <li>
-                                {article.quantity} – Qté: {article.quantity}
+                        {#each commande.items as article}
+                            <li class="flex items-center gap-2">
+                                <img
+                                    class={`w-10 h-10 object-cover rounded-sm`}
+                                    src={article.article.images[0]}
+                                    alt={article.article.title}
+                                />
+                                <div class="flex flex-col">
+                                    <span class="ml-2"
+                                        >{article.article.title} - Qnté : {article.quantity}</span
+                                    >
+                                    <span class="ml-2"
+                                        >{article.article.price *
+                                            article.quantity} Fcfa</span
+                                    >
+                                </div>
                             </li>
                         {/each}
                     </ul>
 
                     <div class="mt-4 flex gap-2 flex-wrap">
                         <button
+                            disabled={commande.status === OrderStatus.VALIDEE}
                             class="btn btn-success btn-sm flex gap-1"
-                            onclick={() => changerStatut(commande.id, "Validé")}
+                            onclick={() =>
+                                changerStatut(commande.id, OrderStatus.VALIDEE)}
                         >
                             <Check class="w-4 h-4" /> Valider
                         </button>
 
                         <button
                             class="btn btn-error btn-sm flex gap-1"
-                            onclick={() => changerStatut(commande.id, "Annulé")}
+                            onclick={() =>
+                                changerStatut(commande.id, OrderStatus.ANNULEE)}
                         >
                             <X class="w-4 h-4" /> Annuler
                         </button>
 
                         <button
                             class="btn btn-outline btn-sm flex gap-1"
-                            onclick={() => contacterClient(commande.buyer_id)}
+                            onclick={() => contacterClient(commande.buyerId)}
                         >
                             <MessageCircle class="w-4 h-4" /> Contacter
                         </button>

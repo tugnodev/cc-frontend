@@ -4,12 +4,19 @@
     import { type commentDto } from "$lib/services/dtos/comment";
     import { panier } from "$lib/store/articles";
     import { type item } from "$lib/services/dtos/cart";
+    import { BackendFetch } from "$lib/backend";
+    import { TokenManager } from "$lib/token";
+    import { goto } from "$app/navigation";
 
     const { product }: { product: articleDto } = $props();
     let modal = $state(false);
     let commentModal = $state(false);
 
-    const addToCart = (product: articleDto) => {
+    const orderProcess = async (product: articleDto) => {
+        goto(`/order/${product.id}`, { state: { product } });
+    };
+
+    const addToCart = async (product: articleDto) => {
         const item: item = {
             articleId: product.id,
             name: product.title,
@@ -25,10 +32,22 @@
             cart.cart = [...cart.cart, item];
             return cart;
         });
+        const tm = new TokenManager();
+        const token = await tm.loadToken().then((token) => {
+            if (typeof token === "string") {
+                return token;
+            } else {
+                return null;
+            }
+        });
+        const fetch = new BackendFetch(token!);
+        console.log($panier.cart);
+        const response = await fetch.patch("/cart", $panier);
+        console.log(response);
     };
 
     const actions = [
-        { label: "Commander", callback: () => "void" },
+        { label: "Commander", callback: orderProcess },
         { label: "Ajouter au panier", callback: addToCart },
     ];
 

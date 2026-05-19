@@ -2,19 +2,89 @@
     import { Filter, CheckCircle, Clock, XCircle } from "@lucide/svelte";
     import { onMount } from "svelte";
     import { orders } from "$lib/store/order";
-    import type { orderDto } from "$lib/services/dtos/order";
+    import { OrderStatus, type orderDto } from "$lib/services/dtos/order";
+    import { BackendFetch } from "$lib/backend";
+    import { TokenManager } from "$lib/token";
+    import { user } from "$lib/store/users";
 
-    let statusFilter = "Toutes";
-    let selectedOrder: orderDto | null = null;
+    let statusFilter = $state("none");
+    let selectedOrder = $derived(orders);
 
-    onMount(() => {
-        orders.loadAll();
+    onMount(async () => {
+        let fetch: BackendFetch;
+        {
+            const tm = new TokenManager();
+            const token = await tm.loadToken();
+            fetch = new BackendFetch(token!);
+        }
+        const usr = await user.get();
+        usr.subscribe(async (usr) => {
+            console.log("subscribed");
+            if (usr) {
+                const res = await fetch.get(`/order/${usr.id}`);
+                console.log(res);
+                switch (typeof res) {
+                    case "object":
+                        orders.set(res);
+                        break;
+                    case "string":
+                        orders.set([]);
+                        break;
+                }
+            }
+        });
     });
 
-    $: filteredOrders =
-        statusFilter === "Toutes"
-            ? $orders
-            : $orders.filter((o) => o.order_status === statusFilter);
+    async function cancelOrder(id: string) {
+        let fetch: BackendFetch;
+        {
+            const tm = new TokenManager();
+            const token = await tm.loadToken();
+            fetch = new BackendFetch(token!);
+        }
+
+        const res = await fetch.patch(`/order`, {
+            id: id,
+            status: OrderStatus.ANNULEE,
+        });
+
+        switch (typeof res) {
+            case "object":
+                orders.update((orders) => {
+                    return orders.map((order) => {
+                        return order.id === id
+                            ? { ...order, status: OrderStatus.ANNULEE }
+                            : order;
+                    });
+                });
+                break;
+            case "string":
+                //notification
+                break;
+        }
+    }
+
+    async function deleteOrder(id: string) {
+        let fetch: BackendFetch;
+        {
+            const tm = new TokenManager();
+            const token = await tm.loadToken();
+            fetch = new BackendFetch(token!);
+        }
+
+        const res = await fetch.delete(`/order/${id}`);
+
+        switch (typeof res) {
+            case "object":
+                orders.update((orders) => {
+                    return orders.filter((order) => order.id !== id);
+                });
+                break;
+            case "string":
+                //notification
+                break;
+        }
+    }
 </script>
 
 <div class="w-full h-full flex flex-col gap-4 items-center justify-center p-2">
@@ -25,106 +95,83 @@
         <button
             class="btn btn-sm flex gap-1"
             class:btn-primary={statusFilter === "Toutes"}
-            onclick={() => (statusFilter = "Toutes")}
+            onclick={() => (statusFilter = "none")}
         >
             <Filter class="w-4 h-4" /> Toutes
         </button>
 
         <button
             class="btn btn-sm flex gap-1"
-            class:btn-success={statusFilter === "Validé"}
-            onclick={() => (statusFilter = "Validé")}
+            class:btn-success={statusFilter === OrderStatus.VALIDEE}
+            onclick={() => (statusFilter = OrderStatus.VALIDEE)}
         >
             <CheckCircle class="w-4 h-4" /> Validé
         </button>
 
         <button
             class="btn btn-sm flex gap-1"
-            class:btn-warning={statusFilter === "En attente"}
-            onclick={() => (statusFilter = "En attente")}
+            class:btn-warning={statusFilter === OrderStatus.ATTENTE}
+            onclick={() => (statusFilter = OrderStatus.ATTENTE)}
         >
             <Clock class="w-4 h-4" /> En attente
         </button>
 
         <button
             class="btn btn-sm flex gap-1"
-            class:btn-error={statusFilter === "Annulé"}
-            onclick={() => (statusFilter = "Annulé")}
+            class:btn-error={statusFilter === OrderStatus.ANNULEE}
+            onclick={() => (statusFilter = OrderStatus.ANNULEE)}
         >
             <XCircle class="w-4 h-4" /> Annulé
         </button>
     </div>
 
-    <!-- COMMANDES -->
-    {#if filteredOrders.length === 0}
-        <p class="text-center text-gray-500">Aucune commande trouvée</p>
-    {:else}
-        <div class="space-y-4">
-            {#each filteredOrders as order}
-                <div
-                    class="collapse collapse-plus border rounded-box bg-base-200"
+    {#each $selectedOrder as order}
+        <details class="collapse bg-base-100 border rounded-md border-base-300">
+            <summary class="p-2 flex gap-1 justify-between">
+                <p>order-{order.id.slice(0, 20)}...</p>
+                <p
+                    class={`badge badge-${
+                        order.status === OrderStatus.VALIDEE
+                            ? "success"
+                            : order.status === OrderStatus.ATTENTE
+                              ? "warning"
+                              : order.status === OrderStatus.ANNULEE
+                                ? "error"
+                                : "default"
+                    }`}
                 >
-                    <input type="checkbox" />
-                    <div
-                        class="collapse-title font-bold flex justify-between items-center"
-                    >
-                        <span>Commande #{order.id} — {order.buyer_id}</span>
-                        <span class="badge">{order.order_status}</span>
-                    </div>
-
-                    <div class="collapse-content">
-                        <p>
-                            <strong>Date :</strong>
-                            {new Date(order.createdAt).toLocaleDateString()}
-                        </p>
-
-                        <p class="mt-2 font-semibold">Articles :</p>
-                        <ul class="list-disc ml-5">
-                            {#each order.article_details as article}
-                                <li>
-                                    {article.articleId} – Qté: {article.quantity}
-                                </li>
-                            {/each}
-                        </ul>
-
-                        <button
-                            class="btn btn-sm btn-primary mt-3"
-                            onclick={() => (selectedOrder = order)}
-                        >
-                            Voir plus
-                        </button>
-                    </div>
-                </div>
-            {/each}
-        </div>
-    {/if}
-
-    <!-- MODAL DETAILS -->
-    {#if selectedOrder}
-        <dialog class="modal modal-open">
-            <div class="modal-box">
-                <h3 class="font-bold text-lg">Commande #{selectedOrder.id}</h3>
-                <p><strong>Client :</strong> {selectedOrder.buyer_id}</p>
-                <p><strong>Statut :</strong> {selectedOrder.order_status}</p>
-                <p>
-                    <strong>Date :</strong>
-                    {new Date(selectedOrder.createdAt).toLocaleDateString()}
+                    {order.status}
                 </p>
-
-                <div class="divider"></div>
-
-                <ul class="list-disc list-inside">
-                    {#each selectedOrder.article_details as a}
-                        <li>{a.articleId} – Qté: {a.quantity}</li>
+            </summary>
+            <div class="p-2 collapse-content flex flex-col gap-2">
+                <span class="flex gap-2 items-start">
+                    {#each order.items as item}
+                        <img
+                            class="h-20 aspect-square object-cover"
+                            src={item.article.images[0]}
+                            alt={`article image`}
+                        />
+                        <div class="flex flex-col gap-1">
+                            <p>{item.article.title} - {item.quantity} x</p>
+                            <p>{item.article.price * item.quantity} XOF</p>
+                            <p>
+                                {order.updatedAt}
+                            </p>
+                        </div>
                     {/each}
-                </ul>
-
-                <div class="modal-action">
-                    <button class="btn" onclick={() => (selectedOrder = null)}
-                        >Fermer</button
+                </span>
+                {#if order.status === OrderStatus.ATTENTE}
+                    <button
+                        onclick={() => cancelOrder(order.id)}
+                        class="btn btn-error flex w-full">Annuler</button
                     >
-                </div>
+                {:else if order.status === OrderStatus.ANNULEE}
+                    <button
+                        onclick={() => deleteOrder(order.id)}
+                        class="btn btn-error flex w-full">Supprimer</button
+                    >
+                {/if}
             </div>
-        </dialog>
-    {/if}
+        </details>
+    {/each}
 </div>

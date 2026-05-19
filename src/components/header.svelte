@@ -2,8 +2,9 @@
     import { ShoppingBag } from "@lucide/svelte";
     import ModalBox from "./ModalBox.svelte";
     import PanierModal from "../components/PanierModal.svelte";
-    
-    let modal=$state(false);
+    import { panier } from "$lib/store/articles";
+
+    let modal = $state(false);
 </script>
 
 <header
@@ -17,10 +18,17 @@
         </span>
     </div>
     <div>
-        <span>
-            <button class="btn btn-ghost"
-                onclick={() => modal=true}
+        <span class="flex items-center">
+            <button
+                class="indicator btn btn-ghost"
+                onclick={() => (modal = true)}
             >
+                {#if $panier && $panier.cart.length > 0}
+                    <span
+                        class="badge badge-error badge-soft badge-sm indicator-item mr-2"
+                        >{$panier.cart.length}</span
+                    >
+                {/if}
                 <ShoppingBag size="32" />
             </button>
         </span>
@@ -28,7 +36,7 @@
 </header>
 
 {#if modal}
-    <ModalBox onClose={() => modal= false}>
-        <PanierModal/>
+    <ModalBox onClose={() => (modal = false)}>
+        <PanierModal />
     </ModalBox>
 {/if}

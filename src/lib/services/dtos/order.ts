@@ -1,37 +1,39 @@
 import { type articleDto } from "./article.js";
 
-enum OrderStatus {
-  ACCEPTED = "accepted",
-  SHIPPED = "shipped",
-  DELIVRED = "delivred",
-  CANCELLED = "cancelled",
+export enum OrderStatus {
+  VALIDEE = "validee",
+  ATTENTE = "en attente",
+  ANNULEE = "annulee",
 }
 
-type article_details = {
+type Items = {
   article: articleDto;
   quantity: number;
 };
 
 export interface createOrderDto {
-  article_details: article_details[];
-  buyer_id: string;
-  seller_id: string;
+  items: {
+    articleId: string;
+    quantity: number;
+  }[];
+  buyerId: string;
+  sellerId: string;
 }
 
 export interface updateOrderDto {
   id: string;
-  article_details?: article_details[];
-  buyer_id?: string;
-  seller_id?: string;
-  order_status?: OrderStatus;
+  items?: Items[];
+  buyerId?: string;
+  sellerId?: string;
+  status?: OrderStatus;
 }
 
 export interface orderDto {
   id: string;
-  article_details: article_details[];
-  buyer_id: string;
-  seller_id: string;
-  order_status: OrderStatus | string;
+  items: Items[];
+  buyerId: string;
+  sellerId: string;
+  status: OrderStatus | string;
   createdAt: Date;
   updatedAt: Date;
 }
