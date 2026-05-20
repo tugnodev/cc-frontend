@@ -18,7 +18,12 @@
         loading?: boolean;
     };
 
-    let { article = null, onSubmit, onCancel, loading = false }: Props = $props();
+    let {
+        article = null,
+        onSubmit,
+        onCancel,
+        loading = false,
+    }: Props = $props();
 
     const isEditing = $derived(!!article?.id);
 
@@ -54,18 +59,23 @@
     });
 
     function validateForm(): string | null {
-        if (!form.title || form.title.trim() === "") return "Le titre est requis";
-        if (!form.price || form.price <= 0) return "Le prix doit être supérieur à 0";
-        if (form.stock == null || form.stock < 0) return "Le stock ne peut pas être négatif";
-        if (!form.images || form.images.length === 0) return "Au moins une image est requise";
-        if (!form.category || form.category.length === 0) return "Au moins une catégorie est requise";
+        if (!form.title || form.title.trim() === "")
+            return "Le titre est requis";
+        if (!form.price || form.price <= 0)
+            return "Le prix doit être supérieur à 0";
+        if (form.stock == null || form.stock < 0)
+            return "Le stock ne peut pas être négatif";
+        if (!form.images || form.images.length === 0)
+            return "Au moins une image est requise";
+        if (!form.category || form.category.length === 0)
+            return "Au moins une catégorie est requise";
         return null;
     }
 
     async function handleSubmit() {
         error = null;
         const validation = validateForm();
-        
+
         if (validation) {
             error = validation;
             return;
@@ -75,7 +85,8 @@
         try {
             await onSubmit(form);
         } catch (e) {
-            error = e instanceof Error ? e.message : "Erreur lors de la sauvegarde";
+            error =
+                e instanceof Error ? e.message : "Erreur lors de la sauvegarde";
         } finally {
             submitting = false;
         }
@@ -110,7 +121,13 @@
         </div>
     {/if}
 
-    <form onsubmit={(e) => { e.preventDefault(); handleSubmit(); }} class="space-y-5">
+    <form
+        onsubmit={(e) => {
+            e.preventDefault();
+            handleSubmit();
+        }}
+        class="space-y-5"
+    >
         <!-- Title -->
         <div class="form-control w-full">
             <label class="label" for="article-title">
@@ -154,7 +171,6 @@
                     class="input input-bordered w-full"
                     bind:value={form.price}
                     min="0"
-                    step="100"
                     disabled={loading || submitting}
                     required
                 />

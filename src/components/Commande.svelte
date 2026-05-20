@@ -22,6 +22,7 @@
 
     let statutActif = $state("Toutes");
     let loading = $state(true);
+    let fetching = $state(false);
 
     onMount(async () => {
         let fetch: BackendFetch;
@@ -45,6 +46,7 @@
         {
             const tm = new TokenManager();
             const token = await tm.loadToken();
+            fetching = true;
             fetch = new BackendFetch(token!);
         }
         const usr = await user.get();
@@ -62,6 +64,7 @@
                     if (order.id === id) {
                         return { ...order, status: statut };
                     }
+                    fetching = false;
                     return order;
                 });
             });
@@ -82,10 +85,10 @@
 </script>
 
 <div
-    class="w-full flex flex-col items-center justify-start mb-8 px-1 transition-all duration-300 ease-in-out"
+    class="w-full flex flex-col gap-4 items-center justify-start px-1 transition-all duration-300 ease-in-out"
 >
     <!-- TITRE -->
-    <div class="space-y-4 w-full p-4">
+    <div class="space-y-4 w-full px-2">
         <h1 class="text-3xl font-bold flex items-center gap-2">
             <ShoppingCart class="w-6 h-6" />
             Commandes
@@ -135,7 +138,7 @@
 {:else if commandesFiltrees.length === 0}
     <p class="text-center text-gray-500 mt-10">Aucune commande trouvée</p>
 {:else}
-    <div class="w-full max-w-3xl space-y-2 mt-6">
+    <div class="w-full max-w-3xl space-y-2">
         {#each commandesFiltrees as commande}
             <div
                 class="collapse border-2 rounded-xl border-base-300 bg-base-100/60"
@@ -183,7 +186,9 @@
 
                     <div class="mt-4 flex gap-2 flex-wrap">
                         <button
-                            disabled={commande.status === OrderStatus.VALIDEE}
+                            disabled={commande.status === OrderStatus.VALIDEE ||
+                                commande.status === OrderStatus.ANNULEE ||
+                                fetching}
                             class="btn btn-success btn-sm flex gap-1"
                             onclick={() =>
                                 changerStatut(commande.id, OrderStatus.VALIDEE)}
@@ -192,6 +197,8 @@
                         </button>
 
                         <button
+                            disabled={commande.status === OrderStatus.ANNULEE ||
+                                fetching}
                             class="btn btn-error btn-sm flex gap-1"
                             onclick={() =>
                                 changerStatut(commande.id, OrderStatus.ANNULEE)}

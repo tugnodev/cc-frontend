@@ -3,6 +3,8 @@
     import { user } from "$lib/store/users";
     import { TokenManager } from "$lib/token";
     import { onMount } from "svelte";
+    import { userArticles } from "$lib/store/articles";
+    import { orders } from "$lib/store/order";
 
     interface stats {
         articles: {

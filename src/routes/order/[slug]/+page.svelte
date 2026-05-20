@@ -15,6 +15,7 @@
 
     const articleId = $derived(page.params.slug);
     let loading = $state(true);
+    let fetching = $state(false);
     let product: articleDto | undefined = $state(undefined);
     let vendor: userDto | undefined = $state(undefined);
 
@@ -30,16 +31,30 @@
             `/articles/${articleId}`,
         );
         console.log(articleFetch);
+        switch (typeof articleFetch) {
+            case "object":
+                product = articleFetch;
+                break;
+            case "string":
+                //notification
+                break;
+        }
         const sellerFetch: userDto = await fetch.get(`/${articleFetch.userId}`);
-        console.log(sellerFetch);
-        product = articleFetch;
-        vendor = sellerFetch;
+        switch (typeof sellerFetch) {
+            case "object":
+                vendor = sellerFetch;
+                break;
+            case "string":
+                //notification
+                break;
+        }
         loading = false;
     };
 
     const handleOrder = async () => {
         if (!product) return;
 
+        fetching = true;
         const tm = new TokenManager();
         const token = await tm.loadToken();
         if (token === null || token === undefined) {
@@ -142,7 +157,11 @@
 
             <!-- Order Form -->
             <div class="bg-base-100 p-4 rounded-lg shadow-md">
-                <button onclick={handleOrder} class="btn btn-primary w-full">
+                <button
+                    disabled={fetching}
+                    onclick={handleOrder}
+                    class="btn btn-primary w-full"
+                >
                     Commander
                 </button>
             </div>

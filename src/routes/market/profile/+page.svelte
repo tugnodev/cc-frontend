@@ -19,6 +19,8 @@
     import { user } from "$lib/store/users";
     let modal: boolean = $state(false);
     let activeRoute: any = $state(null);
+    let fetching: boolean = $state(false);
+
     let orders: orderDto[] = [];
     let statusFilter = "all";
 
@@ -60,6 +62,8 @@
 
         <button
             onclick={async () => {
+                fetching = true;
+
                 const tm = new TokenManager();
                 {
                     const token = await tm.loadToken().then((tk) => {
@@ -77,6 +81,7 @@
                     }
                 }
             }}
+            disabled={fetching}
             class="w-full btn btn-error">Se deconnecter</button
         >
     </div>

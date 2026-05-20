@@ -12,6 +12,21 @@
     let modal = $state(false);
     let commentModal = $state(false);
 
+    async function getComments(productId: string) {
+        const tm = new TokenManager();
+        const token = await tm.loadToken().then((token) => {
+            if (typeof token === "string") {
+                return token;
+            } else {
+                return null;
+            }
+        });
+        const fetch = new BackendFetch(token!);
+        const response = await fetch.get(`/comments/${productId}`);
+        const data = await response.json();
+        comments = data;
+    }
+
     const orderProcess = async (product: articleDto) => {
         goto(`/order/${product.id}`, { state: { product } });
     };
@@ -142,64 +157,6 @@
                         >{action.label}</button
                     >
                 {/each}
-            </div>
-        </div>
-    </ModalBox>
-{/if}
-
-{#if commentModal}
-    <ModalBox onClose={() => (commentModal = false)}>
-        <div
-            class={`w-full p-2 flex flex-col gap-2 max-h-[80vh] overflow-scroll no-scrollbar`}
-        >
-            {#if comments.length > 0}
-                {#each comments as comment}
-                    <div
-                        class="flex flex-col gap-2 border border-base-300 rounded-lg bg-base-200/10 backdrop-blur-2xl p-2 w-full"
-                    >
-                        <span class="flex items-center justify-between">
-                            <span class="flex items-center gap-2">
-                                <span>{comment.rates} ⭐</span>
-                                <span class="text-xl font-semibold"
-                                    >{comment.author}</span
-                                >
-                            </span>
-                            <span class="text-base-content/60"
-                                >{comment.createdAt}</span
-                            >
-                        </span>
-                        <span>{comment.comment}</span>
-                    </div>
-                {/each}
-            {:else}
-                <div>
-                    <span class="text-base-content/60">Aucun commentaire</span>
-                </div>
-            {/if}
-            <div
-                class="flex flex-col gap-2 border border-base-300 rounded-lg bg-base-200/10 backdrop-blur-2xl p-2 w-full"
-            >
-                <div class="flex items-center justify-between gap-2">
-                    {#each [1, 2, 3, 4, 5] as rate}
-                        <button
-                            onclick={() => console.log(rate)}
-                            class="badge badge-soft badge-base-300 text-base-content/60"
-                            >{rate} ⭐</button
-                        >
-                    {/each}
-                </div>
-                <div class="flex items-center gap-2">
-                    <input
-                        class="input input-bordered w-full input-base-200 md:input-xl flex-4"
-                        type="text"
-                        placeholder="ecrire un commentaire"
-                    />
-                    <button
-                        class="btn btn-base-300 btn-soft flex-1"
-                        onclick={() => console.log("Comment envoyé")}
-                        >Envoye</button
-                    >
-                </div>
             </div>
         </div>
     </ModalBox>

@@ -11,24 +11,29 @@
     let password = "";
     let rememberMe = false;
     let csrf_token = "";
+    let fetching = false;
+    let errorMsg = "";
+    let successMsg = "";
 
     async function login(event?: Event) {
         event?.preventDefault?.();
 
         if (!email.trim() || !password) {
-            alert("Veuillez remplir tous les champs.");
+            errorMsg = "Veuillez remplir tous les champs.";
             return;
         }
 
+        fetching = true;
         try {
             const response = await fetch(url, {
                 method: "POST",
                 body: JSON.stringify({ email, password }),
             });
             const data: authPack | string = await response.json();
+            console.log(typeof data);
             switch (typeof data) {
                 case "object":
-                    console.log(`returned ${JSON.stringify(data)}`);
+                    successMsg = "Connexion réussie.";
                     if (data.user) {
                         const tokenManager = new TokenManager();
                         await tokenManager.saveToken(data.token);
@@ -38,7 +43,9 @@
                     }
                     break;
                 default:
-                    console.log("Erreur lors de l'inscription.");
+                    fetching = false;
+                    errorMsg = data as string;
+                    console.log(errorMsg);
             }
         } catch (error) {
             console.error(error);
@@ -51,6 +58,24 @@
         transition:fade={{ duration: 150 }}
         class="card w-full max-w-md bg-base-100 md:h-auto h-full p-6 border-2 border-base-300"
     >
+        {#if errorMsg}
+            <div
+                transition:fade={{ duration: 150 }}
+                class="alert alert-error mb-4"
+            >
+                {errorMsg}
+            </div>
+        {/if}
+
+        {#if successMsg}
+            <div
+                transition:fade={{ duration: 150 }}
+                class="alert alert-success mb-4"
+            >
+                {successMsg}
+            </div>
+        {/if}
+
         <form action="" onsubmit={login}>
             <input type="hidden" name="csrf_token" value={csrf_token} />
             <h2 class="text-3xl font-bold text-center mb-6">Connectez-vous</h2>
@@ -98,7 +123,9 @@
                 >
             </div>
 
-            <button class="btn btn-success w-full">Se connecter</button>
+            <button disabled={fetching} class="btn btn-success w-full"
+                >Se connecter</button
+            >
 
             <div class="divider">Ou connectez-vous avec</div>
 
