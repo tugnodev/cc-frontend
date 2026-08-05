@@ -9,5 +9,15 @@ node_modules
 vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
 .idea/
+.vscode/
+.DS_Store
+pnpm-workspace.yaml
+pnpm-lock.yaml
+pnpm-lock.json
+package-lock.json
+yarn.lock
+package-lock.json
+dist
+dist-ssr
 /target
 /gen
