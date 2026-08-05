@@ -18,17 +18,17 @@
 </script>
 
 <nav
-    class="flex bg-base-300/60 backdrop-blur-md border-2 shadow-md border-base-300 rounded-4xl"
+    class="flex bg-base-300/60 backdrop-blur-md border-2 shadow-md border-base-300 rounded-full"
 >
-    <ul class={`flex items-center justify-center p-2 gap-2`}>
+    <ul class={`flex items-center justify-center p-1 gap-2`}>
         {#each navItems as item}
             <li class={isActive(item.href) + ` transition-all duration-400`}>
                 <a
                     class="flex justify-center gap-1 items-center"
                     href={item.href}
                 >
-                    <item.icon size={28} />
-                    <p class="font-bold text-md">
+                    <item.icon size={20} />
+                    <p class="font-semibold text-md">
                         {page.url.pathname === item.href ? item.label : ""}
                     </p>
                 </a>
