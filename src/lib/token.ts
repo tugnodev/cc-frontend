@@ -8,8 +8,6 @@ export class TokenManager {
         defaults: {},
       });
 
-      console.log(JSON.stringify(store));
-
       await store.set("token", token);
       await store.save();
       return "success!";

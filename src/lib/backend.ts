@@ -20,14 +20,22 @@ export class BackendFetch {
     }).then((response) => response.json());
   }
 
-  async get<T>(endPoint: string) {
+  async get(endPoint: string) {
     return await fetch(`${this.url}${endPoint}`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${this.token}`,
       },
-    }).then((response) => response.json());
+    }).then((response) => {
+      switch (typeof response) {
+        case "string":
+          return response;
+        default:
+          return response.json();
+      }
+      // return response.json()
+    });
   }
 
   async patch<T>(endPoint: string, data: T) {

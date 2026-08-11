@@ -23,10 +23,10 @@
                 class="indicator btn btn-ghost"
                 onclick={() => (modal = true)}
             >
-                {#if $panier && $panier.cart.length > 0}
+                {#if $panier && $panier.items.length > 0}
                     <span
                         class="badge badge-error badge-soft badge-sm indicator-item mr-2"
-                        >{$panier.cart.length}</span
+                        >{$panier.items.length}</span
                     >
                 {/if}
                 <ShoppingBag size="32" />

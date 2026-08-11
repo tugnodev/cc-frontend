@@ -8,15 +8,19 @@
     import { onMount } from "svelte";
     import type { articleDto } from "$lib/services/dtos/article";
 
-    const categories = [
-        "Mode & Cosmétique",
-        "Jeux Vidéo & Console",
-        "Education",
-        "Informatique",
-        "Maison & Électronique",
-        "Sport",
-        "Supermarché",
+
+    const CATEGORIES = [
+      { name: "Électronique", description: "Téléphones, ordinateurs, accessoires" },
+      { name: "Livres & Cours", description: "Manuels, notes de cours, fascicules" },
+      { name: "Vêtements", description: "Habits, chaussures, accessoires de mode" },
+      { name: "Meubles", description: "Mobilier pour chambre et bureau" },
+      { name: "Sport & Loisirs", description: "Équipements sportifs et loisirs" },
+      { name: "Beauté & Santé", description: "Cosmétiques et produits de santé" },
+      { name: "Alimentation", description: "Produits alimentaires et boissons" },
+      { name: "Divers", description: "Tout le reste" },
     ];
+
+    const categories = CATEGORIES.map((category) => category.name);
 
     let filterFlag = $state("");
     let filteredArticles = $state<articleDto[]>([]);

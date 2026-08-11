@@ -74,7 +74,7 @@
 <div class="flex h-full w-full items-center justify-center overflow-y-scroll">
     <div
         transition:fade={{ duration: 150 }}
-        class="card bg-base-100 h-full md:h-auto w-full max-w-md shadow-sm p-6 border-2 border-base-300"
+        class="card bg-base-200 h-full md:h-auto w-full max-w-md shadow-sm p-6 border-2 border-base-300"
     >
         <h2 class="text-3xl font-bold text-center mb-6">Inscrivez-vous</h2>
 

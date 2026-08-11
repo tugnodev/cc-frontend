@@ -1,13 +1,13 @@
 import { type articleDto } from "./article.js";
 
 export enum OrderStatus {
-  VALIDEE = "validee",
-  ATTENTE = "en attente",
+  VALIDEE = "valide",
+  ATTENTE = "attente",
   ANNULEE = "annulee",
 }
 
 type Items = {
-  article: articleDto;
+  articleId: string;
   quantity: number;
 };
 
@@ -34,6 +34,19 @@ export interface orderDto {
   buyerId: string;
   sellerId: string;
   status: OrderStatus | string;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export type Order = {
+  id: string;
+  items: {
+    article: articleDto;
+    quantity: number;
+  }[];
+  buyerId: string;
+  sellerId: string;
+  status: string;
   createdAt: Date;
   updatedAt: Date;
 }

@@ -15,7 +15,6 @@ class User {
       defaults: {},
     });
     const user = (await store.get("user")) as string;
-    console.log(`In store get ${user}`);
     this.user = readable(JSON.parse(user));
     return this.user;
   }
@@ -25,7 +24,6 @@ class User {
       autoSave: false,
       defaults: {},
     });
-    console.log(`In store set ${JSON.stringify(user)}`);
     await store.set("user", JSON.stringify(user));
     this.user = readable(user);
   }

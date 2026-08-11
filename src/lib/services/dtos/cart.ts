@@ -7,5 +7,6 @@ export type item = {
 
 export interface cartDto {
   userId: string;
-  cart: item[];
+  items: item[];
+  id: string;
 }

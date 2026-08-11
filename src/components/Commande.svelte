@@ -13,12 +13,13 @@
 
     import { onMount } from "svelte";
     import { orders } from "$lib/store/order";
-    import type { orderDto } from "$lib/services/dtos/order";
+    import type { Order, orderDto } from "$lib/services/dtos/order";
     import { OrderStatus } from "$lib/services/dtos/order";
     import { BackendFetch } from "$lib/backend";
     import { TokenManager } from "$lib/token";
     import { user } from "$lib/store/users";
     import Spinner from "./Spinner.svelte";
+    import type { articleDto } from "$lib/services/dtos/article";
 
     let statutActif = $state("Toutes");
     let loading = $state(true);
@@ -33,10 +34,32 @@
         }
         const usr = await user.get();
         usr.subscribe(async (user) => {
-            const res = (await fetch.get(`/order/${user!.id}`)) as orderDto[];
-            if (typeof res === "string") return [];
-            if (!res) return [];
-            orders.set(res);
+            const res = (await fetch.get(`/order/user/${user!.id}`)) as orderDto[];
+            if (typeof res === "string") {
+              loading = false;
+              return;
+            }
+            if (!res) {
+              loading = false;
+              return;
+            }
+
+            let data: Order[] = [];
+            for (const order of res) {
+              let article = await fetch.get(`/articles/${order.items[0].articleId}`);
+              if (typeof article === "string") continue;
+              data.push({
+                ...order,
+                items: [
+                  {
+                    quantity: order.items[0].quantity,
+                    article: article!,
+                  },
+                ],
+              });
+            }
+            orders.set(data);
+            console.log(data);
             loading = false;
         });
     });
@@ -51,7 +74,7 @@
         }
         const usr = await user.get();
         usr.subscribe(async (user) => {
-            const res = await fetch.patch(`/order`, {
+            const res: string | Order = await fetch.patch(`/order`, {
                 id: id,
                 status: statut,
             });
@@ -59,8 +82,8 @@
                 alert(res);
                 return 0;
             }
-            orders.update((orders) => {
-                return orders.map((order) => {
+            orders.update((order) => {
+                return order.map((order) => {
                     if (order.id === id) {
                         return { ...order, status: statut };
                     }
@@ -80,7 +103,7 @@
     let commandesFiltrees = $derived(
         statutActif === "Toutes"
             ? $orders
-            : $orders.filter((c: orderDto) => c.status === statutActif),
+            : $orders.filter((c: Order) => c.status === statutActif),
     );
 </script>
 

@@ -4,7 +4,7 @@
 
     function isActive(path: string) {
         return $page.url.pathname === path
-            ? "flex bg-base-100 p-2 rounded-4xl"
+            ? "flex bg-base-100 px-2 py-1.5 rounded-full"
             : "";
     }
 
@@ -16,17 +16,17 @@
 </script>
 
 <nav
-    class="flex bg-base-300/60 backdrop-blur-md border-2 shadow-md border-base-300 rounded-4xl"
+    class="flex bg-base-300/60 backdrop-blur-md border-2 shadow-md border-base-300 rounded-full"
 >
-    <ul class={`flex items-center justify-center p-2 gap-2`}>
+    <ul class={`flex items-center justify-center p-1 gap-2`}>
         {#each navItems as item}
             <li class={isActive(item.href) + ` transition-all duration-400`}>
                 <a
-                    class="flex justify-center gap-2 items-center"
+                    class="flex justify-center gap-1 px-1 items-center"
                     href={item.href}
                 >
-                    <item.icon size={28} />
-                    <p class="font-bold text-xl">
+                    <item.icon />
+                    <p class="font-semibold">
                         {$page.url.pathname === item.href ? item.label : ""}
                     </p>
                 </a>

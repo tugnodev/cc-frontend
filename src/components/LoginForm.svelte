@@ -25,16 +25,20 @@
 
         fetching = true;
         try {
+          console.log(JSON.stringify({ email: email, password: password }));
             const response = await fetch(url, {
+                headers: {
+                    "Content-Type": "application/json",
+                },
                 method: "POST",
-                body: JSON.stringify({ email, password }),
+                body: JSON.stringify({ email: email, password: password }),
             });
             const data: authPack | string = await response.json();
-            console.log(typeof data);
+            console.log(data);
             switch (typeof data) {
                 case "object":
-                    successMsg = "Connexion réussie.";
                     if (data.user) {
+                    successMsg = "Connexion réussie.";
                         const tokenManager = new TokenManager();
                         await tokenManager.saveToken(data.token);
                         console.log(`user data: ${JSON.stringify(data.user)}`);
@@ -56,7 +60,7 @@
 <div class="w-full bg-base-200 h-full flex items-start justify-center">
     <div
         transition:fade={{ duration: 150 }}
-        class="card w-full max-w-md bg-base-100 md:h-auto h-full p-6 border-2 border-base-300"
+        class="card w-full max-w-md bg-base-200 md:h-auto h-full p-6 border-2 border-base-300"
     >
         {#if errorMsg}
             <div

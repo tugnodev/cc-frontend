@@ -11,6 +11,7 @@
     import type { articleDto } from "$lib/services/dtos/article";
     import Spinner from "../../components/Spinner.svelte";
 
+    let loading = $state(true);
     onMount(async () => {
         if ($articles.length > 0) {
             loading = false;
@@ -21,18 +22,20 @@
                 goto("/auth/login");
             }
             const fetch = new BackendFetch(token as string);
-            const res = (await fetch.get<articleDto[]>(
+            const res = (await fetch.get(
                 "/articles/all",
             )) as articleDto[];
+            console.log(res);
             articles.set(res);
             loading = false;
+            console.log($articles.length);
+            console.log(loading);
         }
     });
-    let loading = $state(true);
 
     let informatique = $derived(
         $articles.filter((article) =>
-            article.category.includes("Informatique"),
+            article.category.includes("Électronique"),
         ),
     );
 </script>
@@ -40,6 +43,9 @@
 <Main>
     {#if loading}
         <Spinner color="bg-base-200" />
+        <div>
+            {$articles.length}
+        </div>
     {:else}
         <AdBanner images={["/ads/ad1.jpg", "/ads/ad2.jpg", "/ads/ad3.jpg"]} />
         <div class="hidden">

@@ -11,46 +11,45 @@
 
     let { children } = $props();
 
-    const load = async () => {
-        const tm = new TokenManager();
-        const token = await tm.loadToken();
-        switch (!token) {
-            case true:
-                goto("/auth/login");
-                break;
-            case false:
-                if (typeof token === "string") {
-                    console.log("token seen");
-                    const fetch = new BackendFetch(token);
-                    const session = await fetch.get<userDto>("/session");
-                    console.log(JSON.stringify(session));
-                    switch (typeof session) {
-                        case "string":
-                            goto("/auth/login");
-                            break;
-                        case "object":
-                            if (session.message) {
-                                goto("/auth/login");
-                            }
-                            user.set(session);
-
-                            if (page.url.pathname === "/") goto("/market");
-                            break;
-                        default:
-                            window.location.reload();
-                            break;
-                    }
-                }
-                break;
-        }
-    };
-
     onMount(async () => {
-        await load();
+      const tm = new TokenManager();
+      const token = await tm.loadToken();
+      console.log(token);
+      switch (!token) {
+          case true:
+              console.log("no token");
+              goto("/auth/login");
+              break;
+          case false:
+              console.log("token found");
+              if (typeof token === "string") {
+                  const fetch = new BackendFetch(token);
+                  console.log(fetch);
+                  const session = await fetch.get("/session");
+                  console.log(session);
+                  switch (typeof session) {
+                      case "string":
+                          goto("/auth/login");
+                          break;
+                      case "object":
+                          if (session === null) {
+                              goto("/auth/login");
+                          }
+                          user.set(session);
+
+                          if (page.url.pathname === "/") goto("/market");
+                          break;
+                      default:
+                          window.location.reload();
+                          break;
+                  }
+              }
+              break;
+      }
     });
 </script>
 
-<main class="w-full fixed mt-8 h-screen overflow-hidden bg-base-200">
+<main class="w-full fixed mt-8 h-screen overflow-hidden bg-base-100">
     <div class="absolute z-60 bottom-14 left-1">
         <button
             class="btn btn-lg btn-soft btn-error btn-square rounded-full p-2"

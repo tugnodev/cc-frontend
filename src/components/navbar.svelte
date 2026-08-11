@@ -6,7 +6,7 @@
 
     function isActive(path: string) {
         return page.url.pathname === path
-            ? "flex bg-base-100 p-2 rounded-4xl"
+            ? "flex bg-base-100 px-2 py-1.5 rounded-full"
             : "";
     }
 
@@ -24,11 +24,11 @@
         {#each navItems as item}
             <li class={isActive(item.href) + ` transition-all duration-400`}>
                 <a
-                    class="flex justify-center gap-1 items-center"
+                    class="flex justify-center gap-1 px-1 items-center"
                     href={item.href}
                 >
-                    <item.icon size={20} />
-                    <p class="font-semibold text-md">
+                    <item.icon  />
+                    <p class="font-semibold">
                         {page.url.pathname === item.href ? item.label : ""}
                     </p>
                 </a>

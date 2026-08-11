@@ -8,11 +8,11 @@
     import { user as usr } from "$lib/store/users";
 
     let totalPrice = $derived(
-        $panier.cart.reduce((acc, item) => acc + item.price, 0),
+        $panier.items.reduce((acc, item) => acc + item.price, 0),
     );
 
     async function removeFromCart(id: string) {
-        $panier.cart = $panier.cart.filter((item) => item.articleId !== id);
+        $panier.items = $panier.items.filter((item) => item.articleId !== id);
         let fetch: BackendFetch;
         {
             const tm = new TokenManager();
@@ -36,10 +36,10 @@
         </p>
     </div>
     <div class="flex flex-col gap-2 mt-10">
-        {#if !$panier || $panier.cart.length <= 0}
+        {#if !$panier || $panier.items.length <= 0}
             <p class="text-center text-base-content">Votre panier est vide.</p>
         {:else}
-            {#each $panier.cart as item}
+            {#each $panier.items as item}
                 <div
                     class="flex items-center gap-2 border border-base-300 p-2 rounded-xl"
                 >
