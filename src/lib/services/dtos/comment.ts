@@ -1,7 +1,6 @@
 export interface createCommentDto {
   articleId: string;
   userId: string;
-  rates: number;
   comment: string;
 }
 
@@ -10,7 +9,6 @@ export interface updateCommentDto {
   articleId: string;
   userId: string;
   comment?: string;
-  rates?: string;
 }
 
 export interface commentDto {
@@ -18,7 +16,6 @@ export interface commentDto {
   articleId: string;
   author: string;
   comment: string;
-  rates: string;
   createdAt: Date;
   updatedAt: Date;
 }
